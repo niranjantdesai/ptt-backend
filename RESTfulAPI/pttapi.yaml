@@ -152,7 +152,7 @@ paths:
         type: string
       - name: projectName
         in: path
-        description: name of the user's project that needs to be created
+        description: name of the user's project that needs to be deleted
         required: true
         type: string
     delete:
@@ -173,6 +173,19 @@ paths:
           description: 'Invalid input'
         '404':
           description: 'Not found'
+  
+  '/api/user/project/associate/{email}/{projectName}':
+    parameters:
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project that needs to be updated
+        required: true
+        type: string
     put:
       tags:
         - user
