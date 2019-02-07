@@ -114,7 +114,7 @@ paths:
         '404':
           description: Not found
 
-  '/api/user/project/create/{email}/{projectName}/':
+  '/api/user/project/create/{email}/{projectName}':
     parameters:
       - name: email
         in: path
@@ -142,6 +142,57 @@ paths:
             $ref: '#/definitions/Project'
         '400':
           description: 'Invalid input'
+          
+  '/api/user/project/delete/{email}/{projectName}':
+    parameters:
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project that needs to be created
+        required: true
+        type: string
+    delete:
+      tags:
+        - user
+      summary: Delete a user's project
+      description: "The service will delete a project for a user and return the deleted project."
+      consumes:
+        - application/json
+      produces: 
+        - application/json
+      responses:
+        '200':
+          description: 'Success'
+          schema:
+            $ref: '#/definitions/Project'
+        '400': 
+          description: 'Invalid input'
+        '404':
+          description: 'Not found'
+    put:
+      tags:
+        - user
+      summary: Associate a Pomodoro with a user’s project
+      description: "The service will associate a Pomodoro with user's project, and start a new session."
+      consumes: 
+        - application/json
+      produces: 
+        - application/json
+      responses:
+        '200':
+          description: 'Success'
+          schema:
+            $ref: '#/definitions/Session'
+        '400':
+          description: 'Invalid input'
+        '404':
+          description: 'Not found'
+    
+  
 
 
 definitions:
@@ -203,7 +254,7 @@ definitions:
       endtime:
         type: number
       pomodorocounter:
-        type: number
+        type: integer
   
   Boolean:
     type: object
