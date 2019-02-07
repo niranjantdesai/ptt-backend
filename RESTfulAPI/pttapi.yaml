@@ -29,8 +29,7 @@ paths:
         parameters:
           - name: body
             in: body
-            description: >-
-              User object that needs to be added to the addressbook. 
+            description: User object that needs to be added to the addressbook. 
             required: true
             schema:
               $ref: '#/definitions/UserCreateBody'
@@ -117,7 +116,34 @@ paths:
         '404':
           description: Not found
 
-
+  '/api/user/project/create/{email}/{projectName}/':
+    parameters:
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project that needs to be created
+        required: true
+        type: string
+    post:
+      tags:
+        - user
+      summary: User will create a project
+      description: "The service will create a new project for a user and return it."
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: 'Success'
+          schema:
+            $ref: '#/definitions/Project'
+        '400':
+          description: 'Invalid input'
 
 
 
@@ -310,6 +336,12 @@ definitions:
         type: number
       pomodorocounter:
         type: number
+  
+  Boolean:
+    type: object
+    properties:
+      partial:
+        type: boolean
   
   Contact:
     type: object
