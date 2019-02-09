@@ -14,11 +14,11 @@ schemes:
   - https
   - http
 paths:
-  /api/admin/:
+  '/api/admin/':
     post:
       tags:
         - admin
-      summary: Admin will add a new user
+      summary: Add a new user
       description: >-
         The service will add a new user and also return the user added, in JSON
         format.
@@ -40,6 +40,7 @@ paths:
             $ref: '#/definitions/User'
         '400':
           description: Invalid input
+  
   '/api/admin/{email}':
     parameters:
       - name: email
@@ -88,6 +89,7 @@ paths:
           description: Invalid input
         '404':
           description: Not found
+  
   '/api/user/project/{email}':
     parameters:
       - name: email
@@ -113,6 +115,7 @@ paths:
           description: Invalid input
         '404':
           description: Not found
+  
   '/api/user/project/create/{email}/{projectName}':
     parameters:
       - name: email
@@ -128,7 +131,7 @@ paths:
     post:
       tags:
         - user
-      summary: User will create a project
+      summary: Create a user's project
       description: The service will create a new project for a user and return it.
       consumes:
         - application/json
@@ -141,6 +144,7 @@ paths:
             $ref: '#/definitions/Project'
         '400':
           description: Invalid input
+  
   '/api/user/project/delete/{email}/{projectName}':
     parameters:
       - name: email
@@ -173,6 +177,7 @@ paths:
           description: Invalid input
         '404':
           description: Not found
+  
   '/api/user/project/associate/{email}/{projectName}':
     parameters:
       - name: email
@@ -205,6 +210,7 @@ paths:
           description: Invalid input
         '404':
           description: Not found
+  
   '/api/user/project/increment/{email}/{projectName}':
     parameters:
       - name: email
@@ -237,6 +243,7 @@ paths:
           description: Invalid input
         '404':
           description: Not found
+  
   '/api/user/project/done/{email}/{projectName}':
     parameters:
       - name: email
@@ -252,7 +259,7 @@ paths:
     put:
       tags:
         - user
-      summary: Done with a session
+      summary: Completing a session of the user's project
       description: >-
         The service will update the current session which the user is working
         on.
@@ -269,6 +276,7 @@ paths:
           description: Invalid input
         '404':
           description: Not found
+  
   '/api/user/project/stop/{email}/{projectName}':
     parameters: 
       - name: email
@@ -284,14 +292,14 @@ paths:
     put:
       tags:
         - user
-      summary: Stopping a Pomodoro for a user’s project
+      summary: Stopping a pomodoro for a user’s project
       description: >-
         The service will stop the ongoing session, and log the number of
         Pomodoros completed in the session and the end time of the last Pomodoro.
       parameters:
-        - name: partialPomo
+        - name: body
           in: body
-          description: if true, the end time of the last Pomodoro is logged. Otherwise, the end time of the last completed Pomodoro is logged.
+          description: If true, the end time of the last Pomodoro is logged. Otherwise, the end time of the last completed Pomodoro is logged.
           required: true
           schema:
             $ref: '#/definitions/Boolean'
@@ -308,6 +316,7 @@ paths:
           description: Invalid input
         '404':
           description: Not found
+  
   '/api/user/project/report/{email}/{projectName}':
     parameters: 
       - name: email
@@ -339,7 +348,7 @@ paths:
     get:
       tags:
         - user
-      summary: Generating a report for a user's project for a specified timeframe
+      summary: Generating a report for a user's project for a specific timeframe
       description: >-
         The service will generate a report for a user's project for a specified timeframe. The report will show, for each session logged for the selected project and timeframe, (1) starting and ending times and (2) time worked. Optionally, the report will also show the number of Pomodoros completed in the timeframe and the total number of hours worked on the project.
       consumes: 
