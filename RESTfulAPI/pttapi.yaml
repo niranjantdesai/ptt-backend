@@ -288,6 +288,13 @@ paths:
       description: >-
         The service will stop the ongoing session, and log the number of
         Pomodoros completed in the session and the end time of the last Pomodoro.
+      parameters:
+        - name: partialPomo
+          in: body
+          description: if true, the end time of the last Pomodoro is logged. Otherwise, the end time of the last completed Pomodoro is logged.
+          required: true
+          schema:
+            $ref: '#/definitions/Boolean'
       consumes: 
         - application/json
       produces: 
