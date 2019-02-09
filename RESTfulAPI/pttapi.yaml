@@ -204,6 +204,68 @@ paths:
           description: 'Invalid input'
         '404':
           description: 'Not found'
+  '/api/user/project/increment/{email}/{projectName}':
+    parameters:
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project that needs to be updated
+        required: true
+        type: string
+    put:
+      tags:
+        - user
+      summary: Increment the Pomodoro counter for a user's project
+      description: >-
+        The service will increment the Pomodoro counter by one for a user's project.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Session'
+        '400':
+          description: Invalid input
+        '404':
+          description: Not found
+  '/api/user/project/done/{email}/{projectName}':
+    parameters:
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project that needs to be updated
+        required: true
+        type: string
+    put:
+      tags:
+        - user
+      summary: Done with a session
+      description: >-
+        The service will update the current session which the user is working on.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Session'
+        '400':
+          description: Invalid input
+        '404':
+          description: Not found
     
   
 
