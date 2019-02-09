@@ -221,7 +221,7 @@ paths:
         - user
       summary: Increment the Pomodoro counter for a user's project
       description: >-
-        The service will increment the Pomodoro counter by one for a user's project.
+        The service will increment the Pomodoro counter by one for the latest session of the user's project.
       consumes:
         - application/json
       produces:
@@ -244,15 +244,14 @@ paths:
         type: string
       - name: projectName
         in: path
-        description: name of the user's project that needs to be updated
+        description: name of the user's project who session needs to be updated
         required: true
         type: string
     put:
       tags:
         - user
       summary: Done with a session
-      description: >-
-        The service will update the current session which the user is working on.
+      description: The service will update the current session which the user is working on.
       consumes:
         - application/json
       produces:
