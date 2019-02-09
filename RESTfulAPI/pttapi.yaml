@@ -1,44 +1,45 @@
 swagger: '2.0'
 info:
-  description: "Deliverable 1: RESTful API"
+  description: 'Deliverable 1: RESTful API'
   version: 1.0.0
-  title: "Pomodoro Time Tracker"
+  title: Pomodoro Time Tracker
 host: 'localhost:8080'
 basePath: /
 tags:
   - name: admin
-    description: 'Operations by an admin'
+    description: Operations by an admin
   - name: user
-    description: 'Operations by a user'
+    description: Operations by a user
 schemes:
   - https
   - http
 paths:
-  '/api/admin/':
+  /api/admin/:
     post:
-        tags:
-          - admin
-        summary: Admin will add a new user
-        description: "The service will add a new user and also return the user added, in JSON format."
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        parameters:
-          - name: body
-            in: body
-            description: User object that needs to be added to the addressbook. 
-            required: true
-            schema:
-              $ref: '#/definitions/UserCreateBody'
-        responses:
-          '201':
-            description: 'Success'
-            schema:
-              $ref: '#/definitions/User'
-          '400':
-            description: 'Invalid input'
-  
+      tags:
+        - admin
+      summary: Admin will add a new user
+      description: >-
+        The service will add a new user and also return the user added, in JSON
+        format.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          description: User object that needs to be added to the addressbook.
+          required: true
+          schema:
+            $ref: '#/definitions/UserCreateBody'
+      responses:
+        '201':
+          description: Success
+          schema:
+            $ref: '#/definitions/User'
+        '400':
+          description: Invalid input
   '/api/admin/{email}':
     parameters:
       - name: email
@@ -50,7 +51,7 @@ paths:
       tags:
         - admin
       summary: Update an existing user by email
-      description: "The service will update a user and return the updated user"
+      description: The service will update a user and return the updated user
       consumes:
         - application/json
       produces:
@@ -75,7 +76,7 @@ paths:
       tags:
         - admin
       summary: Delete an existing user by email
-      description: 'The service will delete a user and return the deleted user'
+      description: The service will delete a user and return the deleted user
       responses:
         '200':
           description: Success
@@ -87,7 +88,6 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-
   '/api/user/project/{email}':
     parameters:
       - name: email
@@ -99,7 +99,7 @@ paths:
       tags:
         - user
       summary: Get the list of projects of a user
-      description: 'The service will return the list of projects of a user'
+      description: The service will return the list of projects of a user
       produces:
         - application/json
       responses:
@@ -107,13 +107,12 @@ paths:
           description: Success
           schema:
             type: array
-            items: 
+            items:
               $ref: '#/definitions/Project'
         '400':
           description: Invalid input
         '404':
           description: Not found
-
   '/api/user/project/create/{email}/{projectName}':
     parameters:
       - name: email
@@ -130,19 +129,18 @@ paths:
       tags:
         - user
       summary: User will create a project
-      description: "The service will create a new project for a user and return it."
+      description: The service will create a new project for a user and return it.
       consumes:
         - application/json
       produces:
         - application/json
       responses:
         '201':
-          description: 'Success'
+          description: Success
           schema:
             $ref: '#/definitions/Project'
         '400':
-          description: 'Invalid input'
-          
+          description: Invalid input
   '/api/user/project/delete/{email}/{projectName}':
     parameters:
       - name: email
@@ -159,21 +157,22 @@ paths:
       tags:
         - user
       summary: Delete a user's project
-      description: "The service will delete a project for a user and return the deleted project."
+      description: >-
+        The service will delete a project for a user and return the deleted
+        project.
       consumes:
         - application/json
-      produces: 
+      produces:
         - application/json
       responses:
         '200':
-          description: 'Success'
+          description: Success
           schema:
             $ref: '#/definitions/Project'
-        '400': 
-          description: 'Invalid input'
+        '400':
+          description: Invalid input
         '404':
-          description: 'Not found'
-  
+          description: Not found
   '/api/user/project/associate/{email}/{projectName}':
     parameters:
       - name: email
@@ -190,20 +189,22 @@ paths:
       tags:
         - user
       summary: Associate a Pomodoro with a user’s project
-      description: "The service will associate a Pomodoro with user's project, and start a new session."
-      consumes: 
+      description: >-
+        The service will associate a Pomodoro with user's project, and start a
+        new session.
+      consumes:
         - application/json
-      produces: 
+      produces:
         - application/json
       responses:
         '200':
-          description: 'Success'
+          description: Success
           schema:
             $ref: '#/definitions/Session'
         '400':
-          description: 'Invalid input'
+          description: Invalid input
         '404':
-          description: 'Not found'
+          description: Not found
   '/api/user/project/increment/{email}/{projectName}':
     parameters:
       - name: email
@@ -221,7 +222,8 @@ paths:
         - user
       summary: Increment the Pomodoro counter for a user's project
       description: >-
-        The service will increment the Pomodoro counter by one for the latest session of the user's project.
+        The service will increment the Pomodoro counter by one for the latest
+        session of the user's project.
       consumes:
         - application/json
       produces:
@@ -251,7 +253,9 @@ paths:
       tags:
         - user
       summary: Done with a session
-      description: The service will update the current session which the user is working on.
+      description: >-
+        The service will update the current session which the user is working
+        on.
       consumes:
         - application/json
       produces:
@@ -265,10 +269,86 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-    
-  
-
-
+  '/api/user/project/stop/{email}/{projectName}':
+    parameters: 
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project who session needs to be updated
+        required: true
+        type: string
+    put:
+      tags:
+        - user
+      summary: Stopping a Pomodoro for a user’s project
+      description: >-
+        The service will stop the ongoing session, and log the number of
+        Pomodoros completed in the session and the end time of the last Pomodoro.
+      consumes: 
+        - application/json
+      produces: 
+        - application/json
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Session'
+        '400':
+          description: Invalid input
+        '404':
+          description: Not found
+  '/api/user/project/report/{email}/{projectName}':
+    parameters: 
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project for which the report needs to be
+          generated
+        required: true
+        type: string
+      - name: startTime
+        in: query
+        description: start time of the timeframe for which the report needs to be generated
+        required: true
+        type: string
+      - name: endTime
+        in: query
+        description: end time of the timeframe for which the report needs to be generated
+        required: true
+        type: string
+      - name: addInfo
+        in: query
+        description: if true, the number of Pomodoros completed in the timeframe and the total number of hours worked on the project are also returned
+        required: false
+        type: boolean
+    get:
+      tags:
+        - user
+      summary: Generating a report for a user's project for a specified timeframe
+      description: >-
+        The service will generate a report for a user's project for a specified timeframe. The report will show, for each session logged for the selected project and timeframe, (1) starting and ending times and (2) time worked. Optionally, the report will also show the number of Pomodoros completed in the timeframe and the total number of hours worked on the project.
+      consumes: 
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Report'
+        '400':
+          description: Invalid input
+        '404':
+          description: Not found
+      
 definitions:
   User:
     type: object
@@ -285,9 +365,8 @@ definitions:
         type: string
       projects:
         type: array
-        items: 
-            $ref: '#/definitions/Project'
-  
+        items:
+          $ref: '#/definitions/Project'
   UserCreateBody:
     type: object
     required:
@@ -301,7 +380,6 @@ definitions:
         type: string
       email:
         type: string
-  
   UserUpdateBody:
     type: object
     properties:
@@ -309,7 +387,6 @@ definitions:
         type: string
       lastname:
         type: string
-  
   Project:
     type: object
     properties:
@@ -317,9 +394,21 @@ definitions:
         type: string
       sessions:
         type: array
-        items: 
+        items:
           $ref: '#/definitions/Session'
-  
+  Report:
+    type: object
+    required: 
+      - sessions
+    properties:
+      sessions:
+        type: array
+        items:
+          $ref: '#/definitions/Session'
+      numPomodoros:
+        type: integer
+      numHours:
+        type: number
   Session:
     type: object
     properties:
@@ -329,7 +418,6 @@ definitions:
         type: number
       pomodorocounter:
         type: integer
-  
   Boolean:
     type: object
     properties:
