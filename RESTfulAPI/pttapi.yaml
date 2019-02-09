@@ -90,6 +90,30 @@ paths:
         '404':
           description: Not found
   
+  
+  
+  '/api/user/project/login/{email}':
+    parameters:
+      - name: email
+        in: path
+        description: email of the user that needs to be verified if exists in the database
+        required: true
+        type: string
+    get:
+      tags:
+        - user
+      summary: Verify if a user with this email exists in the system
+      description: The service will return a boolean indicating whether a user with this email exists in the system or not
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '400':
+          description: Invalid input
+  
   '/api/user/project/{email}':
     parameters:
       - name: email
@@ -439,3 +463,10 @@ definitions:
     properties:
       partial:
         type: boolean
+    
+  LoginResponse:
+    type: object
+    properties:
+      exists:
+        type: boolean
+    
