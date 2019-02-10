@@ -14,7 +14,7 @@ schemes:
   - https
   - http
 paths:
-  '/api/admin/':
+  /api/admin/:
     post:
       tags:
         - admin
@@ -32,7 +32,7 @@ paths:
           description: User object that needs to be added to the addressbook.
           required: true
           schema:
-            $ref: '#/definitions/UserCreateBody'
+            $ref: '#/definitions/User'
       responses:
         '201':
           description: Success
@@ -40,7 +40,8 @@ paths:
             $ref: '#/definitions/User'
         '400':
           description: Invalid input
-  
+        '409':
+          description: User already exists
   '/api/admin/{email}':
     parameters:
       - name: email
@@ -89,9 +90,6 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-  
-  
-  
   '/api/user/project/login/{email}':
     parameters:
       - name: email
@@ -103,7 +101,9 @@ paths:
       tags:
         - user
       summary: Verify if a user with this email exists in the system
-      description: The service will return a boolean indicating whether a user with this email exists in the system or not
+      description: >-
+        The service will return a boolean indicating whether a user with this
+        email exists in the system or not
       produces:
         - application/json
       responses:
@@ -113,7 +113,6 @@ paths:
             $ref: '#/definitions/LoginResponse'
         '400':
           description: Invalid input
-  
   '/api/user/project/{email}':
     parameters:
       - name: email
@@ -139,7 +138,36 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-  
+  '/api/user/project/{email}/{projectName}':
+    parameters:
+      - name: email
+        in: path
+        description: email of the user
+        required: true
+        type: string
+      - name: projectName
+        in: path
+        description: name of the user's project for which session info needs to be returned
+        required: true
+        type: string
+    get:
+      tags:
+        - user
+      summary: Get the sessions of a project of a user
+      description: The service will return the list of sessions of the given project of a user
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Session'
+        '400':
+          description: Invalid input
+        '404':
+          description: Not found
   '/api/user/project/create/{email}/{projectName}':
     parameters:
       - name: email
@@ -168,7 +196,8 @@ paths:
             $ref: '#/definitions/Project'
         '400':
           description: Invalid input
-  
+        '409':
+          description: Project already exists
   '/api/user/project/delete/{email}/{projectName}':
     parameters:
       - name: email
@@ -201,7 +230,6 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-  
   '/api/user/project/associate/{email}/{projectName}':
     parameters:
       - name: email
@@ -234,7 +262,6 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-  
   '/api/user/project/increment/{email}/{projectName}':
     parameters:
       - name: email
@@ -267,7 +294,6 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-  
   '/api/user/project/done/{email}/{projectName}':
     parameters:
       - name: email
@@ -300,9 +326,8 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-  
   '/api/user/project/stop/{email}/{projectName}':
-    parameters: 
+    parameters:
       - name: email
         in: path
         description: email of the user
@@ -319,17 +344,20 @@ paths:
       summary: Stopping a pomodoro for a user’s project
       description: >-
         The service will stop the ongoing session, and log the number of
-        Pomodoros completed in the session and the end time of the last Pomodoro.
+        Pomodoros completed in the session and the end time of the last
+        Pomodoro.
       parameters:
         - name: body
           in: body
-          description: If true, the end time of the last Pomodoro is logged. Otherwise, the end time of the last completed Pomodoro is logged.
+          description: >-
+            If true, the end time of the last Pomodoro is logged. Otherwise, the
+            end time of the last completed Pomodoro is logged.
           required: true
           schema:
             $ref: '#/definitions/Boolean'
-      consumes: 
+      consumes:
         - application/json
-      produces: 
+      produces:
         - application/json
       responses:
         '200':
@@ -340,9 +368,8 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-  
   '/api/user/project/report/{email}/{projectName}':
-    parameters: 
+    parameters:
       - name: email
         in: path
         description: email of the user
@@ -350,8 +377,7 @@ paths:
         type: string
       - name: projectName
         in: path
-        description: name of the user's project for which the report needs to be
-          generated
+        description: name of the user's project for which the report needs to be generated
         required: true
         type: string
       - name: startTime
@@ -366,7 +392,9 @@ paths:
         type: string
       - name: addInfo
         in: query
-        description: if true, the number of Pomodoros completed in the timeframe and the total number of hours worked on the project are also returned
+        description: >-
+          if true, the number of Pomodoros completed in the timeframe and the
+          total number of hours worked on the project are also returned
         required: false
         type: boolean
     get:
@@ -374,8 +402,13 @@ paths:
         - user
       summary: Generating a report for a user's project for a specific timeframe
       description: >-
-        The service will generate a report for a user's project for a specified timeframe. The report will show, for each session logged for the selected project and timeframe, (1) starting and ending times and (2) time worked. Optionally, the report will also show the number of Pomodoros completed in the timeframe and the total number of hours worked on the project.
-      consumes: 
+        The service will generate a report for a user's project for a specified
+        timeframe. The report will show, for each session logged for the
+        selected project and timeframe, (1) starting and ending times and (2)
+        time worked. Optionally, the report will also show the number of
+        Pomodoros completed in the timeframe and the total number of hours
+        worked on the project.
+      consumes:
         - application/json
       produces:
         - application/json
@@ -388,26 +421,8 @@ paths:
           description: Invalid input
         '404':
           description: Not found
-      
 definitions:
   User:
-    type: object
-    required:
-      - firstname
-      - lastname
-      - email
-    properties:
-      firstname:
-        type: string
-      lastname:
-        type: string
-      email:
-        type: string
-      projects:
-        type: array
-        items:
-          $ref: '#/definitions/Project'
-  UserCreateBody:
     type: object
     required:
       - firstname
@@ -438,7 +453,7 @@ definitions:
           $ref: '#/definitions/Session'
   Report:
     type: object
-    required: 
+    required:
       - sessions
     properties:
       sessions:
@@ -463,10 +478,8 @@ definitions:
     properties:
       partial:
         type: boolean
-    
   LoginResponse:
     type: object
     properties:
       exists:
         type: boolean
-    
