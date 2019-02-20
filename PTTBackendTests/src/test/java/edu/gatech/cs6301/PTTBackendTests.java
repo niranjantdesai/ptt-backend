@@ -25,7 +25,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 public class PTTBackendTests {
 
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "http://localhost:8888";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     private CloseableHttpClient httpclient;
     private boolean setupdone;
@@ -55,11 +55,15 @@ public class PTTBackendTests {
     // *** YOU SHOULD NOT NEED TO CHANGE ANYTHING ABOVE THIS LINE ***
 
     @Test
-    public void createUserTest() throws Exception {
+    public void createUserTest201() throws Exception {
         deleteUsers();
 
+        String firstname = "John";
+        String lastname = "Doe";
+        String email = "john@doe.org";
+
         try {
-            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            CloseableHttpResponse response = createUser(firstname, lastname, email);
 
             int status = response.getStatusLine().getStatusCode();
             HttpEntity entity;
@@ -75,8 +79,10 @@ public class PTTBackendTests {
 
             String id = getIdFromStringResponse(strResponse);
 
-            String expectedJson = "{\"id\":\"" + id
-                    + "\",\"firstname\":\"John\",\"familyname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+            String expectedJson = "{\"id\":\"" + id + "\"," + 
+                "\"firstname\":\"" + firstname + "\"," + 
+                "\"lastname\":\"" + lastname + "\"," + 
+                "\"email\":\"" + email + "\"}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -86,7 +92,32 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void updateContactTest() throws Exception {
+    public void createUserTest400() throws Exception {
+        deleteUsers();
+
+        String firstname = "John";
+        String email = "john@doe.org";
+
+        try {
+            CloseableHttpResponse response = createUserIncorrect(firstname, email);
+
+            int status = response.getStatusLine().getStatusCode();
+            if (status == 400) {
+                System.out.println(
+                        "*** Correct! Expected response status: 400 since lastname was not sent to the server.***");
+
+                EntityUtils.consume(response.getEntity());
+                response.close();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expected 400 since lastname was not sent to the server.");
+            }
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    @Test
+    public void updateUserTest() throws Exception {
         deleteUsers();
 
         try {
@@ -110,7 +141,7 @@ public class PTTBackendTests {
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
             String expectedJson = "{\"id\":\"" + id
-                    + "\",\"firstname\":\"Tom\",\"familyname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"tom@doe.org\"}";
+                    + "\",\"firstname\":\"Tom\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"tom@doe.org\"}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -120,7 +151,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void getContactTest() throws Exception {
+    public void getUserTest() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
 
@@ -146,7 +177,7 @@ public class PTTBackendTests {
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
             String expectedJson = "{\"id\":\"" + id
-                    + "\",\"firstname\":\"John\",\"familyname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -156,7 +187,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void getAllContactsTest() throws Exception {
+    public void getAllUsersTest() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
         String id = null;
@@ -167,14 +198,14 @@ public class PTTBackendTests {
             // EntityUtils.consume(response.getEntity());
             id = getIdFromResponse(response);
             expectedJson += "[{\"id\":\"" + id
-                    + "\",\"firstname\":\"John\",\"familyname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
             response.close();
 
             response = createUser("Jane", "Wall", "jane@wall.com");
             // EntityUtils.consume(response.getEntity());
             id = getIdFromResponse(response);
             expectedJson += ",{\"id\":\"" + id
-                    + "\",\"firstname\":\"Jane\",\"familyname\":\"Wall\",\"phonenumber\":\"(9876)-543-210\",\"email\":\"jane@wall.com\"}]";
+                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"phonenumber\":\"(9876)-543-210\",\"email\":\"jane@wall.com\"}]";
             response.close();
 
             response = getAllUsers();
@@ -201,7 +232,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void DeleteContactTest() throws Exception {
+    public void DeleteUserTest() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
         String expectedJson = null;
@@ -230,7 +261,7 @@ public class PTTBackendTests {
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
             expectedJson = "{\"id\":\"" + deleteid
-                    + "\",\"firstname\":\"John\",\"familyname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -257,7 +288,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void CreateMultipleDeleteOneContactTest() throws Exception {
+    public void CreateMultipleDeleteOneUserTest() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
         String expectedJson = "";
@@ -272,7 +303,7 @@ public class PTTBackendTests {
             // EntityUtils.consume(response.getEntity());
             String id = getIdFromResponse(response);
             expectedJson += "[{\"id\":\"" + id
-                    + "\",\"firstname\":\"Jane\",\"familyname\":\"Wall\",\"phonenumber\":\"(9876)-543-210\",\"email\":\"jane@wall.com\"}]";
+                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"phonenumber\":\"(9876)-543-210\",\"email\":\"jane@wall.com\"}]";
             response.close();
 
             int status;
@@ -293,7 +324,7 @@ public class PTTBackendTests {
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
             String expectedJson2 = "{\"id\":\"" + deleteId
-                    + "\",\"firstname\":\"John\",\"familyname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
             JSONAssert.assertEquals(expectedJson2, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -320,7 +351,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void CreateMultipleUpdateOneContactTest() throws Exception {
+    public void CreateMultipleUpdateOneUserTest() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
 
@@ -341,7 +372,7 @@ public class PTTBackendTests {
 
             response = updateUser(updatedId, "Jane", "Wall", "jane@wall.com");
             String expectedJson = "{\"id\":\"" + updatedId
-                    + "\",\"firstname\":\"Jane\",\"familyname\":\"Wall\",\"phonenumber\":\"(6789)-210-534\",\"email\":\"jane@wall.com\"}";
+                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"phonenumber\":\"(6789)-210-534\",\"email\":\"jane@wall.com\"}";
 
             status = response.getStatusLine().getStatusCode();
             if (status == 200) {
@@ -383,7 +414,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void getMissingContactTest() throws Exception {
+    public void getMissingUserTest() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
 
@@ -413,7 +444,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void deleteMissingContactTest() throws Exception {
+    public void deleteMissingUserTest() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
 
@@ -448,6 +479,22 @@ public class PTTBackendTests {
         StringEntity input = new StringEntity(
             "{\"firstname\":\"" + firstname + "\"," + 
             "\"lastname\":\"" + lastname + "\"," + 
+            "\"email\":\"" + email + "\"}"
+            );
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
+    }
+
+    private CloseableHttpResponse createUserIncorrect(String firstname, String email) throws IOException {
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users");
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+            "{\"firstname\":\"" + firstname + "\"," + 
             "\"email\":\"" + email + "\"}"
             );
         input.setContentType("application/json");
