@@ -55,8 +55,8 @@ public class PTTBackendTests {
     // *** YOU SHOULD NOT NEED TO CHANGE ANYTHING ABOVE THIS LINE ***
 
     @Test
-    public void createContactTest() throws Exception {
-        deleteContacts();
+    public void createUserTest() throws Exception {
+        deleteUsers();
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
@@ -87,7 +87,7 @@ public class PTTBackendTests {
 
     @Test
     public void updateContactTest() throws Exception {
-        deleteContacts();
+        deleteUsers();
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
@@ -122,7 +122,7 @@ public class PTTBackendTests {
     @Test
     public void getContactTest() throws Exception {
         httpclient = HttpClients.createDefault();
-        deleteContacts();
+        deleteUsers();
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
@@ -158,7 +158,7 @@ public class PTTBackendTests {
     @Test
     public void getAllContactsTest() throws Exception {
         httpclient = HttpClients.createDefault();
-        deleteContacts();
+        deleteUsers();
         String id = null;
         String expectedJson = "";
 
@@ -203,7 +203,7 @@ public class PTTBackendTests {
     @Test
     public void DeleteContactTest() throws Exception {
         httpclient = HttpClients.createDefault();
-        deleteContacts();
+        deleteUsers();
         String expectedJson = null;
 
         try {
@@ -259,7 +259,7 @@ public class PTTBackendTests {
     @Test
     public void CreateMultipleDeleteOneContactTest() throws Exception {
         httpclient = HttpClients.createDefault();
-        deleteContacts();
+        deleteUsers();
         String expectedJson = "";
 
         try {
@@ -322,7 +322,7 @@ public class PTTBackendTests {
     @Test
     public void CreateMultipleUpdateOneContactTest() throws Exception {
         httpclient = HttpClients.createDefault();
-        deleteContacts();
+        deleteUsers();
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
@@ -385,7 +385,7 @@ public class PTTBackendTests {
     @Test
     public void getMissingContactTest() throws Exception {
         httpclient = HttpClients.createDefault();
-        deleteContacts();
+        deleteUsers();
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
@@ -415,7 +415,7 @@ public class PTTBackendTests {
     @Test
     public void deleteMissingContactTest() throws Exception {
         httpclient = HttpClients.createDefault();
-        deleteContacts();
+        deleteUsers();
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
@@ -507,8 +507,8 @@ public class PTTBackendTests {
         return response;
     }
 
-    private CloseableHttpResponse deleteContacts() throws IOException {
-        HttpDelete httpDelete = new HttpDelete(baseUrl + "/api/contacts");
+    private CloseableHttpResponse deleteUsers() throws IOException {
+        HttpDelete httpDelete = new HttpDelete(baseUrl + "/users");
         httpDelete.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpDelete.getRequestLine() + "***");
