@@ -106,10 +106,79 @@ public class PTTBackendTests {
                 System.out.println(
                         "*** Correct! Expected response status: 400 since lastname was not sent to the server.***");
 
-                EntityUtils.consume(response.getEntity());
+                // EntityUtils.consume(response.getEntity());
                 response.close();
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + ", expected 400 since lastname was not sent to the server.");
+            }
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    @Test
+    public void getUserTest200() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String id = getIdFromResponse(response);
+            // EntityUtils.consume(response.getEntity());
+            response.close();
+
+            response = getUser(id);
+
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
+
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+            String expectedJson = "{\"id\":\"" + id
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"john@doe.org\"}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    @Test
+    public void getUserTest400() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String id = getIdFromResponse(response);
+            // EntityUtils.consume(response.getEntity());
+            response.close();
+
+            // Corrupting the ID
+            char[] idChars = id.toCharArray();
+            idChars[id.length()-1] = '~';
+            id = String.valueOf(idChars);
+
+            response = getUser(id);
+
+            int status = response.getStatusLine().getStatusCode();
+            if (status == 400) {
+                System.out.println(
+                    "*** Correct! Expected response status: 400 since a corrupted user ID was sent to the server.***");
+
+                // EntityUtils.consume(response.getEntity());
+                response.close();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expected 400 since a get request was made with a corrupted id: " + id);
             }
         } finally {
             httpclient.close();
@@ -141,43 +210,7 @@ public class PTTBackendTests {
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
             String expectedJson = "{\"id\":\"" + id
-                    + "\",\"firstname\":\"Tom\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"tom@doe.org\"}";
-            JSONAssert.assertEquals(expectedJson, strResponse, false);
-            EntityUtils.consume(response.getEntity());
-            response.close();
-        } finally {
-            httpclient.close();
-        }
-    }
-
-    @Test
-    public void getUserTest() throws Exception {
-        httpclient = HttpClients.createDefault();
-        deleteUsers();
-
-        try {
-            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-            String id = getIdFromResponse(response);
-            // EntityUtils.consume(response.getEntity());
-            response.close();
-
-            response = getUser(id);
-
-            int status = response.getStatusLine().getStatusCode();
-            HttpEntity entity;
-            String strResponse;
-            if (status == 200) {
-                entity = response.getEntity();
-            } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
-            }
-            strResponse = EntityUtils.toString(entity);
-
-            System.out.println(
-                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
-            String expectedJson = "{\"id\":\"" + id
-                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"Tom\",\"lastname\":\"Doe\",\"email\":\"tom@doe.org\"}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -198,14 +231,14 @@ public class PTTBackendTests {
             // EntityUtils.consume(response.getEntity());
             id = getIdFromResponse(response);
             expectedJson += "[{\"id\":\"" + id
-                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"john@doe.org\"}";
             response.close();
 
             response = createUser("Jane", "Wall", "jane@wall.com");
             // EntityUtils.consume(response.getEntity());
             id = getIdFromResponse(response);
             expectedJson += ",{\"id\":\"" + id
-                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"phonenumber\":\"(9876)-543-210\",\"email\":\"jane@wall.com\"}]";
+                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"email\":\"jane@wall.com\"}]";
             response.close();
 
             response = getAllUsers();
@@ -261,7 +294,7 @@ public class PTTBackendTests {
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
             expectedJson = "{\"id\":\"" + deleteid
-                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"john@doe.org\"}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -303,7 +336,7 @@ public class PTTBackendTests {
             // EntityUtils.consume(response.getEntity());
             String id = getIdFromResponse(response);
             expectedJson += "[{\"id\":\"" + id
-                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"phonenumber\":\"(9876)-543-210\",\"email\":\"jane@wall.com\"}]";
+                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"email\":\"jane@wall.com\"}]";
             response.close();
 
             int status;
@@ -324,7 +357,7 @@ public class PTTBackendTests {
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
             String expectedJson2 = "{\"id\":\"" + deleteId
-                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"phonenumber\":\"(123)-456-7890\",\"email\":\"john@doe.org\"}";
+                    + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"john@doe.org\"}";
             JSONAssert.assertEquals(expectedJson2, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -372,7 +405,7 @@ public class PTTBackendTests {
 
             response = updateUser(updatedId, "Jane", "Wall", "jane@wall.com");
             String expectedJson = "{\"id\":\"" + updatedId
-                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"phonenumber\":\"(6789)-210-534\",\"email\":\"jane@wall.com\"}";
+                    + "\",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"email\":\"jane@wall.com\"}";
 
             status = response.getStatusLine().getStatusCode();
             if (status == 200) {
@@ -554,7 +587,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    private CloseableHttpResponse deleteUsers() throws IOException {
+    private CloseableHttpResponse deleteUsers() throws Exception {
         HttpDelete httpDelete = new HttpDelete(baseUrl + "/users");
         httpDelete.addHeader("accept", "application/json");
 
