@@ -186,7 +186,7 @@ public class PTTBackendTests {
     }
 
     @Test
-    public void updateUserTest() throws Exception {
+    public void updateUserTest201() throws Exception {
         deleteUsers();
 
         try {
@@ -199,7 +199,7 @@ public class PTTBackendTests {
             int status = response.getStatusLine().getStatusCode();
             HttpEntity entity;
             String strResponse;
-            if (status == 200) {
+            if (status == 201) {
                 entity = response.getEntity();
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status);
@@ -214,6 +214,32 @@ public class PTTBackendTests {
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    @Test
+    public void updateUserTest400() throws Exception {
+        deleteUsers();
+
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String id = getIdFromResponse(response);
+            response.close();
+
+            response = updateUserIncorrect(id, "Tom", "Doe", "tom@doe.org");
+
+            int status = response.getStatusLine().getStatusCode();
+            if (status == 400) {
+                System.out.println(
+                    "*** Correct! Expected response status: 400 since an invalid attribute (noname) was asked to be updated.***");
+
+                // EntityUtils.consume(response.getEntity());
+                response.close();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
         } finally {
             httpclient.close();
         }
@@ -545,6 +571,22 @@ public class PTTBackendTests {
         StringEntity input = new StringEntity(
             "{\"firstname\":\"" + firstname + "\"," + 
             "\"lastname\":\"" + lastname + "\"," + 
+            "\"email\":\"" + email + "\"}");
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
+    }
+
+    private CloseableHttpResponse updateUserIncorrect(String id, String firstname, String lastname, String email) throws IOException {
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + id);
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+            "{\"firstname\":\"" + firstname + "\"," + 
+            "\"noname\":\"" + lastname + "\"," + 
             "\"email\":\"" + email + "\"}");
         input.setContentType("application/json");
         httpRequest.setEntity(input);
