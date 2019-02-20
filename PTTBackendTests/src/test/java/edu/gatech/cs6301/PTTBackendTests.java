@@ -117,7 +117,7 @@ public class PTTBackendTests {
             if (status == 201) {
                 entity = response.getEntity();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 201 since a valid user object was asked to be created");
             }
             String strResponse = EntityUtils.toString(entity);
 
@@ -154,12 +154,12 @@ public class PTTBackendTests {
             if (status == 400) {
                 System.out.println(
                         "*** Correct! Expected response status: 400 since lastname was not sent to the server.***");
-
-                // EntityUtils.consume(response.getEntity());
-                response.close();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status + ", expected 400 since lastname was not sent to the server.");
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since lastname was not sent to the server.");
             }
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
         } finally {
             httpclient.close();
         }
@@ -185,7 +185,7 @@ public class PTTBackendTests {
             if (status == 200) {
                 entity = response.getEntity();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since a user for a valid id: " + id + " was asked to be returned");
             }
             strResponse = EntityUtils.toString(entity);
 
@@ -214,7 +214,7 @@ public class PTTBackendTests {
             // EntityUtils.consume(response.getEntity());
             response.close();
 
-            // Corrupting the ID with a character that is not alphanumeric
+            // Corrupting the ID by making it twice long
             id = id + id;
 
             response = getUser(id);
@@ -222,13 +222,13 @@ public class PTTBackendTests {
             int status = response.getStatusLine().getStatusCode();
             if (status == 400) {
                 System.out.println(
-                    "*** Correct! Expected response status: 400 since a corrupted user ID was sent to the server.***");
-
-                // EntityUtils.consume(response.getEntity());
-                response.close();
+                    "*** Correct! Expected response status: 400 since a corrupted user ID: " + id + " was sent to the server.***");
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status + ", expected 400 since a get request was made with a corrupted id: " + id);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a get request was made with a corrupted(twice as long) id: " + id);
             }
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
         } finally {
             httpclient.close();
         }
@@ -258,12 +258,12 @@ public class PTTBackendTests {
             if (status == 404) {
                 System.out.println(
                     "*** Correct! Expected response status: 404 since a valid but unused user ID was sent to the server.***");
-
-                EntityUtils.consume(response.getEntity());
-                response.close();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status + ", expected 404 since a get request was made with an unsed user id: " + id);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since a get request was made with an unsed (hopefully) user id: " + id);
             }
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
         } finally {
             httpclient.close();
         }
@@ -288,7 +288,7 @@ public class PTTBackendTests {
             if (status == 200) {
                 entity = response.getEntity();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since firstname and email were asked to be updated");
             }
             strResponse = EntityUtils.toString(entity);
 
@@ -322,12 +322,12 @@ public class PTTBackendTests {
             if (status == 400) {
                 System.out.println(
                     "*** Correct! Expected response status: 400 since an invalid attribute (noname) was asked to be updated.***");
-
-                // EntityUtils.consume(response.getEntity());
-                response.close();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a \"noname\" atribute was asked to be updated which does not exist in the user model");
             }
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
         } finally {
             httpclient.close();
         }
@@ -344,27 +344,27 @@ public class PTTBackendTests {
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             // EntityUtils.consume(response.getEntity());
-            String deleteid = getIdFromResponse(response);
+            String deleteId = getIdFromResponse(response);
             response.close();
 
             int status;
             HttpEntity entity;
             String strResponse;
 
-            response = deleteUser(deleteid);
+            response = deleteUser(deleteId);
 
             status = response.getStatusLine().getStatusCode();
             if (status == 200) {
                 entity = response.getEntity();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since an existing user with id: " + deleteId + " was asked to be deleted");
             }
             strResponse = EntityUtils.toString(entity);
 
             System.out.println(
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-            expectedJson = "{\"id\":\"" + deleteid
+            expectedJson = "{\"id\":\"" + deleteId
                     + "\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"john@doe.org\"}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
@@ -375,7 +375,7 @@ public class PTTBackendTests {
             if (status == 200) {
                 entity = response.getEntity();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllUsers should return all users with code 200 even if no user exists");
             }
             strResponse = EntityUtils.toString(entity);
 
@@ -422,7 +422,7 @@ public class PTTBackendTests {
             if (status == 200) {
                 entity = response.getEntity();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since an existing user with id: " + deleteId + " was asked to be deleted");
             }
             strResponse = EntityUtils.toString(entity);
 
@@ -440,7 +440,7 @@ public class PTTBackendTests {
             if (status == 200) {
                 entity = response.getEntity();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllUsers should return all users with code 200 even if no user exists");
             }
             strResponse = EntityUtils.toString(entity);
 
@@ -473,12 +473,11 @@ public class PTTBackendTests {
             if (status == 400) {
                 System.out.println(
                     "*** Correct! Expected response status: 400 since an invalid user id was asked to be deleted.***");
-
-                // EntityUtils.consume(response.getEntity());
-                response.close();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a user with an invalid id: " + deleteId + " was asked to be deleted");
             }
+            EntityUtils.consume(response.getEntity());
+            response.close();
         } finally {
             httpclient.close();
         }
@@ -507,12 +506,11 @@ public class PTTBackendTests {
             if (status == 404) {
                 System.out.println(
                     "*** Correct! Expected response status: 404 since an valid but hopefully unused user id was asked to be deleted.***");
-
-                // EntityUtils.consume(response.getEntity());
-                response.close();
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status);
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since a user with a valid but hopefully unused id: " + id + " was asked to be deleted");
             }
+            EntityUtils.consume(response.getEntity());
+            response.close();
         } finally {
             httpclient.close();
         }
