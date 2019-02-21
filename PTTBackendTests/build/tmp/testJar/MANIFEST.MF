@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: Test Jar File
-Implementation-Version: 1.0.0
-
