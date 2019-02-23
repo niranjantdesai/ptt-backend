@@ -853,7 +853,391 @@ public class PTTBackendTests {
         }
     }
 
+    //done by Niranjan
+    @Test
+    public void createSessionTest201() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
 
+            response = createProject("CS6301",userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+            
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if(status == 201){
+                entity = response.getEntity();
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 201");
+            }
+            strResponse = EntityUtils.toString(entity);
+
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+            String id = getIdFromStringResponse(strResponse);
+
+            String expectedJson = "{\"id\":\"" + id + "\"," +
+                "\"startTime\":\"" + startTime + "\"," +
+                "\"endTime\":\"" + endTime + "\"," +
+                "\"counter\":0}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void createSessionTest400() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+
+            response = createProject("CS6301",userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+            
+            String endTime = "2019-02-18T20:00Z";
+            response = createSessionIncorrect(userId, projectId, endTime);
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 400){
+                System.out.println(
+                        "*** Correct! Expected response status: 400 since start time was not sent to the server.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since start time was not sent to the server");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void createSessionTest404_1() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a project
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+
+            // Corrupt the userId
+            int temp = Integer.parseInt(userId);
+            userId = String.valueOf(temp - 1);
+            
+            // Create a session
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 404){
+                System.out.println(
+                        "*** Correct! Expected response status: 404 since the user ID: " + userId + " does not exist.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the user ID " + userId + "does not exist.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void createSessionTest404_2() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a project
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+
+            // Corrupt the project ID
+            int temp = Integer.parseInt(projectId);
+            projectId = String.valueOf(temp - 1);
+            
+            // Create a session
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 404){
+                System.out.println(
+                        "*** Correct! Expected response status: 404 since the project ID: " + projectId + " does not exist.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the project ID " + projectId + "does not exist.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void updateSessionTest201() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+
+            response = createProject("CS6301",userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+            
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+            String sessionId = getIdFromResponse(response);
+            response.close();
+            
+            String newStartTime = "2019-03-18T20:00Z";
+            String newEndTime = newStartTime;
+            String counter = "1";
+            response = updateSession(userId, projectId, sessionId, newStartTime, newEndTime, counter);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if(status == 201){
+                entity = response.getEntity();
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 201");
+            }
+            strResponse = EntityUtils.toString(entity);
+
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+            String id = getIdFromStringResponse(strResponse);
+
+            String expectedJson = "{\"id\":\"" + id + "\"," +
+                "\"startTime\":\"" + newStartTime + "\"," +
+                "\"endTime\":\"" + newEndTime + "\"," +
+                "\"counter\":" + counter + "}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void updateSessionTest400() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a project
+            response = createProject("CS6301",userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a session
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+            String sessionId = getIdFromResponse(response);
+            response.close();
+
+            // Update the session
+            String newStartTime = "2019-03-18T20:00Z";
+            String newEndTime = newStartTime;
+            response = updateSessionIncorrect(userId, projectId, sessionId, newStartTime, newEndTime);
+
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 400){
+                System.out.println(
+                        "*** Correct! Expected response status: 400 since updated counter was not sent to the server.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since updated counter was not sent to the server");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void updateSessionTest404_1() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a project
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a session
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+            String sessionId = getIdFromResponse(response);
+            response.close();
+
+            // Corrupt the userId
+            int temp = Integer.parseInt(userId);
+            userId = String.valueOf(temp - 1);
+
+            // Update the session
+            String newStartTime = "2019-03-18T20:00Z";
+            String newEndTime = newStartTime;
+            String counter = "1";
+            response = updateSession(userId, projectId, sessionId, newStartTime, newEndTime, counter);
+
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 404){
+                System.out.println(
+                        "*** Correct! Expected response status: 404 since the user ID: " + userId + " does not exist.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the user ID " + userId + "does not exist.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void updateSessionTest404_2() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a project
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a session
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+            String sessionId = getIdFromResponse(response);
+            response.close();
+
+            // Corrupt the projectId
+            int temp = Integer.parseInt(projectId);
+            projectId = String.valueOf(temp - 1);
+
+            // Update the session
+            String newStartTime = "2019-03-18T20:00Z";
+            String newEndTime = newStartTime;
+            String counter = "1";
+            response = updateSession(userId, projectId, sessionId, newStartTime, newEndTime, counter);
+
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 404){
+                System.out.println(
+                        "*** Correct! Expected response status: 404 since the project ID: " + projectId + " does not exist.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the project ID " + projectId + "does not exist.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Niranjan
+    @Test
+    public void updateSessionTest404_3() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a project
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+            
+            // Create a session
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+            String sessionId = getIdFromResponse(response);
+            response.close();
+
+            // Corrupt the sessionId
+            int temp = Integer.parseInt(sessionId);
+            sessionId = String.valueOf(temp - 1);
+
+            // Update the session
+            String newStartTime = "2019-03-18T20:00Z";
+            String newEndTime = newStartTime;
+            String counter = "1";
+            response = updateSession(userId, projectId, sessionId, newStartTime, newEndTime, counter);
+
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 404){
+                System.out.println(
+                        "*** Correct! Expected response status: 404 since the session ID: " + sessionId + " does not exist.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the session ID " + sessionId + "does not exist.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
 
     // sample, TODO: comment out before submitting
     @Test
@@ -1267,6 +1651,76 @@ public class PTTBackendTests {
         System.out.println("*** Raw response " + response + "***");
         return response;
 
+    }
+
+    //done by Niranjan
+    private CloseableHttpResponse createSession(String userId, String projectId, String startTime, String endTime) throws IOException{
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions");
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+                "{\"startTime\":\"" + startTime + "\"," +
+                "\"endTime\":\"" + endTime + "\"," +
+                "\"counter\":0}" 
+        );
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
+    }
+
+    //done by Niranjan
+    private CloseableHttpResponse createSessionIncorrect(String userId, String projectId, String endTime) throws IOException{
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions");
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+                "{\"endTime\":\"" + endTime + "\"," +
+                "\"counter\":0}" 
+        );
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
+    }
+
+    //done by Niranjan
+    private CloseableHttpResponse updateSession(String userId, String projectId, String sessionId, String startTime, String endTime, String counter) throws IOException{
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions/" + sessionId);
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+                "{\"startTime\":\"" + startTime + "\"," +
+                "\"endTime\":\"" + endTime + "\"," +
+                "\"counter\":" + counter + "}" 
+        );
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
+    }
+
+    //done by Niranjan
+    private CloseableHttpResponse updateSessionIncorrect(String userId, String projectId, String sessionId, String startTime, String endTime) throws IOException{
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions/" + sessionId);
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+                "{\"startTime\":\"" + startTime + "\"," +
+                "\"endTime\":\"" + endTime + "\"}"
+        );
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
     }
 
 
