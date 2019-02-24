@@ -54,8 +54,9 @@ public class PTTBackendTests {
 
     // *** YOU SHOULD NOT NEED TO CHANGE ANYTHING ABOVE THIS LINE ***
 
+    //done by Weihua
     @Test
-    public void getAllUsersTest() throws Exception {
+    public void getAllUsersTest200() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
         String id = null;
@@ -934,6 +935,43 @@ public class PTTBackendTests {
             EntityUtils.consume(response.getEntity());
             response.close();
         } finally {
+            httpclient.close();
+        }
+    }
+
+    //done by Weihua
+    @Test
+    public void updateProjectTest200() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+
+            response = updateProject(projectId, "CS6302", userId);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if(status == 200){
+                entity = response.getEntity();
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200");
+            }
+            strResponse = EntityUtils.toString(entity);
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+            String expectedJson = "{\"id\":\"" + projectId
+                    + "\",\"projectname\":\"CS6302\",\"userId\":\"" + userId + "\"}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
             httpclient.close();
         }
     }
@@ -2043,6 +2081,23 @@ public class PTTBackendTests {
         System.out.println("*** Raw response " + response + "***");
         return response;
 
+    }
+
+    //done by Weihua
+    private CloseableHttpResponse updateProject(String projectId, String projectName, String userId) throws IOException {
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userId + "/projects/" + projectId);
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+            "{\"projectId\":\"" + projectId + "\"," + 
+            "\"projectName\":\"" + projectName + "\"," + 
+            "\"userId\":\"" + userId + "\"}");
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
     }
 
     // done by Niranjan
