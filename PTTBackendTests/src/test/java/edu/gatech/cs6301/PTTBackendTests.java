@@ -976,6 +976,71 @@ public class PTTBackendTests {
         }
     }
 
+    //done by Weihua
+    @Test
+    public void updateProjectTest400() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+
+            response = updateProjectIncorrect(projectId, "CS6302", userId);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 400) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
+
+    //done by Weihua
+    @Test
+    public void updateProjectTest404() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
+
+            response = createProject("CS6301", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
+
+            char[] idChars = projectId.toCharArray();
+            idChars[projectId.length()-1] = '1';
+            idChars[projectId.length()-2] = '2';
+            projectId = String.valueOf(idChars);
+
+            response = updateProjectIncorrect(projectId, "CS6302", userId);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if(status == 404){
+                entity = response.getEntity();
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
+
     // done by Niranjan
     @Test
     public void createSessionTest201() throws Exception{
@@ -2090,6 +2155,23 @@ public class PTTBackendTests {
         StringEntity input = new StringEntity(
             "{\"projectId\":\"" + projectId + "\"," + 
             "\"projectName\":\"" + projectName + "\"," + 
+            "\"userId\":\"" + userId + "\"}");
+        input.setContentType("application/json");
+        httpRequest.setEntity(input);
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
+    }
+
+    //done by Weihua
+    private CloseableHttpResponse updateProjectIncorrect(String projectId, String projectName, String userId) throws IOException {
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userId + "/projects/" + projectId);
+        httpRequest.addHeader("accept", "application/json");
+        StringEntity input = new StringEntity(
+            "{\"projectId\":\"" + projectId + "\"," + 
+            "\"noName\":\"" + projectName + "\"," + 
             "\"userId\":\"" + userId + "\"}");
         input.setContentType("application/json");
         httpRequest.setEntity(input);
