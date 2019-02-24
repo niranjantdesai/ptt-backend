@@ -2,6 +2,9 @@ package edu.gatech.cs6301;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.regex.*;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.*;
@@ -2267,16 +2270,42 @@ public class PTTBackendTests {
     }
 
     // TODO: first make a get call to get all users and then invoke the delete for each of those users
-    private CloseableHttpResponse deleteUsers() throws Exception {
-        HttpDelete httpDelete = new HttpDelete(baseUrl + "/users");
-        httpDelete.addHeader("accept", "application/json");
+    private void deleteUsers() throws Exception {
 
-        System.out.println("*** Executing request " + httpDelete.getRequestLine() + "***");
-        CloseableHttpResponse response = httpclient.execute(httpDelete);
-        System.out.println("*** Raw response " + response + "***");
+        CloseableHttpResponse response = getAllUsers();
+        int status = response.getStatusLine().getStatusCode();
+        HttpEntity entity;
+        String strResponse;
+        if (status == 200) {
+            entity = response.getEntity();
+        } else {
+            throw new ClientProtocolException("Unexpected response status: " + status);
+        }
+        strResponse = EntityUtils.toString(entity);
+        response.close();
+
+        List<String> userIds = new ArrayList<>();
+        Pattern p = Pattern.compile("\"id\":.*?,");
+        Matcher m = p.matcher(strResponse);
+        while (m.find()) {
+            int start = m.start();
+            int end = m.end();
+            userIds.add(strResponse.substring(start + 6, end - 2));
+        }
+        for (String id : userIds) {
+            response = deleteUser(id);
+            response.close();
+        }
+        
+        // HttpDelete httpDelete = new HttpDelete(baseUrl + "/users");
+        // httpDelete.addHeader("accept", "application/json");
+
+        // System.out.println("*** Executing request " + httpDelete.getRequestLine() + "***");
+        // CloseableHttpResponse response = httpclient.execute(httpDelete);
+        // System.out.println("*** Raw response " + response + "***");
         // EntityUtils.consume(response.getEntity());
         // response.close();
-        return response;
+        //return response;
     }
 
     // done by Billy
