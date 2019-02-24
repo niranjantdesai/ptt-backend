@@ -2269,7 +2269,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    // TODO: first make a get call to get all users and then invoke the delete for each of those users
+    //Done by Weihua: first make a get call to get all users and then invoke the delete for each of those users
     private void deleteUsers() throws Exception {
 
         CloseableHttpResponse response = getAllUsers();
@@ -2296,7 +2296,6 @@ public class PTTBackendTests {
             response = deleteUser(id);
             response.close();
         }
-        
         // HttpDelete httpDelete = new HttpDelete(baseUrl + "/users");
         // httpDelete.addHeader("accept", "application/json");
 
