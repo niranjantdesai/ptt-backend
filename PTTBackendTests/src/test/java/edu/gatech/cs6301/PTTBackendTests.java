@@ -167,6 +167,58 @@ public class PTTBackendTests {
 
     // done by Haamid
     @Test
+    public void createUserTest409() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+
+        String firstname = "John";
+        String lastname = "Doe";
+        String email = "john@doe.org";
+
+        try {
+            CloseableHttpResponse response = createUser(firstname, lastname, email);
+
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            if (status == 201) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 201 since a valid user object was asked to be created");
+            }
+            String strResponse = EntityUtils.toString(entity);
+
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+            String id = getIdFromStringResponse(strResponse);
+
+            String expectedJson = "{\"id\":\"" + id + "\"," + 
+                "\"firstname\":\"" + firstname + "\"," + 
+                "\"lastname\":\"" + lastname + "\"," + 
+                "\"email\":\"" + email + "\"}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+
+            // creating another user with the same email but different first and last name
+            firstname = "AB";
+            lastname = "CD";
+            
+            response = createUser(firstname, lastname, email);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 409) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 409 since a user with existing email was asked to be created");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    // done by Haamid
+    @Test
     public void getUserTest200() throws Exception {
         httpclient = HttpClients.createDefault();
         deleteUsers();
@@ -324,6 +376,39 @@ public class PTTBackendTests {
                     "*** Correct! Expected response status: 400 since an invalid attribute (noname) was asked to be updated.***");
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a \"noname\" atribute was asked to be updated which does not exist in the user model");
+            }
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    // done by Haamid
+    @Test
+    public void updateUserTest404() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String id = getIdFromResponse(response);
+            response.close();
+
+            char[] idChars = id.toCharArray();
+            idChars[id.length()-1] = '1';
+            idChars[id.length()-2] = '2';
+            id = String.valueOf(idChars);
+
+            response = updateUser(id, "Tom", "Doe", "tom@doe.org");
+
+            int status = response.getStatusLine().getStatusCode();
+            if (status == 404) {
+                System.out.println(
+                    "*** Correct! Expected response status: 404 since a valid but hopefully unused user id was asked to be updated.***");
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since a valid but hopefully unused user id was asked to be updated.");
             }
 
             EntityUtils.consume(response.getEntity());
@@ -505,7 +590,7 @@ public class PTTBackendTests {
             int status = response.getStatusLine().getStatusCode();
             if (status == 404) {
                 System.out.println(
-                    "*** Correct! Expected response status: 404 since an valid but hopefully unused user id was asked to be deleted.***");
+                    "*** Correct! Expected response status: 404 since a valid but hopefully unused user id was asked to be deleted.***");
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since a user with a valid but hopefully unused id: " + id + " was asked to be deleted");
             }
@@ -516,7 +601,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void createProjectTest201() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -551,7 +636,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void createProjectTest400() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -576,7 +661,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void getAllProjectsTest200() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -631,7 +716,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void getAllProjectTest400() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -676,7 +761,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void getAllProjectTest404() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -720,7 +805,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void getProjectTest200() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -757,7 +842,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void getProjectTest400() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -787,7 +872,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void getProjectTest404_1() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -820,7 +905,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Billy
+    // done by Billy
     @Test
     public void getProjectTest404_2() throws Exception {
         httpclient = HttpClients.createDefault();
@@ -853,7 +938,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void createSessionTest201() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -897,7 +982,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void createSessionTest400() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -927,7 +1012,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void createSessionTest404_1() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -966,7 +1051,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void createSessionTest404_2() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1005,7 +1090,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void updateSessionTest201() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1056,7 +1141,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void updateSessionTest400() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1098,7 +1183,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void updateSessionTest404_1() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1145,7 +1230,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void updateSessionTest404_2() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1192,7 +1277,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void updateSessionTest404_3() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1239,7 +1324,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void getReportTest200() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1321,7 +1406,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void getReportTest400() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1392,7 +1477,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void getReportTest404_1() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1469,7 +1554,7 @@ public class PTTBackendTests {
         }
     }
 
-    //done by Niranjan
+    // done by Niranjan
     @Test
     public void getReportTest404_2() throws Exception{
         httpclient = HttpClients.createDefault();
@@ -1891,8 +1976,8 @@ public class PTTBackendTests {
         return response;
     }
 
+    // TODO: first make a get call to get all users and then invoke the delete for each of those users
     private CloseableHttpResponse deleteUsers() throws Exception {
-        // TODO: first make a get call to get all users and then invoke the delete for each of those users
         HttpDelete httpDelete = new HttpDelete(baseUrl + "/users");
         httpDelete.addHeader("accept", "application/json");
 
@@ -1904,7 +1989,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Billy
+    // done by Billy
     private CloseableHttpResponse createProject(String projectName, String userId) throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects");
         httpRequest.addHeader("accept", "application/json");
@@ -1921,7 +2006,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Billy
+    // done by Billy
     private CloseableHttpResponse createProjectIncorrect(String userId) throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects");
         httpRequest.addHeader("accept", "application/json");
@@ -1937,7 +2022,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Billy
+    // done by Billy
     private CloseableHttpResponse getProject(String userId, String projectId) throws IOException{
         HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId);
         httpRequest.addHeader("accept", "application/json");
@@ -1948,7 +2033,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Billy
+    // done by Billy
     private CloseableHttpResponse getAllProjects(String userId) throws IOException{
         HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects");
         httpRequest.addHeader("accept", "application/json");
@@ -1960,7 +2045,7 @@ public class PTTBackendTests {
 
     }
 
-    //done by Niranjan
+    // done by Niranjan
     private CloseableHttpResponse createSession(String userId, String projectId, String startTime, String endTime) throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions");
         httpRequest.addHeader("accept", "application/json");
@@ -1978,7 +2063,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Niranjan
+    // done by Niranjan
     private CloseableHttpResponse createSessionIncorrect(String userId, String projectId, String endTime) throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions");
         httpRequest.addHeader("accept", "application/json");
@@ -1995,7 +2080,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Niranjan
+    // done by Niranjan
     private CloseableHttpResponse updateSession(String userId, String projectId, String sessionId, String startTime, String endTime, String counter) throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions/" + sessionId);
         httpRequest.addHeader("accept", "application/json");
@@ -2013,7 +2098,7 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Niranjan
+    // done by Niranjan
     private CloseableHttpResponse updateSessionIncorrect(String userId, String projectId, String sessionId, String startTime, String endTime) throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions/" + sessionId);
         httpRequest.addHeader("accept", "application/json");
@@ -2030,9 +2115,8 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Niranjan
-    private CloseableHttpResponse getReport(String userId, String projectId, String startTime, String endTime, Boolean inclCompPomodoros, Boolean inclTotalHrs) 
-    throws IOException{
+    // done by Niranjan
+    private CloseableHttpResponse getReport(String userId, String projectId, String startTime, String endTime, Boolean inclCompPomodoros, Boolean inclTotalHrs) throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report?from=" + startTime + "&to=" + endTime + 
         "&includeCompletedPomodoros=" + Boolean.toString(inclCompPomodoros) + "&includeTotalHoursWorkedOnProject=" + Boolean.toString(inclTotalHrs));
         httpRequest.addHeader("accept", "application/json");
@@ -2043,9 +2127,8 @@ public class PTTBackendTests {
         return response;
     }
 
-    //done by Niranjan
-    private CloseableHttpResponse getReportIncorrect(String userId, String projectId, Boolean inclCompPomodoros, Boolean inclTotalHrs) 
-    throws IOException{
+    // done by Niranjan
+    private CloseableHttpResponse getReportIncorrect(String userId, String projectId, Boolean inclCompPomodoros, Boolean inclTotalHrs)  throws IOException{
         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report?" + 
         "includeCompletedPomodoros=" + Boolean.toString(inclCompPomodoros) + "&includeTotalHoursWorkedOnProject=" + Boolean.toString(inclTotalHrs));
         httpRequest.addHeader("accept", "application/json");
@@ -2055,7 +2138,6 @@ public class PTTBackendTests {
         System.out.println("*** Raw response " + response + "***");
         return response;
     }
-
 
     private String getIdFromResponse(CloseableHttpResponse response) throws IOException, JSONException {
         HttpEntity entity = response.getEntity();
