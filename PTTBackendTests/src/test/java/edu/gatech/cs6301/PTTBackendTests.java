@@ -563,7 +563,7 @@ public class PTTBackendTests {
                 System.out.println(
                     "*** Correct! Expected response status: 400 since an invalid user id was asked to be deleted.***");
             } else {
-                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a user with an invalid id: " + id + " was asked to be deleted");
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a user with an invalid id: " + id + id + " was asked to be deleted");
             }
             EntityUtils.consume(response.getEntity());
             response.close();
