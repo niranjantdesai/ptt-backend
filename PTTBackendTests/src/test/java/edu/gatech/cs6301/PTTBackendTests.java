@@ -1924,6 +1924,7 @@ public class PTTBackendTests {
         }
     }
 
+    /*
     // sample, TODO: comment out before submitting
     @Test
     public void DeleteUserTest() throws Exception {
@@ -2170,6 +2171,8 @@ public class PTTBackendTests {
             httpclient.close();
         }
     }
+
+    */
 
     
     private CloseableHttpResponse createUser(String firstname, String lastname, String email) throws IOException {
