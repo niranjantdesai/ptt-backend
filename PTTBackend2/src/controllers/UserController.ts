@@ -12,7 +12,7 @@ export class UserController {
     public addUser(userJSON) {
         return new promise<Result> ((resolve, reject) => {
             try {
-                delete userJSON.id;
+                delete userJSON.id; // ignoring the id field set by the frontend
                 let newUser = new this.User(userJSON);
                 newUser.save((error, user) => {
                     if (error) {
@@ -52,6 +52,7 @@ export class UserController {
                             user = moldJSON(user);
                             resolve({code: 200, result: user});
                         } else {
+                            print("User not found:", userId);
                             reject({code: 404, result: "User not found"});
                         }
                     }
@@ -66,7 +67,7 @@ export class UserController {
     public updateUser(userId: string, updatedUser) {
         return new promise<Result> ((resolve, reject) => {
             try {
-                delete updatedUser.email;
+                delete updatedUser.email; // ignoring any update to the email set by the frontend since modifying email is not allowed
                 let condition = { _id: { $eq: userId } };
                 let options = {new: true};
                 this.User.findOneAndUpdate(condition, updatedUser, options, (err: any, res: mongoose.Document) => {
@@ -78,6 +79,7 @@ export class UserController {
                             res = moldJSON(res);
                             resolve({code: 200, result: res});
                         } else {
+                            print("User not found:", userId);
                             reject({code: 404, result: "User not found"});
                         }
                     }
@@ -102,6 +104,7 @@ export class UserController {
                             user = moldJSON(user);
                             resolve({code: 200, result: user});
                         } else {
+                            print("User not found:", userId);
                             reject({code: 404, result: `User not found`});
                         }
                     }
