@@ -4,8 +4,6 @@
   +  ###### cd PTTBackend2/src/
 * ##### Install node version 8.10.0
   + ###### Follow the instructions at https://github.com/nodesource/distributions/blob/master/README.md
-* ##### Install the latest stable version of typescript
-  + ###### https://www.npmjs.com/package/typescript
 * ##### Install the latest stable version of mongodb
   + ###### https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
 * ##### Start mongodb service
