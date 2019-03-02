@@ -40,7 +40,9 @@ routes.route('/users/:userId')
 })
 .delete((req, res) => {
     userController.deleteUser(req.params["userId"])
-    .then(obj => {res.status(obj["code"]).send(obj["result"]);})
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
     .catch(obj => {
         res.status(obj["code"]).send(obj["result"]);
     })

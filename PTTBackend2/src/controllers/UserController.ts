@@ -10,7 +10,7 @@ export class UserController {
     }
 
     public addUser(userJSON) {
-        return new promise<Result> ((resolve, reject) => {
+        return new promise<ResultInterface> ((resolve, reject) => {
             try {
                 
             } catch (e) {
@@ -21,18 +21,34 @@ export class UserController {
     }
 
     public getUser(userId: string) {
-        return new promise<Result> ((resolve, reject) => {
+        print(userId);
+        return new promise<ResultInterface> ((resolve, reject) => {
             try {
                 
+                this.User.findById(userId, (err, user) => {
+                    if (err) {
+                        print("err:", err);
+                        reject({code: 400, result: "Bad request"});
+                    } else {
+                        if (user) {
+                            user = moldJSON(user);
+                            resolve({code: 200, result: user});
+                        } else {
+                            print("User not found:", userId);
+                            reject({code: 404, result: "User not found"});
+                        }
+                    }
+                });
             } catch (e) {
                 print("500: server error:", e);
-                reject({code: 500, result: "Server error"});
+                let returnObject = {code: 500, result: "Server error"};
+                reject(returnObject);
             }
         });
     }
 
     public updateUser(userId: string, updatedUser) {
-        return new promise<Result> ((resolve, reject) => {
+        return new promise<ResultInterface> ((resolve, reject) => {
             try {
                 
             } catch (e) {
@@ -44,7 +60,7 @@ export class UserController {
 
     public deleteUser(userId: string) {
         print(userId);
-        return new promise<Result> ((resolve, reject) => {
+        return new promise<ResultInterface> ((resolve, reject) => {
             try {
                 
             } catch (e) {
@@ -65,7 +81,7 @@ function print(...a) {
     console.log(...a);
 }
 
-export interface Result {
+export interface ResultInterface {
     code: number;
     result: any;
 }
