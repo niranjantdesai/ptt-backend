@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 export const UserSchema = new Schema({
-    _id: { 
-        type: Schema.Types.ObjectId, 
-        auto: true 
+    id: { 
+        type: Number,
+        required: 'ID is required'
     },
     firstname: {
         type: String,
@@ -24,7 +24,7 @@ export const UserSchema = new Schema({
     strict: "throw"
 });
 
-// This will duplicate the _id to a field called id
-UserSchema.virtual('id').get(function() {
-    return this._id;
-});
+// // This will duplicate the _id to a field called id
+// UserSchema.virtual('id').get(function() {
+//     return this._id;
+// });

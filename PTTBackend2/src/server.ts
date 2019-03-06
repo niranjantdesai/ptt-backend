@@ -4,12 +4,15 @@ import { routes } from './routes';
 import mongoose from "mongoose";
 import cors from 'cors';
 import { MongoError } from "mongodb";
+import { IDCounterController } from "./controllers/IDCounterController";
 
 const APP = express();
 const PORT = process.env.PORT || 8080;
 const DB_NAME: string = '/ptt';
 const MONGO_URI: string = 'mongodb://127.0.0.1:27017'
 const DB_URI: string = MONGO_URI + DB_NAME;
+
+let counterController = new IDCounterController();
 
 mongoose.connect(DB_URI, (err: MongoError) => {
     if (err) {
@@ -18,6 +21,7 @@ mongoose.connect(DB_URI, (err: MongoError) => {
     else {
         setupServer();
         print("Connected to MongoDB database");
+        counterController.initializeDB()
     }
 });
 

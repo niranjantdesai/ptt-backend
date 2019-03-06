@@ -1,3 +1,6 @@
+// ptt in the uri
+// id is supposed to be an integer, not a string
+
 import express from 'express';
 import { UserController } from "./controllers/UserController";
 
