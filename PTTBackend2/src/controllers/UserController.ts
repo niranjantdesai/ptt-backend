@@ -11,7 +11,7 @@ export class UserController {
 
     constructor() {mongoose.set('useFindAndModify', false);}
 
-    public addUser(userJSON) {
+    public addUser(userJSON): promise<UserResultInterface> {
         return new promise<UserResultInterface> ((resolve, reject) => {
             this.counterController.getNextUserId()
             .then(obj => {
@@ -53,7 +53,7 @@ export class UserController {
         });
     }
 
-    public getUser(userId: string) {
+    public getUser(userId: string): promise<UserResultInterface> {
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
                 let condition = { id: { $eq: userId } };
@@ -78,7 +78,7 @@ export class UserController {
         });
     }
 
-    public updateUser(userId: string, updatedUser) {
+    public updateUser(userId: string, updatedUser): promise<UserResultInterface> {
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
                 // delete updatedUser.email; // ignoring any update to the email set by the frontend since modifying email is not allowed
@@ -108,7 +108,7 @@ export class UserController {
         });
     }
 
-    public deleteUser(userId: string) {
+    public deleteUser(userId: string): promise<UserResultInterface> {
         print(userId);
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
@@ -134,13 +134,13 @@ export class UserController {
         });
     }
 
-    public getAllUsers() {
+    public getAllUsers(): promise<UserResultInterface> {
         return new promise<UserResultInterface> ((resolve ,reject) => {
             try {
                 this.User.find((err: any, users: mongoose.Document[]) => {
                     if (err) {
-                        print("500: server error:", err)
-                        reject({code: 500, result: "Server error"});
+                        print("err:", err);
+                        reject({code: 400, result: "Bad request"});
                     } else {
                         let moldedUsers = users.map(user => this.removeAllButSomeKeys(user, this.schemaKeys));
                         resolve({code: 500, result: moldedUsers});
@@ -153,13 +153,13 @@ export class UserController {
         });
     }
 
-    public appendProject(userId: string, projectId: string) {
+    public appendProject(userId: string, projectId: string): promise<UserResultInterface> {
         return new promise <UserResultInterface> ((resolve, reject) => {
-
+            
         });
     }
 
-    public removeProject(userId: string, projectId: string) {
+    public removeProject(userId: string, projectId: string): promise<UserResultInterface> {
         return new promise <UserResultInterface> ((resolve, reject) => {
             
         });

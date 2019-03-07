@@ -16,13 +16,13 @@ export class ProjectController {
         mongoose.set('useFindAndModify', false);
     }
 
-    public addProject(userId: string, projectJSON: JSON) {
+    public addProject(userId: string, projectJSON: JSON, appendToUsersListOfProjects: boolean) {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
             
         });
     }
 
-    public deleteProject(userId: string, projectId: string) {
+    public deleteProject(userId: string, projectId: string, removeFromUsersListOfProjects: boolean): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
 
         });
