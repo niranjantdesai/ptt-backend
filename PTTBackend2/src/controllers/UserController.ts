@@ -30,7 +30,7 @@ export class UserController {
                                     reject({code: 409, result: "Resource conflict"});
                                 } else {
                                     print("unknown MongoError:", error);
-                                    reject({code: 500, result: "Server error"});
+                                    reject({code: 400, result: "Bad request"});
                                 }
                             } else if (error.name === 'ValidationError') {
                                 print("ValidationError:", error);
