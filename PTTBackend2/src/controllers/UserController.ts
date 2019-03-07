@@ -155,8 +155,8 @@ export class UserController {
     }
 }
 
-function moldJSON(mongoObject) {
-    let newObj = JSON.parse(JSON.stringify(mongoObject));
+function moldJSON(userSchemaJSON) {
+    let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
     delete newObj._id;
     delete newObj.projects;
     return newObj;
