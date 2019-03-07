@@ -6,11 +6,11 @@ import { UserController } from "./UserController";
 import promise from "promise";
 
 export class ProjectController {
-    User: mongoose.Model<mongoose.Document> = mongoose.model('User', UserSchema);
     Project: mongoose.Model<mongoose.Document> = mongoose.model('Project', ProjectSchema);
     counterController = new IDCounterController();
     userController = new UserController();
-    relevantFields = ["id", "projectname"];
+    schemaKeys = ["id", "projectname"];
+    updatedableKeys = ["projectname"];
 
     constructor() {
         mongoose.set('useFindAndModify', false);
@@ -18,15 +18,7 @@ export class ProjectController {
 
     public addProject(userId: string, projectJSON: JSON) {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-            this.counterController.getNextProjectId()
-            .then(obj => {
-                let projectId = obj["result"];
-
-            })
-            .catch(obj => {
-                print("500: server error:", obj);
-                reject({code: 500, result: "Server error"});
-            })
+            
         });
     }
 
@@ -36,14 +28,14 @@ export class ProjectController {
         });
     }
 
-    public removeIrrelevantKeys(userSchemaJSON) {
+    public removeAllButSomeKeys(userSchemaJSON, keepWhichKeys: string[]) {
         let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
         // delete newObj._id;
         // delete newObj.projects;
         // return newObj;
         let allKeys = Object.keys(newObj);
         allKeys.forEach((key) => {
-            if (this.relevantFields.indexOf(key) == -1) {
+            if (keepWhichKeys.indexOf(key) == -1) {
                 delete newObj[key];
             }
         });

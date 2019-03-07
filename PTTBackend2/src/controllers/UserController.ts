@@ -6,7 +6,8 @@ import { IDCounterController } from "./IDCounterController";
 export class UserController {
     User: mongoose.Model<mongoose.Document> = mongoose.model('User', UserSchema);
     counterController = new IDCounterController();
-    relevantFields = ["id", "firstname", "lastname", "email"];
+    schemaKeys = ["id", "firstname", "lastname", "email"];
+    updateableKeys = ["firstname", "lastname"];
 
     constructor() {mongoose.set('useFindAndModify', false);}
 
@@ -31,18 +32,16 @@ export class UserController {
                                     reject({code: 400, result: "Bad request"});
                                 }
                             } else if (error.name === 'ValidationError') {
-                                print("ValidationError:", error);
+                                print("ValidationError:", error);  // when some necessary field is absent
                                 reject({code: 400, result: "Bad request"});
                             }
                         } else {
-                            print(user);
-                            user = this.removeIrrelevantKeys(user);
-                            print(user);
+                            user = this.removeAllButSomeKeys(user, this.schemaKeys);
                             resolve({code: 201, result: user});
                         }
                     });
                 } catch (error) {
-                    print("400:", error);
+                    print("400:", error); // when all necessary keys are there but there are also some extra keys
                     reject({code: 400, result: "Bad request"});
                 }
             })
@@ -63,7 +62,7 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
-                            user = this.removeIrrelevantKeys(user);
+                            user = this.removeAllButSomeKeys(user, this.schemaKeys);
                             resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);
@@ -81,9 +80,10 @@ export class UserController {
     public updateUser(userId: string, updatedUser) {
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
-                delete updatedUser.email; // ignoring any update to the email set by the frontend since modifying email is not allowed
-                delete updatedUser.id; // ignoring any update to the id set by the frontend since modifying id is not allowed
-                delete updatedUser.projects; // ignoring any update to the projects set by the frontend since modifying projects is not allowed
+                // delete updatedUser.email; // ignoring any update to the email set by the frontend since modifying email is not allowed
+                // delete updatedUser.id; // ignoring any update to the id set by the frontend since modifying id is not allowed
+                // delete updatedUser.projects; // ignoring any update to the projects set by the frontend since modifying projects is not allowed
+                updatedUser = this.removeAllButSomeKeys(updatedUser, this.updateableKeys);
                 let condition = { id: { $eq: userId } };
                 let options = {new: true};
                 this.User.findOneAndUpdate(condition, updatedUser, options, (err: any, user: mongoose.Document) => {
@@ -92,7 +92,7 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
-                            user = this.removeIrrelevantKeys(user);
+                            user = this.removeAllButSomeKeys(user, this.schemaKeys);
                             resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);
@@ -118,7 +118,7 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
-                            user = this.removeIrrelevantKeys(user);
+                            user = this.removeAllButSomeKeys(user, this.schemaKeys);
                             resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);
@@ -141,7 +141,7 @@ export class UserController {
                         print("500: server error:", err)
                         reject({code: 500, result: "Server error"});
                     } else {
-                        let moldedUsers = users.map(user => this.removeIrrelevantKeys(user));
+                        let moldedUsers = users.map(user => this.removeAllButSomeKeys(user, this.schemaKeys));
                         resolve({code: 500, result: moldedUsers});
                     }
                 });
@@ -156,14 +156,14 @@ export class UserController {
 
     }
 
-    public removeIrrelevantKeys(userSchemaJSON) {
+    public removeAllButSomeKeys(userSchemaJSON, keepWhichKeys: string[]) {
         let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
         // delete newObj._id;
         // delete newObj.projects;
         // return newObj;
         let allKeys = Object.keys(newObj);
         allKeys.forEach((key) => {
-            if (this.relevantFields.indexOf(key) == -1) {
+            if (keepWhichKeys.indexOf(key) == -1) {
                 delete newObj[key];
             }
         });

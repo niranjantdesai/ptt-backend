@@ -9,6 +9,7 @@ export const ProjectSchema = new Schema({
     },
     projectname: {
         type: String,
+        unique: true,
         required: 'Project name is required'
     },
     sessions: {
