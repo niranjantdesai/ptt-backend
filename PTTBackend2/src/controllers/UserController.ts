@@ -19,31 +19,31 @@ export class UserController {
                 userId = obj["result"];
 
                 try {
-                    userJSON.id = userId; // overwriting the ID with what we expect
+                    userJSON.id = userId; // overwriting the ID with what our generator tells us
                     let newUser = new this.User(userJSON);
     
                     newUser.save((error, user) => {
                         if (error) {
                             if (error.name === 'MongoError') {
                                 if (error.code === 11000) {
-                                    print("duplicate emails");
-                                    reject({code: 409, result: error.errmsg});
+                                    print("duplicate emails", error);
+                                    reject({code: 409, result: "Resource conflict"});
                                 } else {
                                     print("unknown MongoError:", error);
                                     reject({code: 500, result: "Server error"});
                                 }
                             } else if (error.name === 'ValidationError') {
-                                print("ValidationError:", error._message);
-                                reject({code: 400, result: error._message});
+                                print("ValidationError:", error);
+                                reject({code: 400, result: "Bad request"});
                             }
                         } else {
                             user = moldJSON(user);
                             resolve({code: 201, result: user});
                         }
                     });
-                } catch (e) {
-                    print("500: server error:", e.message);
-                    reject({code: 500, result: e.message});
+                } catch (error) {
+                    print("400:", error);
+                    reject({code: 400, result: "Bad request"});
                 }
             })
             .catch(obj => {
@@ -56,7 +56,8 @@ export class UserController {
     public getUser(userId: string) {
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
-                this.User.findById(userId, (err: any, user: mongoose.Document) => {
+                let condition = { id: { $eq: userId } };
+                this.User.findOne(condition, (err: any, user: mongoose.Document) => {
                     if (err) {
                         print("err:", err);
                         reject({code: 400, result: "Bad request"});
@@ -72,7 +73,7 @@ export class UserController {
                 });
             } catch (e) {
                 print("500: server error:", e.message);
-                reject({code: 500, result: e.message});
+                reject({code: 500, result: "Server error"});
             }
         });
     }
@@ -81,16 +82,18 @@ export class UserController {
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
                 delete updatedUser.email; // ignoring any update to the email set by the frontend since modifying email is not allowed
-                let condition = { _id: { $eq: userId } };
+                delete updatedUser.id; // ignoring any update to the id set by the frontend since modifying id is not allowed
+                delete updatedUser.projects; // ignoring any update to the projects set by the frontend since modifying projects is not allowed
+                let condition = { id: { $eq: userId } };
                 let options = {new: true};
-                this.User.findOneAndUpdate(condition, updatedUser, options, (err: any, res: mongoose.Document) => {
+                this.User.findOneAndUpdate(condition, updatedUser, options, (err: any, user: mongoose.Document) => {
                     if (err) {
                         print("err:", err.message, err);
-                        reject({code: 400, result: err.message});
+                        reject({code: 400, result: "Bad request"});
                     } else {
-                        if (res) {
-                            res = moldJSON(res);
-                            resolve({code: 200, result: res});
+                        if (user) {
+                            user = moldJSON(user);
+                            resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);
                             reject({code: 404, result: "User not found"});
@@ -99,7 +102,7 @@ export class UserController {
                 })
             } catch (e) {
                 print("500: server error:", e.message);
-                reject({code: 500, result: e.message});
+                reject({code: 500, result: "Server error"});
             }
         });
     }
@@ -108,10 +111,11 @@ export class UserController {
         print(userId);
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
-                this.User.findByIdAndDelete(userId, (err: any, user: mongoose.Document) => {
+                let condition = { id: { $eq: userId } };
+                this.User.findOneAndDelete(condition, (err: any, user: mongoose.Document) => {
                     if (err) {
                         print("err:", err.message);
-                        reject({code: 400, result: err.message});
+                        reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
                             user = moldJSON(user);
@@ -124,15 +128,17 @@ export class UserController {
                 });
             } catch (e) {
                 print("500: server error:", e.message);
-                reject({code: 500, result: e.message});
+                reject({code: 500, result: "Server error"});
             }
         });
     }
 }
 
 function moldJSON(mongoObject) {
-    delete mongoObject._id;
-    return mongoObject;
+    let newObj = JSON.parse(JSON.stringify(mongoObject))
+    delete newObj._id;
+    delete newObj.projects;
+    return newObj;
 }
 
 function print(...a) {

@@ -19,6 +19,12 @@ export const UserSchema = new Schema({
         required: 'Email is required',
         unique: true
     },
+    projects: {
+        type: [{
+            type: Number,
+        }],
+        default: []
+    }
 }, {
     versionKey: false,
     strict: "throw"

@@ -21,7 +21,7 @@ mongoose.connect(DB_URI, (err: MongoError) => {
     else {
         setupServer();
         print("Connected to MongoDB database");
-        counterController.initializeDB()
+        counterController.initializeDB();
     }
 });
 
