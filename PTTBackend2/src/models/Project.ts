@@ -7,7 +7,7 @@ export const ProjectSchema = new Schema({
         type: Number,
         required: 'ID is required'
     },
-    name: {
+    projectname: {
         type: String,
         required: 'Project name is required'
     },

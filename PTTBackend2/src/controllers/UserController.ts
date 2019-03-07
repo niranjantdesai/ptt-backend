@@ -6,17 +6,15 @@ import { IDCounterController } from "./IDCounterController";
 export class UserController {
     User: mongoose.Model<mongoose.Document> = mongoose.model('User', UserSchema);
     counterController = new IDCounterController();
+    relevantFields = ["id", "firstname", "lastname", "email"];
 
-    constructor() {
-        mongoose.set('useFindAndModify', false);
-    }
+    constructor() {mongoose.set('useFindAndModify', false);}
 
     public addUser(userJSON) {
         return new promise<UserResultInterface> ((resolve, reject) => {
-            let userId = null;
             this.counterController.getNextUserId()
             .then(obj => {
-                userId = obj["result"];
+                let userId = obj["result"];
 
                 try {
                     userJSON.id = userId; // overwriting the ID with what our generator tells us
@@ -38,7 +36,7 @@ export class UserController {
                             }
                         } else {
                             print(user);
-                            user = moldJSON(user);
+                            user = this.removeIrrelevantKeys(user);
                             print(user);
                             resolve({code: 201, result: user});
                         }
@@ -65,7 +63,7 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
-                            user = moldJSON(user);
+                            user = this.removeIrrelevantKeys(user);
                             resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);
@@ -94,7 +92,7 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
-                            user = moldJSON(user);
+                            user = this.removeIrrelevantKeys(user);
                             resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);
@@ -120,7 +118,7 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
-                            user = moldJSON(user);
+                            user = this.removeIrrelevantKeys(user);
                             resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);
@@ -143,7 +141,7 @@ export class UserController {
                         print("500: server error:", err)
                         reject({code: 500, result: "Server error"});
                     } else {
-                        let moldedUsers = users.map(user => moldJSON(user));
+                        let moldedUsers = users.map(user => this.removeIrrelevantKeys(user));
                         resolve({code: 500, result: moldedUsers});
                     }
                 });
@@ -153,13 +151,24 @@ export class UserController {
             }
         });
     }
-}
 
-function moldJSON(userSchemaJSON) {
-    let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
-    delete newObj._id;
-    delete newObj.projects;
-    return newObj;
+    public appendProject() {
+
+    }
+
+    public removeIrrelevantKeys(userSchemaJSON) {
+        let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
+        // delete newObj._id;
+        // delete newObj.projects;
+        // return newObj;
+        let allKeys = Object.keys(newObj);
+        allKeys.forEach((key) => {
+            if (this.relevantFields.indexOf(key) == -1) {
+                delete newObj[key];
+            }
+        });
+        return newObj;
+    }
 }
 
 function print(...a) {
