@@ -109,7 +109,6 @@ export class UserController {
     }
 
     public deleteUser(userId: string): promise<UserResultInterface> {
-        print(userId);
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
                 let condition = { id: { $eq: userId } };

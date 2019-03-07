@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { UserSchema } from "../models/User";
 import { ProjectSchema } from "../models/Project";
 import { IDCounterController } from "./IDCounterController";
 import { UserController } from "./UserController";
@@ -16,15 +15,15 @@ export class ProjectController {
         mongoose.set('useFindAndModify', false);
     }
 
-    public addProject(userId: string, projectJSON: JSON, appendToUsersListOfProjects: boolean) {
+    public addProject(userId: string, projectJSON: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
             
         });
     }
 
-    public deleteProject(userId: string, projectId: string, removeFromUsersListOfProjects: boolean): promise<ProjectResultInterface> {
+    public deleteProject(userId: string, projectId: string): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-
+            
         });
     }
 

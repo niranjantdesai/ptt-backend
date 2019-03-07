@@ -65,7 +65,7 @@ routes.route(`${baseUrl}/users/:userId`)
 
 routes.route(`${baseUrl}/users/:userId/projects`)
 .post((req, res) => {
-    projectController.addProject(req.params["userId"], req.body, true)
+    projectController.addProject(req.params["userId"], req.body)
     .then(obj => {
         res.status(obj["code"]).send(obj["result"]);
     })
@@ -76,7 +76,7 @@ routes.route(`${baseUrl}/users/:userId/projects`)
 
 routes.route(`${baseUrl}/users/:userId/projects/:projectId`)
 .delete((req, res) => {
-    projectController.deleteProject(req.params["userId"], req.params["projectId"], true)
+    projectController.deleteProject(req.params["userId"], req.params["projectId"])
     .then(obj => {
         res.status(obj["code"]).send(obj["result"]);
     })
