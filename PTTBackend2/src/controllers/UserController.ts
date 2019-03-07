@@ -19,6 +19,7 @@ export class UserController {
 
                 try {
                     userJSON.id = userId; // overwriting the ID with what our generator tells us
+                    userJSON = this.removeAllButSomeKeys(userJSON, this.schemaKeys);
                     let newUser = new this.User(userJSON);
     
                     newUser.save((error, user) => {
@@ -41,7 +42,7 @@ export class UserController {
                         }
                     });
                 } catch (error) {
-                    print("400:", error); // when all necessary keys are there but there are also some extra keys
+                    print("400:", error); // when all necessary keys are there but there are also some extra keys, shouldn't happen since all such keys were removed at the start
                     reject({code: 400, result: "Bad request"});
                 }
             })
@@ -152,8 +153,16 @@ export class UserController {
         });
     }
 
-    public appendProject() {
+    public appendProject(userId: string, projectId: string) {
+        return new promise <UserResultInterface> ((resolve, reject) => {
 
+        });
+    }
+
+    public removeProject(userId: string, projectId: string) {
+        return new promise <UserResultInterface> ((resolve, reject) => {
+            
+        });
     }
 
     public removeAllButSomeKeys(userSchemaJSON, keepWhichKeys: string[]) {
