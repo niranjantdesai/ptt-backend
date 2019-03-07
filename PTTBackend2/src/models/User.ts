@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+import { IDCounterController } from "../controllers/IDCounterController";
 
-export const UserSchema = new Schema({
+let counterController = new IDCounterController();
+
+export var UserSchema = new Schema({
     id: { 
         type: Number,
         required: 'ID is required'
@@ -21,7 +24,7 @@ export const UserSchema = new Schema({
     },
     projects: {
         type: [{
-            type: Number,
+            type: Number
         }],
         default: []
     }

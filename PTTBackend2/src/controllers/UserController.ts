@@ -37,7 +37,9 @@ export class UserController {
                                 reject({code: 400, result: "Bad request"});
                             }
                         } else {
+                            print(user);
                             user = moldJSON(user);
+                            print(user);
                             resolve({code: 201, result: user});
                         }
                     });
@@ -47,7 +49,7 @@ export class UserController {
                 }
             })
             .catch(obj => {
-                print("500: server error:", obj["result"]);
+                print("500: server error:", obj);
                 reject({code: 500, result: "Server error"});
             })
         });
@@ -72,7 +74,7 @@ export class UserController {
                     }
                 });
             } catch (e) {
-                print("500: server error:", e.message);
+                print("500: server error:", e);
                 reject({code: 500, result: "Server error"});
             }
         });
@@ -88,7 +90,7 @@ export class UserController {
                 let options = {new: true};
                 this.User.findOneAndUpdate(condition, updatedUser, options, (err: any, user: mongoose.Document) => {
                     if (err) {
-                        print("err:", err.message, err);
+                        print("err:", err);
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
@@ -101,7 +103,7 @@ export class UserController {
                     }
                 })
             } catch (e) {
-                print("500: server error:", e.message);
+                print("500: server error:", e);
                 reject({code: 500, result: "Server error"});
             }
         });
@@ -114,7 +116,7 @@ export class UserController {
                 let condition = { id: { $eq: userId } };
                 this.User.findOneAndDelete(condition, (err: any, user: mongoose.Document) => {
                     if (err) {
-                        print("err:", err.message);
+                        print("err:", err);
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
@@ -127,7 +129,26 @@ export class UserController {
                     }
                 });
             } catch (e) {
-                print("500: server error:", e.message);
+                print("500: server error:", e);
+                reject({code: 500, result: "Server error"});
+            }
+        });
+    }
+
+    public getAllUsers() {
+        return new promise<UserResultInterface> ((resolve ,reject) => {
+            try {
+                this.User.find((err: any, users: mongoose.Document[]) => {
+                    if (err) {
+                        print("500: server error:", err)
+                        reject({code: 500, result: "Server error"});
+                    } else {
+                        let moldedUsers = users.map(user => moldJSON(user));
+                        resolve({code: 500, result: moldedUsers});
+                    }
+                });
+            } catch (error) {
+                print("500: server error:", error);
                 reject({code: 500, result: "Server error"});
             }
         });
@@ -135,7 +156,7 @@ export class UserController {
 }
 
 function moldJSON(mongoObject) {
-    let newObj = JSON.parse(JSON.stringify(mongoObject))
+    let newObj = JSON.parse(JSON.stringify(mongoObject));
     delete newObj._id;
     delete newObj.projects;
     return newObj;

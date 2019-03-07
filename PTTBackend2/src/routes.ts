@@ -12,6 +12,15 @@ routes.route('/')
 .get((req, res) => {res.send('Backend Server is working');});
 
 routes.route('/users')
+.get((req, res) => {
+    userController.getAllUsers()
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
+    .catch(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    });
+})
 .post((req, res) => {
     userController.addUser(req.body)
     .then(obj => {
