@@ -156,13 +156,45 @@ export class UserController {
 
     public appendProject(userId: string, projectId: string): promise<UserResultInterface> {
         return new promise <UserResultInterface> ((resolve, reject) => {
-            
+            let condition = { id: { $eq: userId } };
+            let update = {$addToSet: { projects: { $each: [projectId] } }};
+            let options = {new: true};
+            this.User.findOneAndUpdate(condition, update, options, (err, user) => {
+                if (err) {
+                    print("err:", err);
+                    reject({code: 400, result: "Bad request"});
+                } else {
+                    if (user) {
+                        user = this.removeAllButSomeKeys(user, this.schemaKeys);
+                        resolve({code: 201, result: user});
+                    } else {
+                        print(`A user with id: ${userId} not found`);
+                        reject({code: 404, result: `User not found`});
+                    }
+                }
+            });
         });
     }
 
     public removeProject(userId: string, projectId: string): promise<UserResultInterface> {
         return new promise <UserResultInterface> ((resolve, reject) => {
-            
+            let condition = { id: { $eq: userId } };
+            let update = {$pull: { projects: { $in: [projectId] } }};;
+            let options = {new: true};
+            this.User.findOneAndUpdate(condition, update, options, (err, user) => {
+                if (err) {
+                    print("err:", err);
+                    reject({code: 400, result: "Bad request"});
+                } else {
+                    if (user) {
+                        user = this.removeAllButSomeKeys(user, this.schemaKeys);
+                        resolve({code: 201, result: user});
+                    } else {
+                        print(`A user with id: ${userId} not found`);
+                        reject({code: 404, result: `User not found`});
+                    }
+                }
+            });
         });
     }
 
