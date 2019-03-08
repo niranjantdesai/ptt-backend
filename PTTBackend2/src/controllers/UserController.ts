@@ -166,7 +166,7 @@ export class UserController {
         });
     }
 
-    public removeAllButSomeKeys(userSchemaJSON, keepWhichKeys: string[]) {
+    private removeAllButSomeKeys(userSchemaJSON, keepWhichKeys: string[]) {
         let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
         // delete newObj._id;
         // delete newObj.projects;

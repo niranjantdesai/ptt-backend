@@ -84,6 +84,15 @@ routes.route(`${baseUrl}/users/:userId/projects/:projectId`)
         res.status(obj["code"]).send(obj["result"]);
     });
 })
+.put((req, res) => {
+    projectController.updateProject(req.params["userId"], req.params["projectId"], req.body)
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
+    .catch(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    });
+})
 .delete((req, res) => {
     projectController.deleteProject(req.params["userId"], req.params["projectId"])
     .then(obj => {
