@@ -36,7 +36,7 @@ routes.route(`${baseUrl}/users`)
 
 routes.route(`${baseUrl}/users/:userId`)
 .get((req, res) => {
-    userController.getUser(req.params["userId"])
+    userController.getUser(req.params["userId"], true)
     .then(obj => {
         res.status(obj["code"]).send(obj["result"]);
     })
@@ -75,6 +75,15 @@ routes.route(`${baseUrl}/users/:userId/projects`)
 })
 
 routes.route(`${baseUrl}/users/:userId/projects/:projectId`)
+.get((req, res) => {
+    projectController.getProject(req.params["userId"], req.params["projectId"])
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
+    .catch(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    });
+})
 .delete((req, res) => {
     projectController.deleteProject(req.params["userId"], req.params["projectId"])
     .then(obj => {

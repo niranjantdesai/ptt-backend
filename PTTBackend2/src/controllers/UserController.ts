@@ -53,7 +53,7 @@ export class UserController {
         });
     }
 
-    public getUser(userId: string): promise<UserResultInterface> {
+    public getUser(userId: string, hideKeys: boolean): promise<UserResultInterface> {
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
                 let condition = { id: { $eq: userId } };
@@ -63,7 +63,9 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
-                            user = this.removeAllButSomeKeys(user, this.schemaKeys);
+                            if (hideKeys) {
+                                user = this.removeAllButSomeKeys(user, this.schemaKeys);
+                            }
                             resolve({code: 200, result: user});
                         } else {
                             print("User not found:", userId);

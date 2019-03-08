@@ -15,6 +15,12 @@ export class ProjectController {
         mongoose.set('useFindAndModify', false);
     }
 
+    public getProject(userId: string, projectId: string): promise<ProjectResultInterface> {
+        return new promise <ProjectResultInterface> ((resolve, reject) => {
+            
+        });
+    }
+
     public addProject(userId: string, projectJSON: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
             
