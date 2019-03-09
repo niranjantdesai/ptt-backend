@@ -42,8 +42,8 @@ export class UserController {
                         }
                     });
                 } catch (error) {
-                    print("400:", error); // when all necessary keys are there but there are also some extra keys, shouldn't happen since all such keys were removed at the start
-                    reject({code: 400, result: "Bad request"});
+                    print("500:", error); // when all necessary keys are there but there are also some extra keys, shouldn't happen since all such keys were removed at the start
+                    reject({code: 500, result: "Server error"});
                 }
             })
             .catch(obj => {
