@@ -23,7 +23,7 @@ import org.apache.http.util.EntityUtils;
 
 import org.skyscreamer.jsonassert.JSONAssert;
 
-public class PTTBackendTests {
+public class BackendTestsMobile3 {
 
     private String baseUrl = "https://gazelle.cc.gatech.edu:8083/ptt";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();

@@ -21,7 +21,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class PTTBackendTests {
+public class BackendTestsBackend4 {
 
     private String baseUrl = "http://localhost:8080";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();

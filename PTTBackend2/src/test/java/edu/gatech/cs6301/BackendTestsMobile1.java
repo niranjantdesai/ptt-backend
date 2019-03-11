@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PTTBackendTests {
+public class BackendTestsMobile1 {
 
     private String baseUrl = "http://localhost:8080";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
