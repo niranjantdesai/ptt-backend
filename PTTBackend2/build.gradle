@@ -1,0 +1,42 @@
+apply plugin: 'java'
+// apply plugin: 'eclipse'
+// apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.apache.httpcomponents:httpclient:4.5.5")
+    compile("org.skyscreamer:jsonassert:1.5.0")
+    testCompile('junit:junit:4.12')
+}
+
+task BuildBackendTests(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Test cases Jar File for Backend1',
+                   'Implementation-Version': '1.0.0',
+                   'Main-Class': 'edu.gatech.cs6301.BackendTestsBackend1'
+    }
+    baseName = 'AllBackendTests'
+    from { configurations.testRuntime.collect { it.isDirectory() ? it : zipTree(it) } }
+    from sourceSets.test.output
+    with jar
+}
+
+// task BackendTestsBackend1{
+
+// }
+
+// command to compile all testcases
+// gradle BuildBackendTests
+// command to run a jar file
+// java -cp build/libs/AllBackendTests.jar org.junit.runner.JUnitCore edu.gatech.cs6301.BackendTestsBackend2
+
+
+// //create a single Jar for test files with all dependencies
+// task BackendTestsBackend1(type: JavaExec) {
+//     classpath = files('PTTBackend2/src/test/java')
+//     classpath += sourceSets.main.runtimeClasspath
+//     main = 'edu.gatech.cs6301.BackendTestsBackend1'
+// }
