@@ -3,6 +3,8 @@
 /dist
 /tmp
 /out-tsc
+build/
+.gradle
 
 # dependencies
 node_modules/*
