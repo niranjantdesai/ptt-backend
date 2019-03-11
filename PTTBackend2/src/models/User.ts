@@ -9,11 +9,11 @@ export var UserSchema = new Schema({
         type: Number,
         required: 'ID is required'
     },
-    firstname: {
+    firstName: {
         type: String,
         required: 'First name is required'
     },
-    lastname: {
+    lastName: {
         type: String,
         required: 'Last name is required'
     },
