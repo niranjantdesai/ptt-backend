@@ -25,7 +25,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 public class BackendTestsBackend1 {
 
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "http://localhost:8080/ptt";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     private CloseableHttpClient httpclient;
     private boolean setupdone;
