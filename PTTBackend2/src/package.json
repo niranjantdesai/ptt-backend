@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "clear && node_modules/.bin/ts-node-dev server.ts"
+    "start": "node_modules/.bin/ts-node-dev server.ts"
   },
   "repository": {
     "type": "git",
