@@ -144,7 +144,7 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         let moldedUsers = users.map(user => this.removeAllButSomeKeys(user, this.schemaKeys));
-                        resolve({code: 500, result: moldedUsers});
+                        resolve({code: 200, result: moldedUsers});
                     }
                 });
             } catch (error) {
