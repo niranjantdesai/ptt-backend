@@ -1,3 +1,7 @@
+// https://stackoverflow.com/questions/46959783/running-shell-command-from-gradle-script
+// https://www.tutorialspoint.com/gradle/gradle_running_a_build.htm
+
+
 apply plugin: 'java'
 // apply plugin: 'eclipse'
 // apply plugin: 'idea'
@@ -15,8 +19,8 @@ dependencies {
 task BuildBackendTests(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'Test cases Jar File for Backend1',
-                   'Implementation-Version': '1.0.0',
-                   'Main-Class': 'edu.gatech.cs6301.BackendTestsBackend1'
+                   'Implementation-Version': '1.0.0' //,
+                //    'Main-Class': 'edu.gatech.cs6301.BackendTestsBackend1'
     }
     baseName = 'AllBackendTests'
     from { configurations.testRuntime.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -24,19 +28,147 @@ task BuildBackendTests(type: Jar) {
     with jar
 }
 
-// task BackendTestsBackend1{
+task BackendTestsBackend1 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsBackend1'
 
-// }
+        }
+    }
+}
+
+task BackendTestsBackend2 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsBackend2'
+
+        }
+    }
+}
+
+task BackendTestsBackend3 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsBackend3'
+
+        }
+    }
+}
+
+task BackendTestsBackend4 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsBackend4'
+
+        }
+    }
+}
+
+task BackendTestsWeb1 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsWeb1'
+
+        }
+    }
+}
+
+task BackendTestsWeb2 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsWeb2'
+
+        }
+    }
+}
+
+task BackendTestsWeb3 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsWeb3'
+
+        }
+    }
+}
+
+task BackendTestsWeb4 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsWeb4'
+
+        }
+    }
+}
+
+task BackendTestsMobile1 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsMobile1'
+
+        }
+    }
+}
+
+task BackendTestsMobile2 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsMobile2'
+
+        }
+    }
+}
+
+task BackendTestsMobile3 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsMobile3'
+
+        }
+    }
+}
+
+task BackendTestsMobile4 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsMobile4'
+
+        }
+    }
+}
+
+task BackendTestsDevOps12 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsDevOps12'
+
+        }
+    }
+}
+
+task BackendTestsDevOps34 (dependsOn: BuildBackendTests) {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsDevOps34'
+
+        }
+    }
+}
 
 // command to compile all testcases
 // gradle BuildBackendTests
 // command to run a jar file
 // java -cp build/libs/AllBackendTests.jar org.junit.runner.JUnitCore edu.gatech.cs6301.BackendTestsBackend2
-
-
-// //create a single Jar for test files with all dependencies
-// task BackendTestsBackend1(type: JavaExec) {
-//     classpath = files('PTTBackend2/src/test/java')
-//     classpath += sourceSets.main.runtimeClasspath
-//     main = 'edu.gatech.cs6301.BackendTestsBackend1'
-// }
