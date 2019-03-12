@@ -7,7 +7,7 @@ export class UserController {
     User: mongoose.Model<mongoose.Document> = mongoose.model('User', UserSchema);
     counterController = new IDCounterController();
     schemaKeys = ["id", "firstName", "lastName", "email"];
-    updateableKeys = ["firstName", "lastName"];
+    updateableKeys = ["firstName", "lastName"]; // TODO: add email over here
 
     constructor() {mongoose.set('useFindAndModify', false);}
 
@@ -83,9 +83,6 @@ export class UserController {
     public updateUser(userId: string, updatedUser): promise<UserResultInterface> {
         return new promise<UserResultInterface> ((resolve, reject) => {
             try {
-                // delete updatedUser.email; // ignoring any update to the email set by the frontend since modifying email is not allowed
-                // delete updatedUser.id; // ignoring any update to the id set by the frontend since modifying id is not allowed
-                // delete updatedUser.projects; // ignoring any update to the projects set by the frontend since modifying projects is not allowed
                 updatedUser = this.removeAllButSomeKeys(updatedUser, this.updateableKeys);
                 let condition = { id: { $eq: userId } };
                 let options = {new: true};
