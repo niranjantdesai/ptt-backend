@@ -1,7 +1,8 @@
 #### Instructions to run the backend server:
-* ##### Clone my repo
+* ##### Clone repo in any directory
+  +  ###### git clone https://github.gatech.edu/gt-se-cs6301-spring2019/6301Spring19Backend2.git
 * ##### Go to the the code directory
-  +  ###### cd PTTBackend2/src/
+  +  ###### cd 6301Spring19Backend2/PTTBackend2/src/
 * ##### Install node version 8.10.0
   + ###### Follow the instructions at https://github.com/nodesource/distributions/blob/master/README.md
 * ##### Install the latest stable version of mongodb
