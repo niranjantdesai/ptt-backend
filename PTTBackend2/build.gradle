@@ -16,7 +16,16 @@ dependencies {
     testCompile('junit:junit:4.12')
 }
 
-task BuildBackendTests(type: Jar) {
+task CleanUp () {
+    doLast {
+        exec {
+            // workingDir '.'
+            commandLine 'rm', '-rf', 'build'
+        }
+    }
+}
+
+task BuildBackendTests(type: Jar, dependsOn: CleanUp) {
     manifest {
         attributes 'Implementation-Title': 'Test cases Jar File for Backend1',
                    'Implementation-Version': '1.0.0' //,
@@ -33,7 +42,6 @@ task BackendTestsBackend1 (dependsOn: BuildBackendTests) {
         exec {
             // workingDir '.'
             commandLine 'java', '-cp', 'build/libs/AllBackendTests.jar', 'org.junit.runner.JUnitCore', 'edu.gatech.cs6301.BackendTestsBackend1'
-
         }
     }
 }
