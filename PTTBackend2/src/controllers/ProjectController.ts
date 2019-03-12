@@ -93,7 +93,7 @@ export class ProjectController {
                             })
                             .catch(obj => { 
                                 // since the project could not be added to the user's list of projects, we should also delete this project from our collection
-                                this.deleteProjectAndRemoveProject(userId, projectId, false)
+                                this.deleteProject(userId, projectId, false)
                                 .then(__ => {
                                     reject(obj);
                                 })
@@ -117,16 +117,12 @@ export class ProjectController {
         });
     }
 
-    public deleteProject(userId: string, projectId: string): promise<ProjectResultInterface> {
-        return this.deleteProjectAndRemoveProject(userId, projectId, true);
-    }
-    
-    private deleteProjectAndRemoveProject(userId: string, projectId: string, removeFromUsersListOfProjects: boolean): promise<ProjectResultInterface> {
+    public deleteProject(userId: string, projectId: string, removeFromUsersListOfProjects: boolean): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
             if (removeFromUsersListOfProjects) {
                 this.userController.removeProject(userId, projectId)
                 .then(__ => {
-                    this.deleteProjectAndRemoveProject(userId, projectId, false)
+                    this.deleteProject(userId, projectId, false)
                     .then(result => {
                         resolve(result);
                     })
