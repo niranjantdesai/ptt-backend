@@ -379,44 +379,43 @@ public class BackendTestsBackend1 {
      * Tests for PUT /users/{userId}
      */
 
-     /* TODO: uncomment this after adding email to updateable keys in usercontroller.ts */
-    // @Test
-    // public void updateUserTest() throws Exception {
-    //     try {
+    @Test
+    public void updateUserTest() throws Exception {
+        try {
 
-    //         // Adding a user to the PTT
-    //         deleteUsers();
+            // Adding a user to the PTT
+            deleteUsers();
 
-    //         CloseableHttpResponse response =
-    //                 createUser("John", "Doe", "john@doe.org");
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+            CloseableHttpResponse response =
+                    createUser("John", "Doe", "john@doe.org");
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Perform PUT /users/{userId} and ensure that the user is accurately updated.
+            // Perform PUT /users/{userId} and ensure that the user is accurately updated.
 
-    //         response = updateUser(id, "Tom", "James", "tom@james.org");
-    //         String expectedJson = "{\"id\":" + id + ",\"firstName\":\"Tom\",\"lastName\":\"James\",\"email\":\"tom@james.org\"}";
+            response = updateUser(id, "Tom", "James", "tom@james.org");
+            String expectedJson = "{\"id\":" + id + ",\"firstName\":\"Tom\",\"lastName\":\"James\",\"email\":\"john@doe.org\"}";
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         String strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            String strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
 
-    //         deleteUser(id);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(id);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     @Test
     public void updateUserWithInvalidUserIdTest() throws Exception {
