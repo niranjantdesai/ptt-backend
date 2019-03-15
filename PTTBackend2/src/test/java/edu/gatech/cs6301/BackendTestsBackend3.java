@@ -58,429 +58,429 @@ public class BackendTestsBackend3 {
 
     /* User related tests -- START*/ 
     
-    // @Test
-    // public void createUserTest() throws Exception{
-    //     System.out.println("----- Start testing POST user -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void createUserTest() throws Exception{
+        System.out.println("----- Start testing POST user -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         deleteUsers();
-    //         // Post user request
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+        try{
+            deleteUsers();
+            // Post user request
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
 
-    //         // Response
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
+            // Response
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
 
-    //         // Check response status, if correct get response body
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected POST response status: " + status);
+            // Check response status, if correct get response body
+            if(status == 201){
+                entity = response.getEntity();
+            }
+            else throw new ClientProtocolException("Unexpected POST response status: " + status);
 
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Get server-side generated id
-    //         String id = getIdFromStringResponse(strResponse);
-    //         // Expected response body
-    //         String expectedJson = "{\"id\":" + id + ",\"firstName\":\"Logan\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Convert response body to string (in purpose of comparing)
+            String strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+            // Get server-side generated id
+            String id = getIdFromStringResponse(strResponse);
+            // Expected response body
+            String expectedJson = "{\"id\":" + id + ",\"firstName\":\"Logan\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"}";
+            // Compare
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Delete created user
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete created user
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void createUserBadRequestTest() throws Exception{
-    //     System.out.println("----- Start testing POST user with bad request body -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void createUserBadRequestTest() throws Exception{
+        System.out.println("----- Start testing POST user with bad request body -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         // Post user with bad request
-    //         CloseableHttpResponse response = createUserBadRequest();
-    //         int status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 400) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+        try{
+            // Post user with bad request
+            CloseableHttpResponse response = createUserBadRequest();
+            int status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void creatUserConflictTest() throws Exception{
-    //     System.out.println("----- Start testing user POST conflict  -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void creatUserConflictTest() throws Exception{
+        System.out.println("----- Start testing user POST conflict  -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         deleteUsers();
-    //         // Create user once
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status1 = response.getStatusLine().getStatusCode();
-    //         String id = getIdFromResponse(response);
-    //         if(status1 != 201) throw new ClientProtocolException("Unexpected POST response status: " + status1);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try{
+            deleteUsers();
+            // Create user once
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status1 = response.getStatusLine().getStatusCode();
+            String id = getIdFromResponse(response);
+            if(status1 != 201) throw new ClientProtocolException("Unexpected POST response status: " + status1);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Create user twice
-    //         response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status2 = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status2 + " ***");
-    //         if(status2 == 409) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status2 + "***");
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Create user twice
+            response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status2 = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status2 + " ***");
+            if(status2 == 409) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status2 + "***");
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Delete created user
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
+            // Delete created user
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
 
-    // }
+    }
 
-    // @Test
-    // public void getUserTest() throws Exception{
-    //     System.out.println("----- Start testing successful user GET -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void getUserTest() throws Exception{
+        System.out.println("----- Start testing successful user GET -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         deleteUsers();
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         String id = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try {
+            deleteUsers();
+            // Create user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            String id = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Get user
-    //         response = getUser(id);
-    //         status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 200) {
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected GET response status: " + status);
+            // Get user
+            response = getUser(id);
+            status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 200) {
+                entity = response.getEntity();
+            }
+            else throw new ClientProtocolException("Unexpected GET response status: " + status);
 
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         String expectedJSON = "{\"id\":" + id + ",\"firstName\":\"Logan\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"}";
-    //         JSONAssert.assertEquals(strResponse, expectedJSON, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            String strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String expectedJSON = "{\"id\":" + id + ",\"firstName\":\"Logan\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"}";
+            JSONAssert.assertEquals(strResponse, expectedJSON, false);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void getMissingUser() throws Exception{
-    //     System.out.println("----- Start testing GET missing user -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void getMissingUser() throws Exception{
+        System.out.println("----- Start testing GET missing user -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         deleteUsers();
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         String id = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try {
+            deleteUsers();
+            // Create user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            String id = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Get user
-    //         response = getUser("521" + id);
-    //         status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 404) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Get user
+            response = getUser("521" + id);
+            status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 404) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void getAllUserTest() throws Exception{
-    //     System.out.println("----- Start testing GET all users -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void getAllUserTest() throws Exception{
+        System.out.println("----- Start testing GET all users -----");
+        httpclient = HttpClients.createDefault();
 
-    //     String expectedJson = "";
-    //     int status = 0;
+        String expectedJson = "";
+        int status = 0;
 
-    //     try{
-    //         deleteUsers();
-    //         // Create a user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id1 = getIdFromResponse(response);
-    //         expectedJson += "[{\"id\":" + id1 + ",\"firstName\":\"Logan\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"},";
-    //         response.close();
+        try{
+            deleteUsers();
+            // Create a user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id1 = getIdFromResponse(response);
+            expectedJson += "[{\"id\":" + id1 + ",\"firstName\":\"Logan\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"},";
+            response.close();
 
-    //         // Create another user
-    //         response = createUser("No", "More", "nomore@xxx.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id2 = getIdFromResponse(response);
-    //         expectedJson += "{\"id\":" + id2 + ",\"firstName\":\"No\",\"lastName\":\"More\",\"email\":\"nomore@xxx.com\"}]";
-    //         response.close();
+            // Create another user
+            response = createUser("No", "More", "nomore@xxx.com");
+            status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id2 = getIdFromResponse(response);
+            expectedJson += "{\"id\":" + id2 + ",\"firstName\":\"No\",\"lastName\":\"More\",\"email\":\"nomore@xxx.com\"}]";
+            response.close();
 
-    //         // Get all users
-    //         response = getAllUsers();
-    //         status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 200){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected GET response status: " + status);
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         response.close();
+            // Get all users
+            response = getAllUsers();
+            status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 200){
+                entity = response.getEntity();
+            }
+            else throw new ClientProtocolException("Unexpected GET response status: " + status);
+            String strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            response.close();
 
-    //         // Delete users
-    //         response = deleteUser(id1);
-    //         response.close();
-    //         response = deleteUser(id2);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete users
+            response = deleteUser(id1);
+            response.close();
+            response = deleteUser(id2);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void getUserIllegalIdTest() throws Exception{
-    //     System.out.println("----- Start testing GET user with illegal id -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void getUserIllegalIdTest() throws Exception{
+        System.out.println("----- Start testing GET user with illegal id -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         deleteUsers();
-    //         // Create a user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try{
+            deleteUsers();
+            // Create a user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Get user with illegal id
-    //         response = getUser("ABCDEFGHIJKLMN");
-    //         status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 400) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Get user with illegal id
+            response = getUser("ABCDEFGHIJKLMN");
+            status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Delete users
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete users
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updateUserTest() throws Exception{
-    //     System.out.println("----- Start testing PUT user -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateUserTest() throws Exception{
+        System.out.println("----- Start testing PUT user -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         deleteUsers();
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try{
+            deleteUsers();
+            // Create user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Update user
-    //         response = updateUser(id, "No", "Superman", "logansuperman@xxx.com");
-    //         String expectedJson = "{\"id\":" + id + ",\"firstName\":\"No\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"}";
-    //         status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 200){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected PUT response status: " + status);
-    //         String strResponse = EntityUtils.toString(entity);
-    //         JSONAssert.assertEquals(strResponse, expectedJson, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Update user
+            response = updateUser(id, "No", "Superman", "logansuperman@xxx.com");
+            String expectedJson = "{\"id\":" + id + ",\"firstName\":\"No\",\"lastName\":\"Superman\",\"email\":\"logansuperman@xxx.com\"}";
+            status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 200){
+                entity = response.getEntity();
+            }
+            else throw new ClientProtocolException("Unexpected PUT response status: " + status);
+            String strResponse = EntityUtils.toString(entity);
+            JSONAssert.assertEquals(strResponse, expectedJson, false);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Delete user
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete user
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updateMissingUserTest() throws Exception{
-    //     System.out.println("----- Start testing PUT user -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateMissingUserTest() throws Exception{
+        System.out.println("----- Start testing PUT user -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         deleteUsers();
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try{
+            deleteUsers();
+            // Create user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Update user
-    //         response = updateUser("541" + id, "No", "Superman", "logansuperman@xxx.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 404) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
-    //         response.close();
+            // Update user
+            response = updateUser("541" + id, "No", "Superman", "logansuperman@xxx.com");
+            status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 404) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            response.close();
 
-    //         // Delete user
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete user
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updateUserBadRequestTest() throws Exception{
-    //     System.out.println("----- Start testing PUT user with bad request -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateUserBadRequestTest() throws Exception{
+        System.out.println("----- Start testing PUT user with bad request -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try{
+            // Create user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Update user with bad request body
-    //         response = updateUserBadRequest(id);
-    //         status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if (status == 400) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
-    //         response.close();
+            // Update user with bad request body
+            response = updateUserBadRequest(id);
+            status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if (status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            response.close();
 
-    //         // Delete user
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete user
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updateUserEmptyIdTest() throws Exception{
-    //     System.out.println("----- Start testing PUT user with empty id -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateUserEmptyIdTest() throws Exception{
+        System.out.println("----- Start testing PUT user with empty id -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         deleteUsers();
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try{
+            deleteUsers();
+            // Create user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Update user with empty id
-    //         response = updateUser("", "No", "More", "logansuperman@xxx.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 404) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Update user with empty id
+            response = updateUser("", "No", "More", "logansuperman@xxx.com");
+            status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 404) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Delete user
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete user
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updateUserIllegalIdTest() throws Exception{
-    //     System.out.println("----- Start testing PUT user wit illegal id -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateUserIllegalIdTest() throws Exception{
+        System.out.println("----- Start testing PUT user wit illegal id -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         deleteUsers();
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try{
+            deleteUsers();
+            // Create user
+            CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+            int status = response.getStatusLine().getStatusCode();
+            if(status != 201) throw new ClientProtocolException("Unexpected POST response status: " + status);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Update user with illegal id
-    //         response = updateUser("ABCDEFGHIJKLMN", "No", "More", "logansuperman@xxx.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 400) System.out.println("*** Response code correct ***");
-    //         else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Update user with illegal id
+            response = updateUser("ABCDEFGHIJKLMN", "No", "More", "logansuperman@xxx.com");
+            status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Delete user
-    //         response = deleteUser(id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete user
+            response = deleteUser(id);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
 
     @Test
     public void deleteUserTest() throws Exception{
