@@ -34,7 +34,7 @@ export class ProjectController {
                             } else {
                                 if (project) {
                                     project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                                    project["userId"] = userId;
+                                    project["userId"] = Number(userId);
                                     resolve({code: 200, result: project});
                                 } else {
                                     print("Project not found:", projectId);
@@ -84,7 +84,7 @@ export class ProjectController {
                             }
                         } else {
                             project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                            project["userId"] = userId;
+                            project["userId"] = Number(userId);
                             
                             // now that project object has been added, lets add the project id to the list of projects for this user
                             this.userController.appendProject(userId, projectId)
@@ -152,7 +152,7 @@ export class ProjectController {
                         } else {
                             if (project) {
                                 project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                                project["userId"] = userId;
+                                project["userId"] = Number(userId);
                                 resolve({code: 200, result: project});
                             } else {
                                 print("Project not found:", projectId);
