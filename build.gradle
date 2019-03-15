@@ -1,0 +1,150 @@
+// https://stackoverflow.com/questions/46959783/running-shell-command-from-gradle-script
+// https://www.tutorialspoint.com/gradle/gradle_running_a_build.htm
+
+
+apply plugin: 'java'
+// apply plugin: 'eclipse'
+// apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.apache.httpcomponents:httpclient:4.5.5")
+    compile("org.skyscreamer:jsonassert:1.5.0")
+    testCompile('junit:junit:4.12')
+}
+
+task BackendTestsBackend1 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsBackend1'
+        }
+    }
+}
+
+task BackendTestsBackend2 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsBackend2'
+        }
+    }
+}
+
+task BackendTestsBackend3 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsBackend3'
+        }
+    }
+}
+
+task BackendTestsBackend4 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsBackend4'
+        }
+    }
+}
+
+task BackendTestsWeb1 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsWeb1'
+        }
+    }
+}
+
+task BackendTestsWeb2 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsWeb2'
+        }
+    }
+}
+
+task BackendTestsWeb3 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsWeb3'
+        }
+    }
+}
+
+task BackendTestsWeb4 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsWeb4'
+        }
+    }
+}
+
+task BackendTestsMobile1 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsMobile1'
+        }
+    }
+}
+
+task BackendTestsMobile2 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsMobile2'
+        }
+    }
+}
+
+task BackendTestsMobile3 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsMobile3'
+        }
+    }
+}
+
+task BackendTestsMobile4 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsMobile4'
+        }
+    }
+}
+
+task BackendTestsDevOps12 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsDevOps12'
+        }
+    }
+}
+
+task BackendTestsDevOps34 () {
+    doLast {
+        exec {
+            workingDir './PTTBackend2'
+            commandLine 'gradle', 'BackendTestsDevOps34'
+        }
+    }
+}
+
+
+
+// command to compile all testcases
+// gradle BuildBackendTests
+// command to run a jar file
+// java -cp build/libs/AllBackendTests.jar org.junit.runner.JUnitCore edu.gatech.cs6301.BackendTestsBackend2

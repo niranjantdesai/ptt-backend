@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { UserSchema } from "../models/User";
 import promise from "promise";
 import { IDCounterController } from "./IDCounterController";
+import { ProjectController } from "./ProjectController";
 
 export class UserController {
     User: mongoose.Model<mongoose.Document> = mongoose.model('User', UserSchema);
@@ -117,6 +118,11 @@ export class UserController {
                         reject({code: 400, result: "Bad request"});
                     } else {
                         if (user) {
+                            let projectController = new ProjectController();
+                            let usersProjects = user["projects"];
+                            usersProjects.forEach(projectId => {
+                                projectController.deleteProject(userId, projectId, false);
+                            })
                             user = this.removeAllButSomeKeys(user, this.schemaKeys);
                             resolve({code: 200, result: user});
                         } else {

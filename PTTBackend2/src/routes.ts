@@ -91,7 +91,7 @@ routes.route(`${baseUrl}/users/:userId/projects/:projectId`)
     });
 })
 .delete((req, res) => {
-    projectController.deleteProject(req.params["userId"], req.params["projectId"])
+    projectController.deleteProject(req.params["userId"], req.params["projectId"], true)
     .then(obj => {
         res.status(obj["code"]).send(obj["result"]);
     })
