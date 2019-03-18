@@ -13,7 +13,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
