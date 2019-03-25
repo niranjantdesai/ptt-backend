@@ -767,426 +767,385 @@ public class BackendTestsWeb4 {
         }
     }
 
-    // @Test
-    // // When adding a project, if the userId is not in DB, or userId isn't of Long (int64) type
-    // // or the body is missing, the server should report bad request (400)
-    // public void addProjectBadRequestTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+     @Test
+     // When adding a project, if the userId is not in DB, or userId isn't of Long (int64) type
+     // or the body is missing, the server should report bad request (400)
+     public void addProjectBadRequestTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //     try {
-    //         // addProject on an empty DB
-    //         CloseableHttpResponse response = createProject( "test project", 222);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+         try {
+             // addProject on an empty DB
+             CloseableHttpResponse response = createProject( "test project", 222);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // create a user
-    //         response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             // create a user
+             response = createUser("John", "Doe", "john@doe.org");
+             long userId = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // addProject on non-empty DB but with non-exist userId
-    //         response = createProject( "test project", userId+1);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             // addProject on non-empty DB but with non-exist userId
+             response = createProject( "test project", userId+1);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // sent addProject request without body
-    //         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         StringEntity input = new StringEntity("{\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+             // sent addProject request without body
+             HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects");
+             httpRequest.addHeader("accept", "application/json");
+             StringEntity input = new StringEntity("{\"}");
+             input.setContentType("application/json");
+             httpRequest.setEntity(input);
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-
-    // @Test
-    // // When adding a project, if the project body contains conflicting content with
-    // // the existing projects, the server should report Resource conflictt (409)
-    // public void addProjectResourceConflictTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         // create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // add first project
-    //         response = createProject( "test project", userId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // add second project with the same userId and projectname
-    //         response = createProject( "test project", userId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(409, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
-    // @Test
-    // // When adding a project with valid parameter, the server should return 201 and the correct project body
-    // public void addOneValidProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+     @Test
+     // When adding a project, if the project body contains conflicting content with
+     // the existing projects, the server should report Resource conflictt (409)
+     public void addProjectResourceConflictTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //     try {
-    //         // create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+         try {
+             // create a user
+             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+             long userId = getIdFromResponse(response);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // add project
-    //         response = createProject( "test project", userId);
-    //         HttpEntity entity = response.getEntity();
-    //         String strResponse = EntityUtils.toString(entity);
-    //         long projectId = Long.parseLong(getIdFromStringResponse(strResponse));
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         String projectname = getProjectnameFromResponse(strResponse);
-    //         Assert.assertEquals("test project", projectname);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             // add first project
+             response = createProject( "test project", userId);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // get project by id to make sure the addProject operation successes
-    //         response = getProject(userId, projectId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         projectname = getProjectnameFromResponse(response);
-    //         Assert.assertEquals("test project", projectname);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             // add second project with the same userId and projectname
+             response = createProject( "test project", userId);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(409, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
-    // @Test
-    // // When adding a project with valid parameter, the server should return 201 and the correct project body
-    // public void addManyValidProjectToSameUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
 
-    //     try {
-    //         // create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+     @Test
+     // When adding a project with valid parameter, the server should return 201 and the correct project body
+     public void addManyValidProjectToSameUserTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //         long[] projectIds = new long[100];
-    //         // add 100 projects
-    //         for (int i = 0; i < 100; i++) {
-    //             String projectname = "test project " + i;
-    //             response = createProject( projectname, userId);
-    //             HttpEntity entity = response.getEntity();
-    //             String strResponse = EntityUtils.toString(entity);
-    //             projectIds[i] = Long.parseLong(getIdFromStringResponse(strResponse));
-    //             status = response.getStatusLine().getStatusCode();
-    //             Assert.assertEquals(201, status);
-    //             String return_projectname = getProjectnameFromResponse(strResponse);
-    //             Assert.assertEquals(projectname, return_projectname);
-    //             EntityUtils.consume(response.getEntity());
-    //             response.close();
-    //         }
+         try {
+             // create a user
+             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+             long userId = getIdFromResponse(response);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // get project by id to make sure the addProject operation successes
-    //         for (int i = 0; i < 100; i++) {
-    //             String projectname = "test project " + i;
-    //             response = getProject(userId, projectIds[i]);
-    //             status = response.getStatusLine().getStatusCode();
-    //             Assert.assertEquals(200, status);
-    //             String return_projectname = getProjectnameFromResponse(response);
-    //             Assert.assertEquals(projectname, return_projectname);
-    //             EntityUtils.consume(response.getEntity());
-    //             response.close();
-    //         }
+             long[] projectIds = new long[100];
+             // add 100 projects
+             for (int i = 0; i < 100; i++) {
+                 String projectname = "test project " + i;
+                 response = createProject(projectname, userId);
+                 HttpEntity entity = response.getEntity();
+                 String strResponse = EntityUtils.toString(entity);
+                 projectIds[i] = Long.parseLong(getIdFromStringResponse(strResponse));
+                 status = response.getStatusLine().getStatusCode();
+                 Assert.assertEquals(201, status);
+                 String return_projectname = getProjectnameFromResponse(strResponse);
+                 Assert.assertEquals(projectname, return_projectname);
+                 EntityUtils.consume(response.getEntity());
+                 response.close();
+             }
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+//             // get project by id to make sure the addProject operation successes
+//             for (int i = 0; i < 100; i++) {
+//                 String projectname = "test project " + i;
+//                 response = getProject(userId, projectIds[i]);
+//                 status = response.getStatusLine().getStatusCode();
+//                 Assert.assertEquals(200, status);
+//                 String return_projectname = getProjectnameFromResponse(response);
+//                 Assert.assertEquals(projectname, return_projectname);
+//                 EntityUtils.consume(response.getEntity());
+//                 response.close();
+//             }
 
-
-    // @Test
-    // // When adding a project with valid parameter, the server should return 201 and the correct project body
-    // public void addManyValidProjectToManyUsersTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         // create user1
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // create user2
-    //         response = createUser("Jane", "Doe", "jane@doe.com");
-    //         long userId2 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         long[] projectIds1 = new long[50];
-    //         long[] projectIds2 = new long[100];
-
-    //         // add 50 projects to user1
-    //         for (int i = 0; i < 50; i++) {
-    //             String projectname = "test project " + i;
-    //             response = createProject( projectname, userId1);
-    //             HttpEntity entity = response.getEntity();
-    //             String strResponse = EntityUtils.toString(entity);
-    //             projectIds1[i] = Long.parseLong(getIdFromStringResponse(strResponse));
-    //             status = response.getStatusLine().getStatusCode();
-    //             Assert.assertEquals(201, status);
-    //             String return_projectname = getProjectnameFromResponse(strResponse);
-    //             Assert.assertEquals(projectname, return_projectname);
-    //             EntityUtils.consume(response.getEntity());
-    //             response.close();
-    //         }
-
-    //         // add 50 projects to user2
-    //         for (int i = 50; i < 100; i++) {
-    //             String projectname = "test project " + i;
-    //             response = createProject( projectname, userId2);
-    //             HttpEntity entity = response.getEntity();
-    //             String strResponse = EntityUtils.toString(entity);
-    //             projectIds2[i] = Long.parseLong(getIdFromStringResponse(strResponse));
-    //             status = response.getStatusLine().getStatusCode();
-    //             Assert.assertEquals(201, status);
-    //             String return_projectname = getProjectnameFromResponse(strResponse);
-    //             Assert.assertEquals(projectname, return_projectname);
-    //             EntityUtils.consume(response.getEntity());
-    //             response.close();
-    //         }
-
-    //         // get projects of user1
-    //         for (int i = 0; i < 50; i++) {
-    //             String projectname = "test project " + i;
-    //             response = getProject(userId1, projectIds1[i]);
-    //             status = response.getStatusLine().getStatusCode();
-    //             Assert.assertEquals(200, status);
-    //             String return_projectname = getProjectnameFromResponse(response);
-    //             Assert.assertEquals(projectname, return_projectname);
-    //             EntityUtils.consume(response.getEntity());
-    //             response.close();
-    //         }
-
-    //         // get projects of user1
-    //         for (int i = 50; i < 100; i++) {
-    //             String projectname = "test project " + i;
-    //             response = getProject(userId2, projectIds2[i]);
-    //             status = response.getStatusLine().getStatusCode();
-    //             Assert.assertEquals(200, status);
-    //             String return_projectname = getProjectnameFromResponse(response);
-    //             Assert.assertEquals(projectname, return_projectname);
-    //             EntityUtils.consume(response.getEntity());
-    //             response.close();
-    //         }
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
-    // @Test
-    // // When deleting a project, if the userId or projectId isn't Long (int64) type
-    // // the server should report bad request (400)
-    // public void deleteProjectBadRequestTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+     @Test
+     // When adding a project with valid parameter, the server should return 201 and the correct project body
+     public void addManyValidProjectToManyUsersTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //     try {
-    //         // deleteProject with string userId
-    //         HttpDelete httpRequest = new HttpDelete(baseUrl + "/users/" + "astring" + "/projects/" + 222);
-    //         httpRequest.addHeader("accept", "application/json");
+         try {
+             // create user1
+             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+             long userId1 = getIdFromResponse(response);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         CloseableHttpResponse response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+             // create user2
+             response = createUser("Jane", "Doe", "jane@doe.com");
+             long userId2 = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             long[] projectIds1 = new long[50];
+             long[] projectIds2 = new long[100];
 
-    //         // deleteProject with string projectId
-    //         httpRequest = new HttpDelete(baseUrl + "/users/" + 222 + "/projects/" + "()-+=");
-    //         httpRequest.addHeader("accept", "application/json");
+             // add 50 projects to user1
+             for (int i = 0; i < 50; i++) {
+                 String projectname = "test project " + i;
+                 response = createProject( projectname, userId1);
+                 HttpEntity entity = response.getEntity();
+                 String strResponse = EntityUtils.toString(entity);
+                 projectIds1[i] = Long.parseLong(getIdFromStringResponse(strResponse));
+                 status = response.getStatusLine().getStatusCode();
+                 Assert.assertEquals(201, status);
+                 String return_projectname = getProjectnameFromResponse(strResponse);
+                 Assert.assertEquals(projectname, return_projectname);
+                 EntityUtils.consume(response.getEntity());
+                 response.close();
+             }
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+             // add 50 projects to user2
+             for (int i = 50; i < 100; i++) {
+                 String projectname = "test project " + i;
+                 response = createProject( projectname, userId2);
+                 HttpEntity entity = response.getEntity();
+                 String strResponse = EntityUtils.toString(entity);
+                 projectIds2[i] = Long.parseLong(getIdFromStringResponse(strResponse));
+                 status = response.getStatusLine().getStatusCode();
+                 Assert.assertEquals(201, status);
+                 String return_projectname = getProjectnameFromResponse(strResponse);
+                 Assert.assertEquals(projectname, return_projectname);
+                 EntityUtils.consume(response.getEntity());
+                 response.close();
+             }
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+//             // get projects of user1
+//             for (int i = 0; i < 50; i++) {
+//                 String projectname = "test project " + i;
+//                 response = getProject(userId1, projectIds1[i]);
+//                 status = response.getStatusLine().getStatusCode();
+//                 Assert.assertEquals(200, status);
+//                 String return_projectname = getProjectnameFromResponse(response);
+//                 Assert.assertEquals(projectname, return_projectname);
+//                 EntityUtils.consume(response.getEntity());
+//                 response.close();
+//             }
+//
+//             // get projects of user1
+//             for (int i = 50; i < 100; i++) {
+//                 String projectname = "test project " + i;
+//                 response = getProject(userId2, projectIds2[i]);
+//                 status = response.getStatusLine().getStatusCode();
+//                 Assert.assertEquals(200, status);
+//                 String return_projectname = getProjectnameFromResponse(response);
+//                 Assert.assertEquals(projectname, return_projectname);
+//                 EntityUtils.consume(response.getEntity());
+//                 response.close();
+//             }
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-
-    // @Test
-    // // When deleting a project that is not found in the DB, the server should report user or project not found (404)
-    // public void deleteProjectNotFoundTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         // delete on an empty DB
-    //         CloseableHttpResponse response = deleteProject(111, 222);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // delete on DB with user of no project
-    //         response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         response = deleteProject(userId, 222);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // delete with non-existing projectId
-    //         response = createProject("test project", userId);
-    //         long projectId = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         response = deleteProject(userId, projectId+1);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // delete with non-existing userId
-    //         response = deleteProject(userId+1, projectId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
-    // @Test
-    // // When adding a project with valid parameter, the server should return 201 and the correct project body
-    // public void deleteValidProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+     @Test
+     // When deleting a project, if the userId or projectId isn't Long (int64) type
+     // the server should report bad request (400)
+     public void deleteProjectBadRequestTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //     try {
-    //         // create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+         try {
+             // deleteProject with string userId
+             HttpDelete httpRequest = new HttpDelete(baseUrl + "/users/" + "astring" + "/projects/" + 222);
+             httpRequest.addHeader("accept", "application/json");
 
-    //         // create a project
-    //         response = createProject( "test project", userId);
-    //         HttpEntity entity = response.getEntity();
-    //         String strResponse = EntityUtils.toString(entity);
-    //         long projectId = Long.parseLong(getIdFromStringResponse(strResponse));
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         String projectname = getProjectnameFromResponse(strResponse);
-    //         Assert.assertEquals("test project", projectname);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             CloseableHttpResponse response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
 
-    //         // get project by id to make sure the addProject operation successes
-    //         response = getProject(userId, projectId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         projectname = getProjectnameFromResponse(response);
-    //         Assert.assertEquals("test project", projectname);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // delete the project
-    //         response = deleteProject(userId, projectId);
-    //          entity = response.getEntity();
-    //          strResponse = EntityUtils.toString(entity);
-    //         long returned_projectId = Long.parseLong(getIdFromStringResponse(strResponse));
-    //         Assert.assertEquals(returned_projectId, projectId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         projectname = getProjectnameFromResponse(strResponse);
-    //         Assert.assertEquals("test project", projectname);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             // deleteProject with string projectId
+             httpRequest = new HttpDelete(baseUrl + "/users/" + 222 + "/projects/" + "()-+=");
+             httpRequest.addHeader("accept", "application/json");
 
-    //         // confirm the deletion success on the server side
-    //         response = getProject(userId, projectId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+         } finally {
+             httpclient.close();
+         }
+     }
+
+
+     @Test
+     // When deleting a project that is not found in the DB, the server should report user or project not found (404)
+     public void deleteProjectNotFoundTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try {
+             // delete on an empty DB
+             CloseableHttpResponse response = deleteProject(111, 222);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // delete on DB with user of no project
+             response = createUser("John", "Doe", "john@doe.org");
+             long userId = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             response = deleteProject(userId, 222);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // delete with non-existing projectId
+             response = createProject("test project", userId);
+             long projectId = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             response = deleteProject(userId, projectId+1);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // delete with non-existing userId
+             response = deleteProject(userId+1, projectId);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+         } finally {
+             httpclient.close();
+         }
+     }
+
+
+     @Test
+     // When adding a project with valid parameter, the server should return 201 and the correct project body
+     public void deleteValidProjectTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try {
+             // create a user
+             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+             long userId = getIdFromResponse(response);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // create a project
+             response = createProject( "test project", userId);
+             HttpEntity entity = response.getEntity();
+             String strResponse = EntityUtils.toString(entity);
+             long projectId = Long.parseLong(getIdFromStringResponse(strResponse));
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             String projectname = getProjectnameFromResponse(strResponse);
+             Assert.assertEquals("test project", projectname);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // get project by id to make sure the addProject operation successes
+             response = getProject(userId, projectId);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(200, status);
+             projectname = getProjectnameFromResponse(response);
+             Assert.assertEquals("test project", projectname);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // delete the project
+             response = deleteProject(userId, projectId);
+              entity = response.getEntity();
+              strResponse = EntityUtils.toString(entity);
+             long returned_projectId = Long.parseLong(getIdFromStringResponse(strResponse));
+             Assert.assertEquals(returned_projectId, projectId);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(200, status);
+             projectname = getProjectnameFromResponse(strResponse);
+             Assert.assertEquals("test project", projectname);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // confirm the deletion success on the server side
+             response = getProject(userId, projectId);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
     // @Test
