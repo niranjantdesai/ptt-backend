@@ -922,190 +922,196 @@ public class BackendTestsBackend3 {
 
     // // ------------------------------  Projects test ----------------------------------
 
-    // @Test
-    // public void createProjectSuccessTest() throws Exception{
-    //     System.out.println("----- Start testing successful project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void createProjectSuccessTest() throws Exception{
+         System.out.println("----- Start testing successful project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
 
-    //         // Create project
-    //         response = createProject(userId, "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         // Get server-side generated id
-    //         String id = getIdFromStringResponse(strResponse);
-    //         // Expected response body
-    //         String expectedJson = "{\"id\":\"" + id + "\",\"projectname\":\"Project-1\",\"userId\":\"" + userId + "\"}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             // Create project
+             response = createProject(userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 201){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             // Get server-side generated id
+             String id = getIdFromStringResponse(strResponse);
+             // Expected response body
+             String expectedJson = "{\"id\":" + id + ",\"projectname\":\"Project-1\",\"userId\":" + userId + "}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // Delete created project and user
-    //         response = deleteProject(userId, id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // Delete created project and user
+             response = deleteProject(userId, id);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void createProjectBadUserIDTest() throws Exception{
-    //     System.out.println("----- Start testing successful project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){ entity = response.getEntity(); }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void createProjectBadUserIDTest() throws Exception{
+         System.out.println("----- Start testing successful project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){ entity = response.getEntity(); }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject("badUserID", "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 400){
-    //             System.out.println("----- Pass createProjectBadUserID test -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         response.close();
-    //         // Delete created project and user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // Create project
+             response = createProject("badUserID", "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 400){
+                 System.out.println("----- Pass createProjectBadUserID test -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             response.close();
+             // Delete created project and user
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void createProjectBadBodyTest() throws Exception{
-    //     System.out.println("----- Start testing 404 project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){ entity = response.getEntity(); }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void createProjectBadBodyTest() throws Exception{
+         System.out.println("----- Start testing 404 project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){ entity = response.getEntity(); }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createBadProject("Project-1", userId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 404){
-    //             System.out.println("----- Pass createProjectBadBody test -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         response.close();
-    //         String id = getIdFromResponse(response);
-    //         // Delete created project and user
-    //         response = deleteProject(userId ,id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // Create project
+             response = createBadProject("Project-1", userId);
+             status = response.getStatusLine().getStatusCode();
+             //baseUrl + "/users/"+userId +"", this end point doesn't have a POST method, it should return 400 Bad Request
+             if(status == 400){
+                 System.out.println("----- Pass createProjectBadBody test -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             response.close();
+//             String id = getIdFromResponse(response);
+//             // Delete created project and user
+//             response = deleteProject(userId ,id);
+//             EntityUtils.consume(response.getEntity());
+//             response.close();
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void createProjectMissUserIdTest() throws Exception{
-    //     System.out.println("----- Start testing 404 project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){ entity = response.getEntity(); }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void createProjectMissUserIdTest() throws Exception{
+         System.out.println("----- Start testing 404 project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){ entity = response.getEntity(); }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject( userId+"1", "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 404){
-    //             System.out.println("----- Pass createProjectMissUserID test -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         response.close();
-    //         // Delete created project and user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // Create project
+             response = createProject( userId+"1", "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 404){
+                 System.out.println("----- Pass createProjectMissUserID test -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             response.close();
+             // Delete created project and user
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void createProjectExistedTest() throws Exception{
-    //     System.out.println("----- Start testing 409 project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){ entity = response.getEntity(); }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void createProjectExistedTest() throws Exception{
+         System.out.println("----- Start testing 409 project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){ entity = response.getEntity(); }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject(userId, "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 201){
-    //             System.out.println("----- In createProjectExist test  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         response.close();
+             // Create project
+             response = createProject(userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 201){
+                 System.out.println("----- In createProjectExist test  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             response.close();
 
-    //         response = createProject("Project-1", userId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 409){
-    //             System.out.println("----- Pass createProjectExist test -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String id = getIdFromResponse(response);
-    //         // Delete created project and user
-    //         response = deleteProject(userId ,id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             response = createProject(userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 409){
+                 System.out.println("----- Pass createProjectExist test -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+//             String id = getIdFromResponse(response);
+//             // Delete created project and user
+//             response = deleteProject(userId ,id);
+//             EntityUtils.consume(response.getEntity());
+//             response.close();
+             // Delete created project and user
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
     // @Test
     // public void getProjectTest() throws Exception{
@@ -1751,240 +1757,245 @@ public class BackendTestsBackend3 {
     // }
 
 
-    // @Test
-    // public void deleteProjectSuccessTest() throws Exception{
-    //     System.out.println("----- Start testing successful project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void deleteProjectSuccessTest() throws Exception{
+         System.out.println("----- Start testing successful project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject( userId, "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 201){
-    //             System.out.println("----- In putProject test  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+             // Create project
+             response = createProject( userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 201){
+                 System.out.println("----- In putProject test  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             String id = getIdFromResponse(response);
+             response.close();
 
-    //         // delete project
-    //         response = deleteProject(userId, id);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 200){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"id\":\"" + id + "\",\"projectname\":\"Project-1\",\"userId\":\"" + userId + "\"}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         // Delete created project and user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // delete project
+             response = deleteProject(userId, id);
+             status = response.getStatusLine().getStatusCode();
+             if(status == 200){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             // Expected response body
+             String expectedJson = "{\"id\":" + id + ",\"projectname\":\"Project-1\",\"userId\":" + userId + "}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+             // Delete created project and user
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void deleteProjectBadUserIdTest() throws Exception{
-    //     System.out.println("----- Start testing successful project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void deleteProjectBadUserIdTest() throws Exception{
+         System.out.println("----- Start testing successful project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject( userId, "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 201){
-    //             System.out.println("----- In putProject test  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+             // Create project
+             response = createProject(userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 201){
+                 System.out.println("----- In putProject test  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             String id = getIdFromResponse(response);
+             response.close();
 
-    //         // delete project
-    //         response = deleteProject("badUserId", id);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 400){
-    //             System.out.println("----- pass deleteProjectBadUserIdTest  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         // Delete created project and user
-    //         response = deleteProject(userId, id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // delete project
+             response = deleteProject("badUserId", id);
+             status = response.getStatusLine().getStatusCode();
+             if(status == 400){
+                 System.out.println("----- pass deleteProjectBadUserIdTest  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             // Delete created project and user
+             response = deleteProject(userId, id);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void deleteProjectBadProjectIdTest() throws Exception{
-    //     System.out.println("----- Start testing successful project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void deleteProjectBadProjectIdTest() throws Exception{
+         System.out.println("----- Start testing successful project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject( userId, "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 201){
-    //             System.out.println("----- In putProject test  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+             // Create project
+             response = createProject( userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 201){
+                 System.out.println("----- In putProject test  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             String id = getIdFromResponse(response);
+             response.close();
 
-    //         // delete project
-    //         response = deleteProject(userId, "badProjectId");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 400){
-    //             System.out.println("----- pass deleteProjectBadProjectIdTest  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         // Delete created project and user
-    //         response = deleteProject(userId, id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // delete project
+             response = deleteProject(userId, "badProjectId");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 400){
+                 System.out.println("----- pass deleteProjectBadProjectIdTest  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             // Delete created project and user
+             response = deleteProject(userId, id);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void deleteProjectMissProjectIdTest() throws Exception{
-    //     System.out.println("----- Start testing successful project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void deleteProjectMissProjectIdTest() throws Exception{
+         System.out.println("----- Start testing successful project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject( userId, "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 201){
-    //             System.out.println("----- In putProject test  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+             // Create project
+             response = createProject( userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 201){
+                 System.out.println("----- In putProject test  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             String id = getIdFromResponse(response);
+             response.close();
 
-    //         // delete project
-    //         response = deleteProject(userId, id+"1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 404){
-    //             System.out.println("----- pass deleteProjectMissProjectIdTest  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         // Delete created project and user
-    //         response = deleteProject(userId, id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // delete project
+             response = deleteProject(userId, id+"1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 404){
+                 System.out.println("----- pass deleteProjectMissProjectIdTest  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             // Delete created project and user
+             response = deleteProject(userId, id);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void deleteProjectMissUserIdTest() throws Exception{
-    //     System.out.println("----- Start testing successful project POST -----");
-    //     try{
-    //         // Create user
-    //         CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         String userId = getIdFromResponse(response);
+     @Test
+     public void deleteProjectMissUserIdTest() throws Exception{
+         System.out.println("----- Start testing successful project POST -----");
+         try{
+             // Create user
+             CloseableHttpResponse response = createUser("Logan", "Superman", "logansuperman@xxx.com");
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if(status == 201){
+                 entity = response.getEntity();
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         // Create project
-    //         response = createProject( userId, "Project-1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 201){
-    //             System.out.println("----- In putProject test  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+             // Create project
+             response = createProject( userId, "Project-1");
+             status = response.getStatusLine().getStatusCode();
+             if(status == 201){
+                 System.out.println("----- In putProject test  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             String id = getIdFromResponse(response);
+             response.close();
 
-    //         // delete project
-    //         response = deleteProject(userId+"1", id);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if(status == 404){
-    //             System.out.println("----- pass deleteProjectMissUserIdTest  -----");
-    //         }
-    //         else throw new ClientProtocolException("Unexpected response status: " + status);
-    //         // Convert response body to string (in purpose of comparing)
-    //         // Delete created project and user
-    //         response = deleteProject(userId, id);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // delete project
+             response = deleteProject(userId+"1", id);
+             status = response.getStatusLine().getStatusCode();
+             if(status == 404){
+                 System.out.println("----- pass deleteProjectMissUserIdTest  -----");
+             }
+             else throw new ClientProtocolException("Unexpected response status: " + status);
+             // Convert response body to string (in purpose of comparing)
+             // Delete created project and user
+             response = deleteProject(userId, id);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+             response = deleteUser(userId);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
 
 
