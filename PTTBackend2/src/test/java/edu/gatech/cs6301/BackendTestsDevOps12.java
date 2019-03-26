@@ -326,44 +326,47 @@ public class BackendTestsDevOps12 {
    }
 //
 //
-//    // PUT /users/{userId} by Lee Sun
-//    // Case 1: Successful modification of single user
-//    @Test
-//    public void putUsersSuccessTest() throws Exception {
-//        try {
-//            CloseableHttpResponse response = addUser("putUser", "One", "pusr1@example.com");
-//            String userId = getIdFromResponse(response);
-//            response.close();
-//
-//            response = updateUser(userId, "putUserMod", "OneMod", "pusr1Mod@example.com");
-//            userId = getIdFromResponse(response);
-//            response.close();
-//
-//            // Check response code
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 200) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status + " while it should be 200");
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//
-//            String id = getIdFromStringResponse(strResponse);
-//
-//            // Check modified user content
-//            String expectedJson = "{\"id\":\"" + id + "\",\"firstname\":\"putUserMod\",\"lastname\":\"OneMod\",\"email\":\"pusr1@example.com\"}";
-//            JSONAssert.assertEquals(expectedJson,strResponse, false);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
-//
-//            response = deleteUser(userId);
-//            response.close();
-//
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
+   // PUT /users/{userId} by Lee Sun
+   // Case 1: Successful modification of single user
+   @Test
+   public void putUsersSuccessTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       try {
+           
+           deleteAllUsers();
+           CloseableHttpResponse response = addUser("putUser", "One", "pusr1@example.com");
+           String userId = getIdFromResponse(response);
+           response.close();
+
+           response = updateUser(userId, "putUserMod", "OneMod", "pusr1Mod@example.com");
+           userId = getIdFromResponse(response);
+           String strResponse;
+
+           // Check response code
+           int status = response.getStatusLine().getStatusCode();
+           HttpEntity entity;
+           if (status == 200) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status + " while it should be 200");
+           }
+           strResponse = EntityUtils.toString(entity);
+
+           String id = getIdFromStringResponse(strResponse);
+
+           // Check modified user content
+           String expectedJson = "{\"id\":" + id + ",\"firstName\":\"putUserMod\",\"lastName\":\"OneMod\",\"email\":\"pusr1@example.com\"}";
+           JSONAssert.assertEquals(expectedJson,strResponse, false);
+           EntityUtils.consume(response.getEntity());
+           response.close();
+
+           //response = deleteUser(userId);
+           //response.close();
+
+       } finally {
+           httpclient.close();
+       }
+   }
 //
 //    // PUT /users/{userId} by Lee Sun
 //    // Case 2: Successful modification of single user when multiple users are added

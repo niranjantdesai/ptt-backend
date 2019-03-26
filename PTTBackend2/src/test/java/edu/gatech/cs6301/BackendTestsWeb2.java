@@ -108,78 +108,78 @@ public class BackendTestsWeb2 {
         }
     }
 
-    // private void PUTTest(String id, Map<String, Object> inputBody, int expectedStatus, Map<String, Object> expectedResponse, boolean strict) throws Exception{
-    //     CloseableHttpResponse response  = updateUser(id, inputBody);
-    //     int status = response.getStatusLine().getStatusCode();
+    private void PUTTest(String id, Map<String, Object> inputBody, int expectedStatus, Map<String, Object> expectedResponse, boolean strict) throws Exception{
+        CloseableHttpResponse response  = updateUser(id, inputBody);
+        int status = response.getStatusLine().getStatusCode();
 
-    //     if (status == expectedStatus) {
-    //         HttpEntity entity = response.getEntity();
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         if (expectedStatus != 200){
-    //             if (!"".equals(strResponse)){
-    //                 throw new ClientProtocolException("Unexpected response body: " + strResponse);
-    //             }
-    //         }else{
-    //             JSONObject json = new JSONObject(expectedResponse);
-    //             JSONAssert.assertEquals(json.toString() ,strResponse, strict);
-    //         }   
+        if (status == expectedStatus) {
+            HttpEntity entity = response.getEntity();
+            String strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            if (expectedStatus != 200){
+                if (!"".equals(strResponse)){
+                    throw new ClientProtocolException("Unexpected response body: " + strResponse);
+                }
+            }else{
+                JSONObject json = new JSONObject(expectedResponse);
+                JSONAssert.assertEquals(json.toString() ,strResponse, strict);
+            }   
 
-    //     } else {
-    //         throw new ClientProtocolException("Unexpected response status: " + status);
-    //     }
+        } else {
+            throw new ClientProtocolException("Unexpected response status: " + status);
+        }
 
-    //     EntityUtils.consume(response.getEntity());
-    //     response.close();
-    // }
+        EntityUtils.consume(response.getEntity());
+        response.close();
+    }
 
 
-    // @Test
-    // public void updateUserTest() throws Exception {
-    //     deleteUsers();
+    @Test
+    public void updateUserTest() throws Exception {
+        deleteUsers();
 
-    //     try {
-    //         //Create User
-    //         Map<String, Object> inputBody = new HashMap<String, Object>();
-    //         inputBody.put("firstName", "John");
-    //         inputBody.put("lastName", "Doe");
-    //         inputBody.put("email", "john@doe.org");
+        try {
+            //Create User
+            Map<String, Object> inputBody = new HashMap<String, Object>();
+            inputBody.put("firstName", "John");
+            inputBody.put("lastName", "Doe");
+            inputBody.put("email", "john@doe.org");
 
-    //         CloseableHttpResponse response = createUser(inputBody);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+            CloseableHttpResponse response = createUser(inputBody);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // PUT //Covered usercases 2
-    //         inputBody.put("firstName", "Tom");
-    //         Map<String, Object> expectedResponse = new HashMap<String, Object>(inputBody);
-    //         inputBody.put("id", "0");
-    //         expectedResponse.put("id", id);
-    //         PUTTest(id, inputBody, 200, expectedResponse, false);
+            // PUT //Covered usercases 2
+            inputBody.put("firstName", "Tom");
+            Map<String, Object> expectedResponse = new HashMap<String, Object>(inputBody);
+            inputBody.put("id", "0");
+            expectedResponse.put("id", id);
+            PUTTest(id, inputBody, 200, expectedResponse, false);
 
-    //         // PUT Id doesn't exist
-    //         expectedResponse = new HashMap<String, Object>();
-    //         PUTTest(id + "1", inputBody, 404, expectedResponse, false);
+            // PUT Id doesn't exist
+            expectedResponse = new HashMap<String, Object>();
+            PUTTest(id + "1", inputBody, 404, expectedResponse, false);
 
-    //         //PUT Invalid Input
-    //         inputBody = new HashMap<String, Object>();
-    //         inputBody.put("firstName", "John");
-    //         PUTTest(id, inputBody, 400, expectedResponse, false);
+            //PUT Invalid Input
+            inputBody = new HashMap<String, Object>();
+            inputBody.put("firstName", "John");
+            PUTTest(id, inputBody, 400, expectedResponse, false);
 
-    //         //PUT modify email: 
-    //         //  User story say we only want to be able to edit user's first and last name.
-    //         //  Don't know it it will throw an error or just ignore it if we try to modify it.
-    //         //  I assumed that it will throw an error.
-    //         inputBody = new HashMap<String, Object>();
-    //         inputBody.put("firstName", "Tom");
-    //         inputBody.put("lastName", "Doe");
-    //         inputBody.put("email", "tom@doe.org");
-    //         inputBody.put("id", "0");
-    //         PUTTest(id, inputBody, 400, expectedResponse, false);
+            //PUT modify email: 
+            //  User story say we only want to be able to edit user's first and last name.
+            //  Don't know it it will throw an error or just ignore it if we try to modify it.
+            //  I assumed that it will throw an error.
+            inputBody = new HashMap<String, Object>();
+            inputBody.put("firstName", "Tom");
+            inputBody.put("lastName", "Doe");
+            inputBody.put("email", "john@doe.org");
+            inputBody.put("id", "0");
+            PUTTest(id, inputBody, 400, expectedResponse, false);
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
     private void GETTest(String id, int expectedStatus, Map<String, Object> expectedResponse, boolean strict) throws Exception{
         CloseableHttpResponse response  = getUser(id);
