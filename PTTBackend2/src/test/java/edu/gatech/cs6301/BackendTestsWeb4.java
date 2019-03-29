@@ -2184,82 +2184,82 @@ public class BackendTestsWeb4 {
     //     }
     // }
 
-    // //TESTS FOR UPDATE USER
-    // @Test
-    // //update the user with the userId isn't a long int, the server should return code 400 and no body
-    // public void updateUserBadUserIdFormat() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         // create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+    //TESTS FOR UPDATE USER
+    @Test
+    //update the user with the userId isn't a long int, the server should return code 400 and no body
+    public void updateUserBadUserIdFormatTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            // create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //update the user with the userId isn't a long int
-    //         HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + "astring");
-    //         httpRequest.addHeader("accept", "application/json");
+            //update the user with the userId isn't a long int
+            HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + "astring");
+            httpRequest.addHeader("accept", "application/json");
 
-    //         //add body content sent to server
-    //         StringEntity input = new StringEntity("{\"id\":\"" + "astring" + "\"," +
-    //                 "\"firstName\":\"" + "John" + "\"," + "\"lastName\":\"" + "Lee" + "\"," +
-    //                 "\"email\":\"" + "john@doe.org" + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+            //add body content sent to server
+            StringEntity input = new StringEntity("{\"id\":\"" + "astring" + "\"," +
+                    "\"firstName\":\"" + "John" + "\"," + "\"lastName\":\"" + "Lee" + "\"," +
+                    "\"email\":\"" + "john@doe.org" + "\"}");
+            input.setContentType("application/json");
+            httpRequest.setEntity(input);
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+            System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+            response = httpclient.execute(httpRequest);
+            System.out.println("*** Raw response " + response + "***");
 
-    //         //verify if server returns 400 and no body
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            //verify if server returns 400 and no body
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //userId in request is not 64 bits long
-    //         httpRequest = new HttpPut(baseUrl + "/users/" + "()-+=");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+            //userId in request is not 64 bits long
+            httpRequest = new HttpPut(baseUrl + "/users/" + "()-+=");
+            httpRequest.addHeader("accept", "application/json");
+            System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+            response = httpclient.execute(httpRequest);
+            System.out.println("*** Raw response " + response + "***");
 
-    //         //add body content sent to server
-    //         input = new StringEntity("{\"id\":\"" + "()-+=" + "\"," +
-    //                 "\"firstName\":\"" + "John" + "\"," + "\"lastName\":\"" + "Lee" + "\"," +
-    //                 "\"email\":\"" + "john@doe.org" + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+            //add body content sent to server
+            input = new StringEntity("{\"id\":\"" + "()-+=" + "\"," +
+                    "\"firstName\":\"" + "John" + "\"," + "\"lastName\":\"" + "Lee" + "\"," +
+                    "\"email\":\"" + "john@doe.org" + "\"}");
+            input.setContentType("application/json");
+            httpRequest.setEntity(input);
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // //when update a user, if the userId doesn’t exist, the server should report request(404)
-    // public void updateUserNotFound() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response = updateUser(999, "shuangke", "lastName", "Shuangke@gmail.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+    @Test
+    //when update a user, if the userId doesn’t exist, the server should report request(404)
+    public void updateUserNotFoundTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response = updateUser(999, "shuangke", "lastName", "Shuangke@gmail.com");
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // @Test
     // //update user with firstname exceed 1024 characters
@@ -2292,7 +2292,7 @@ public class BackendTestsWeb4 {
 
     // @Test
     // //update user with lastname exceed 1024 characters
-    // public void updateUserWithInvalidLastName() throws Exception {
+    // public void updateUserWithInvalidLastNameTest() throws Exception {
     //     httpclient = HttpClients.createDefault();
     //     deleteUsers();
     //     try {
@@ -2319,88 +2319,89 @@ public class BackendTestsWeb4 {
     //     }
     // }
 
-    // @Test
-    // //Update multiple users
-    // public void updateMultipleUsers() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         //create user1
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+    @Test
+    //Update multiple users
+    public void updateMultipleUsersTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            //create user1
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId1 = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //create user2
-    //         response = createUser("Shuangke", "Li", "shuangke@.org");
-    //         long userId2 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //create user2
+            response = createUser("Shuangke", "Li", "shuangke@.org");
+            long userId2 = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //update user1
-    //         response = updateUser(userId1, "David", "Doe", "john@doe.org");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         String returnedBody1 = EntityUtils.toString(response.getEntity());
+            //update user1
+            response = updateUser(userId1, "David", "Doe", "john@doe.org");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(200, status);
+            String returnedBody1 = EntityUtils.toString(response.getEntity());
 
-    //         //check if server returns the expected body
-    //         String expectedBody1 = "{\"id\":" + userId1 + ",\"firstName\":\"David\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
-    //         JSONAssert.assertEquals(expectedBody1,returnedBody1, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //check if server returns the expected body
+            String expectedBody1 = "{\"id\":" + userId1 + ",\"firstName\":\"David\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
+            JSONAssert.assertEquals(expectedBody1,returnedBody1, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //update user2
-    //         response = updateUser(userId2, "Shuangke", "Zhang", "shuangke@.org");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         String returnedBody2 = EntityUtils.toString(response.getEntity());
+            //update user2
+            response = updateUser(userId2, "Shuangke", "Zhang", "shuangke@.org");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(200, status);
+            String returnedBody2 = EntityUtils.toString(response.getEntity());
 
-    //         //check if server returns the expected body
-    //         String expectedBody2 = "{\"id\":" + userId2 + ",\"firstName\":\"Shuangke\",\"lastName\":\"Zhang\",\"email\":\"shuangke@.org\"}";
-    //         JSONAssert.assertEquals(expectedBody2,returnedBody2, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //check if server returns the expected body
+            String expectedBody2 = "{\"id\":" + userId2 + ",\"firstName\":\"Shuangke\",\"lastName\":\"Zhang\",\"email\":\"shuangke@.org\"}";
+            JSONAssert.assertEquals(expectedBody2,returnedBody2, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // //Update user successfully
-    // public void updateUserSuccessful() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    //Update user successfully
+    public void updateUserSuccessfulTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     try {
-    //         //create user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try {
+            //create user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId1 = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //update user
-    //         response = updateUser(userId1, "David", "Doe", "john@doe.org");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         String returnedBody1 = EntityUtils.toString(response.getEntity());
+            //update user
+            response = updateUser(userId1, "David", "Doe", "john@doe.org");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(200, status);
+            String returnedBody1 = EntityUtils.toString(response.getEntity());
 
-    //         //check if server returns the expected body
-    //         String expectedBody1 = "{\"id\":" + userId1 + ",\"firstName\":\"David\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
-    //         JSONAssert.assertEquals(expectedBody1, returnedBody1, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //check if server returns the expected body
+            String expectedBody1 = "{\"id\":" + userId1 + ",\"firstName\":\"David\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
+            JSONAssert.assertEquals(expectedBody1, returnedBody1, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
+
     // //TESTS FOR RETURNING ALL PROJECTS OWNED BY A GIVEN USER
     // @Test
     // //return all projects associated with a given user, userId not found

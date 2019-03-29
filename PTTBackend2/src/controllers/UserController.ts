@@ -8,7 +8,7 @@ export class UserController {
     User: mongoose.Model<mongoose.Document> = mongoose.model('User', UserSchema);
     counterController = new IDCounterController();
     schemaKeys = ["id", "firstName", "lastName", "email"];
-    updateableKeys = ["firstName", "lastName"]; // TODO: add email over here
+    updateableKeys = ["firstName", "lastName"];
 
     constructor() {mongoose.set('useFindAndModify', false);}
 

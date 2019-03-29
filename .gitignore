@@ -5,6 +5,10 @@ bin/
 .vscode/
 .gradle/
 .project
+.classpath
+.settings/
+.DS_Store
+
 PTTBackend2/.classpath
 PTTBackend2/.settings/org.eclipse.buildship.core.prefs
 .classpath

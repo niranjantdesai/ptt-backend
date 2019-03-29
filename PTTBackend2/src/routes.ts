@@ -61,6 +61,15 @@ routes.route(`${baseUrl}/users/:userId`)
 })
 
 routes.route(`${baseUrl}/users/:userId/projects`)
+.get((req, res) => {
+    projectController.getAllProjects()
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
+    .catch(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    });
+})
 .post((req, res) => {
     projectController.addProject(req.params["userId"], req.body)
     .then(obj => {

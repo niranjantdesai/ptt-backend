@@ -59,51 +59,51 @@ public class BackendTestsBackend2 {
 
     // *** YOU SHOULD NOT NEED TO CHANGE ANYTHING ABOVE THIS LINE ***
 
-    //done by Weihua
-    // @Test
-    // public void getAllUsersTest200() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     String id = null;
-    //     String expectedJson = "";
+    // done by Weihua
+    @Test
+    public void getAllUsersTest200() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        String id = null;
+        String expectedJson = "";
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         // EntityUtils.consume(response.getEntity());
-    //         id = getIdFromResponse(response);
-    //         expectedJson += "[{\"id\":" + id
-    //                 + ",\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"john@doe.org\"}";
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            // EntityUtils.consume(response.getEntity());
+            id = Long.toString(getIdFromResponse(response));
+            expectedJson += "[{\"id\":" + id
+                    + ",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
+            response.close();
 
-    //         response = createUser("Jane", "Wall", "jane@wall.com");
-    //         // EntityUtils.consume(response.getEntity());
-    //         id = getIdFromResponse(response);
-    //         expectedJson += ",{\"id\":" + id
-    //                 + ",\"firstname\":\"Jane\",\"lastname\":\"Wall\",\"email\":\"jane@wall.com\"}]";
-    //         response.close();
+            response = createUser("Jane", "Wall", "jane@wall.com");
+            // EntityUtils.consume(response.getEntity());
+            id = Long.toString(getIdFromResponse(response));
+            expectedJson += ",{\"id\":" + id
+                    + ",\"firstName\":\"Jane\",\"lastName\":\"Wall\",\"email\":\"jane@wall.com\"}]";
+            response.close();
 
-    //         response = getAllUsers();
+            response = getAllUsers();
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println(
-    //                 "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // done by Haamid
     @Test
@@ -328,69 +328,41 @@ public class BackendTestsBackend2 {
         }
     }
 
-    // // done by Haamid
-    // @Test
-    // public void updateUserTest200() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    // done by Haamid
+    @Test
+    public void updateUserTest200() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String id = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         response = updateUser(id, "Tom", "Doe", "tom@doe.org");
+            response = updateUser(id, "Tom", "Doe", "tom@doe.org");
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since firstname and email were asked to be updated");
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since firstname and email were asked to be updated");
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println(
-    //                 "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         String expectedJson = "{\"id\":\"" + id
-    //                 + "\",\"firstName\":\"Tom\",\"lastName\":\"Doe\",\"email\":\"tom@doe.org\"}";
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // // done by Haamid
-    // @Test
-    // public void updateUserTest400() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String id = getIdFromResponse(response);
-    //         response.close();
-
-    //         response = updateUserIncorrect(id, "Tom", "Doe", "tom@doe.org");
-
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if (status == 400) {
-    //             System.out.println(
-    //                 "*** Correct! Expected response status: 400 since an invalid attribute (noname) was asked to be updated.***");
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a \"noname\" atribute was asked to be updated which does not exist in the user model");
-    //         }
-
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            String expectedJson = "{\"id\":" + id
+                    + ",\"firstName\":\"Tom\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // done by Haamid
     @Test
