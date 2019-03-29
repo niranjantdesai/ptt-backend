@@ -15,7 +15,7 @@ export class ProjectController {
         mongoose.set('useFindAndModify', false);
     }
 
-    public getAllProjects() {
+    public getAllProjects(userId: string): promise<ProjectResultInterface> {
         return new promise <ProjectResultInterface> ((resolve, reject) => {
             
         });
@@ -176,6 +176,19 @@ export class ProjectController {
 
     public updateProject(userId: string, projectId: string, updatedProject: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
+
+        });
+    }
+
+    public addSession(userId: string, projectId: string, newSession: JSON): promise<ProjectResultInterface> {
+        return new promise<ProjectResultInterface> ((resolve, reject) => {
+
+        });
+    }
+
+    public updateSession(userId: string, projectId: string, sessionId: string, updatedSession: JSON): promise<ProjectResultInterface> {
+        return new promise<ProjectResultInterface> ((resolve, reject) => {
+
         });
     }
 
