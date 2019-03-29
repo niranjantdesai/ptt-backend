@@ -62,7 +62,7 @@ routes.route(`${baseUrl}/users/:userId`)
 
 routes.route(`${baseUrl}/users/:userId/projects`)
 .get((req, res) => {
-    projectController.getAllProjects()
+    projectController.getAllProjects(req.params["userId"])
     .then(obj => {
         res.status(obj["code"]).send(obj["result"]);
     })
@@ -108,3 +108,36 @@ routes.route(`${baseUrl}/users/:userId/projects/:projectId`)
         res.status(obj["code"]).send(obj["result"]);
     });
 })
+
+routes.route(`${baseUrl}/users/:userId/projects/:projectId/sessions`)
+.post((req, res) => {
+    projectController.addSession(req.params["userId"], req.params["projectId"], req.body)
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
+    .catch(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    });
+})
+
+routes.route(`${baseUrl}/users/:userId/projects/:projectId/sessions/sessionId`)
+.put((req, res) => {
+    projectController.updateSession(req.params["userId"], req.params["projectId"], req.params["sessionId"], req.body)
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
+    .catch(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    });
+})
+
+// routes.route(`${baseUrl}/users/:userId/projects/:projectId/report`)
+// .get((req, res) => {
+//     projectController.getReport(req.params["userId"], req.params["projectId"])
+//     .then(obj => {
+//         res.status(obj["code"]).send(obj["result"]);
+//     })
+//     .catch(obj => {
+//         res.status(obj["code"]).send(obj["result"]);
+//     });
+// })
