@@ -364,34 +364,6 @@ public class BackendTestsBackend2 {
         }
     }
 
-    // // done by Haamid
-    // @Test
-    // public void updateUserTest400() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String id = Long.toString(getIdFromResponse(response));
-    //         response.close();
-
-    //         response = updateUserIncorrect(id, "Tom", "Doe", "tom@doe.org");
-
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if (status == 400) {
-    //             System.out.println(
-    //                 "*** Correct! Expected response status: 400 since an invalid attribute (noname) was asked to be updated.***");
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since a \"noname\" atribute was asked to be updated which does not exist in the user model");
-    //         }
-
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
     // done by Haamid
     @Test
     public void updateUserTest404() throws Exception {
