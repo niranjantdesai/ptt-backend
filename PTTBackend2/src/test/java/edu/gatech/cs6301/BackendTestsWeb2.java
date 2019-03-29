@@ -117,10 +117,12 @@ public class BackendTestsWeb2 {
             String strResponse = EntityUtils.toString(entity);
             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
             if (expectedStatus != 200){
-                if (!"".equals(strResponse)){
-                    throw new ClientProtocolException("Unexpected response body: " + strResponse);
-                }
-            }else{
+                // if (!"".equals(strResponse)){
+                //     throw new ClientProtocolException("Unexpected response body: " + strResponse);
+                // }
+                
+            } else {
+                expectedResponse.put("id", Long.parseLong(getIdFromStringResponse(strResponse)));
                 JSONObject json = new JSONObject(expectedResponse);
                 JSONAssert.assertEquals(json.toString() ,strResponse, strict);
             }   
@@ -153,28 +155,29 @@ public class BackendTestsWeb2 {
             inputBody.put("firstName", "Tom");
             Map<String, Object> expectedResponse = new HashMap<String, Object>(inputBody);
             inputBody.put("id", "0");
-            expectedResponse.put("id", id);
+            expectedResponse.put("id", Long.parseLong(id));
             PUTTest(id, inputBody, 200, expectedResponse, false);
 
             // PUT Id doesn't exist
             expectedResponse = new HashMap<String, Object>();
             PUTTest(id + "1", inputBody, 404, expectedResponse, false);
 
-            //PUT Invalid Input
+            //PUT Valid Partial Modify Input
             inputBody = new HashMap<String, Object>();
             inputBody.put("firstName", "John");
-            PUTTest(id, inputBody, 400, expectedResponse, false);
+            PUTTest(id, inputBody, 200, expectedResponse, false);
 
             //PUT modify email: 
             //  User story say we only want to be able to edit user's first and last name.
-            //  Don't know it it will throw an error or just ignore it if we try to modify it.
-            //  I assumed that it will throw an error.
+            //  if changed email, it won't change the email
             inputBody = new HashMap<String, Object>();
             inputBody.put("firstName", "Tom");
             inputBody.put("lastName", "Doe");
-            inputBody.put("email", "john@doe.org");
+            inputBody.put("email", "tom@doe.org");
             inputBody.put("id", "0");
-            PUTTest(id, inputBody, 400, expectedResponse, false);
+            expectedResponse = new HashMap<String, Object>(inputBody);
+            expectedResponse.put("email", "john@doe.org");
+            PUTTest(id, inputBody, 200, expectedResponse, false);
 
         } finally {
             httpclient.close();
