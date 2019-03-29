@@ -304,88 +304,84 @@ public class BackendTestsWeb2 {
         }
     }
 
-    // private void DELETETest(String id, int expectedStatus, Map<String, Object> expectedResponse, boolean strict) throws Exception{
-    //     CloseableHttpResponse response  = deleteUser(id);
-    //     int status = response.getStatusLine().getStatusCode();
+    private void DELETETest(String id, int expectedStatus, Map<String, Object> expectedResponse, boolean strict) throws Exception{
+        CloseableHttpResponse response  = deleteUser(id);
+        int status = response.getStatusLine().getStatusCode();
 
-    //     if (status == expectedStatus) {
-    //         HttpEntity entity = response.getEntity();
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         if (expectedStatus != 200){
-    //             if (!"".equals(strResponse)){
-    //                 throw new ClientProtocolException("Unexpected response body: " + strResponse);
-    //             }
-    //         }else{
-    //             JSONObject json = new JSONObject(expectedResponse);
-    //             JSONAssert.assertEquals(json.toString(), strResponse, strict);
-    //         }   
+        if (status == expectedStatus) {
+            HttpEntity entity = response.getEntity();
+            String strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            if (expectedStatus == 200){
+                JSONObject json = new JSONObject(expectedResponse);
+                JSONAssert.assertEquals(json.toString(), strResponse, strict);
+            }   
 
-    //     } else {
-    //         throw new ClientProtocolException("Unexpected response status: " + status);
-    //     }
+        } else {
+            throw new ClientProtocolException("Unexpected response status: " + status);
+        }
 
-    //     EntityUtils.consume(response.getEntity());
-    //     response.close();
-    // }
+        EntityUtils.consume(response.getEntity());
+        response.close();
+    }
 
-    // @Test
-    // public void DeleteUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    public void DeleteUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     try {
-    //         //Create User
-    //         Map<String, Object> inputBody = new HashMap<String, Object>();
-    //         inputBody.put("firstName", "John");
-    //         inputBody.put("lastName", "Doe");
-    //         inputBody.put("email", "john@doe.org");
+        try {
+            //Create User
+            Map<String, Object> inputBody = new HashMap<String, Object>();
+            inputBody.put("firstName", "John");
+            inputBody.put("lastName", "Doe");
+            inputBody.put("email", "john@doe.org");
 
-    //         CloseableHttpResponse response = createUser(inputBody);
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+            CloseableHttpResponse response = createUser(inputBody);
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         // Delete and check if it still exists // Covered user cases 3.2.1
-    //         Map<String, Object> expectedResponse = new HashMap<String, Object>(inputBody);
-    //         expectedResponse.put("id", id);
-    //         DELETETest(id, 200, expectedResponse, false);
+            // Delete and check if it still exists // Covered user cases 3.2.1
+            Map<String, Object> expectedResponse = new HashMap<String, Object>(inputBody);
+            expectedResponse.put("id", Long.parseLong(id));
+            DELETETest(id, 200, expectedResponse, false);
 
-    //         response = getAllUsers();
-    //         HttpEntity entity;
-    //         String expectedJson;
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         String strResponse = EntityUtils.toString(entity);
+            response = getAllUsers();
+            HttpEntity entity;
+            String expectedJson;
+            int status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            String strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         expectedJson = "[]";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            expectedJson = "[]";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Delete id that doesn't exist //Covered user cases 3.1
-    //         expectedResponse = new HashMap<String, Object>();
-    //         DELETETest(id + "1", 404, expectedResponse, false);
+            // Delete id that doesn't exist //Covered user cases 3.1
+            expectedResponse = new HashMap<String, Object>();
+            DELETETest(id + "1", 404, expectedResponse, false);
 
-    //         // Delete an user with projects// Covered user cases 3.2.2
-    //         response = createUser(inputBody);
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-    //         response = createProject("testProjectName", userId);
-    //         response.close();
-    //         expectedResponse = new HashMap<String, Object>(inputBody);
-    //         expectedResponse.put("id", userId);
-    //         DELETETest(id, 200, expectedResponse, false);
+            // Delete an user with projects// Covered user cases 3.2.2
+            response = createUser(inputBody);
+            String userId = getIdFromResponse(response);
+            response.close();
+            response = createProject("testProjectName", userId);
+            response.close();
+            expectedResponse = new HashMap<String, Object>(inputBody);
+            expectedResponse.put("id", Long.parseLong(userId));
+            DELETETest(userId, 200, expectedResponse, false);
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
     // //Test Cases for Porjects---------------------------------------------------------------------------------------
      // To test code 201 and id, create project successfully.
      @Test
