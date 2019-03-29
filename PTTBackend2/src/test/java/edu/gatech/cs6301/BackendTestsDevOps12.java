@@ -426,57 +426,57 @@ public class BackendTestsDevOps12 {
        }
    }
 //
-//    // PUT /users/{userId} by Lee Sun
-//    // Case 3: Unsuccessful modification - Invalid user
-//    @Test
-//    public void putUsersNoUserTest() throws Exception {
-//        try {
-//            // test for badrequest: No such user
-//            deleteAllUsers();
-//            CloseableHttpResponse response = updateUser("-1", "putUserMod", "OneMod", "pusr1Mod@example.com");
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 404) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 404");
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//            String expected = "Bad request";
-//            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
+   // PUT /users/{userId} by Lee Sun
+   // Case 3: Unsuccessful modification - Invalid user
+   @Test
+   public void putUsersNoUserTest() throws Exception {
+       try {
+           // test for badrequest: No such user
+           deleteAllUsers();
+           CloseableHttpResponse response = updateUser("-1", "putUserMod", "OneMod", "pusr1Mod@example.com");
+           int status = response.getStatusLine().getStatusCode();
+           HttpEntity entity;
+           if (status == 404) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 404");
+           }
+           String strResponse = EntityUtils.toString(entity);
+           String expected = "User not found";
+           assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
+           EntityUtils.consume(response.getEntity());
+           response.close();
+
+       } finally {
+           httpclient.close();
+       }
+   }
 //
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
-//
-//    // PUT /users/{userId} by Lee Sun
-//    // Case 4: Unsuccessful modification - Invalid request
-//    @Test
-//    public void putUsersInvalidRequestTest() throws Exception {
-//        try {
-//            // test for badrequest: No such user
-//            deleteAllUsers();
-//            CloseableHttpResponse response = invalidUpdateUser("-1", 5, "OneMod", "pusr1Mod@example.com");
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 400) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//            String expected = "Bad request";
-//            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
-//
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
+   // PUT /users/{userId} by Lee Sun
+   // Case 4: Unsuccessful modification - Invalid request
+   @Test
+   public void putUsersInvalidRequestTest() throws Exception {
+       try {
+           // test for badrequest: No such user
+           deleteAllUsers();
+           CloseableHttpResponse response = invalidUpdateUser("-1", 5, "OneMod", "pusr1Mod@example.com");
+           int status = response.getStatusLine().getStatusCode();
+           HttpEntity entity;
+           if (status == 404) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
+           }
+           String strResponse = EntityUtils.toString(entity);
+           String expected = "User not found";
+           assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
+           EntityUtils.consume(response.getEntity());
+           response.close();
+
+       } finally {
+           httpclient.close();
+       }
+   }
 //    // DELETE /users/{userId} by Lee Sun
 //    // Case 1: Successful Deletion of User w/ no projects
    @Test
