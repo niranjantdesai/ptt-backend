@@ -11,6 +11,9 @@ export class ProjectController {
     schemaKeys = ["id", "projectname"];
     updatedableKeys = ["projectname"];
 
+    sessionSchemaKeys = ["id", "startTime", "endTime", "counter"];
+    sessionUpdatedableKeys = ["startTime", "endTime", "counter"];
+
     constructor() {
         mongoose.set('useFindAndModify', false);
     }
@@ -188,12 +191,58 @@ export class ProjectController {
 
     public updateSession(userId: string, projectId: string, sessionId: string, updatedSession: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
+            this.getProject(userId, projectId)
+            .then(obj => {
+                try {
+
+                    // let conditions = {id: projectId, "sessions.id": sessionId};
+                    // let attrUpdate = {};
+                    // updatedSession = this.removeAllButSomeKeys(updatedSession, this.sessionUpdatedableKeys);
+                    // Object.keys(updatedSession).forEach(key => {
+                    //     attrUpdate[`sessions.$.${key}`] = updatedSession[key];
+                    // });
+                    // let update = {$set: attrUpdate};
+                    // let options = {new: true};
+                    // this.Project.findOneAndUpdate(conditions, update, options)
+                    // .exec((err, updatedProject) => {
+                    //     if (err) {
+                    //         print("err:", err);
+                    //         reject({code: 400, result: "Bad request"});
+                    //     } else {
+                    //         if (updatedProject) {
+                    //             let projectSessions = updatedProject["sessions"];
+                    //             let result = projectSessions.filter(session => session["id"] == sessionId);
+                    //             if (result.length == 0) {
+                    //                 print("500: server error, shouldn't happen");
+                    //                 reject({code: 500, result: "Server error"});
+                    //             } else if (result.length == 1) {
+                    //                 let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
+                    //                 resolve({code: 200, result: session});
+                    //             } else {
+                    //                 print("500: server error, shouldn't happen");
+                    //                 reject({code: 500, result: "Server error"});
+                    //             }
+                    //         } else {
+                    //             print("Session not found:", sessionId);
+                    //             reject({code: 404, result: "Session not found"});
+                    //         }
+                    //     }
+                    // });
+
+                } catch (e) {
+                    print("500: server error:", e);
+                    reject({code: 500, result: "Server error"});
+                }
+            })
+            .catch(obj => {
+                reject(obj);
+            })
 
         });
     }
 
-    private removeAllButSomeKeys(userSchemaJSON, keepWhichKeys: string[]) {
-        let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
+    private removeAllButSomeKeys(JSONObj, keepWhichKeys: string[]) {
+        let newObj = JSON.parse(JSON.stringify(JSONObj));
         // delete newObj._id;
         // delete newObj.projects;
         // return newObj;
