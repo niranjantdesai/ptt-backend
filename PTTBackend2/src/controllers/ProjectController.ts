@@ -207,8 +207,21 @@ export class ProjectController {
                                 reject({code: 400, result: "Bad Request"});
                             } else {
                                 if (updatedProject) {
-                                    // TODO: resolve not with the newSession JSON but with the actual session that has been added in the array
-                                    resolve({code: 200, result: newSession});
+                                    // resolve not with the newSession JSON but with the actual session that has been added in the array
+                                    let projectSessions = updatedProject["sessions"];
+
+                                    let result = projectSessions.filter(session => session["id"] == sessionId);
+                                    if (result.length == 0) {
+                                        print("500: server error, shouldn't happen");
+                                        reject({code: 500, result: "Server error"});
+                                    } else if (result.length == 1) {
+                                        let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
+                                        resolve({code: 200, result: session});
+                                    } else {
+                                        print("500: server error, shouldn't happen");
+                                        reject({code: 500, result: "Server error"});
+                                    }
+
                                 } else {
                                     print(`No Project with id: ${projectId}`);
                                     reject({code: 404, result: `Project ${projectId} Not Found`});
