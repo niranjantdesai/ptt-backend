@@ -43,6 +43,7 @@ export class ProjectController {
                                     project["userId"] = Number(userId);
                                     resolve({code: 200, result: project});
                                 } else {
+                                    print("here!!!!!!!!!!!!!!!!")
                                     print("Project not found:", projectId);
                                     reject({code: 404, result: "Project not found"});
                                 }
@@ -119,7 +120,7 @@ export class ProjectController {
             .catch(obj => {
                 print("500: server error:", obj);
                 reject({code: 500, result: "Server error"});
-            })
+            });
         });
     }
 
@@ -182,7 +183,46 @@ export class ProjectController {
 
     public addSession(userId: string, projectId: string, newSession: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
+            this.counterController.getNextSessionId()
+            .then(obj => {
+                //Check if user actually has this project
+                this.getProject(userId, projectId)
+                .then(result => {
+                    //if user actually has this project, try to insert a new session
+                    let sessionId = obj["result"];
 
+                    try {
+                        newSession["id"] = sessionId;
+                        let filter = { id: { $eq: projectId } }
+                        let update = { $addToSet: { sessions: newSession } };
+                        let options = {new: true};
+                        
+                        this.Project.findOneAndUpdate(filter, update, options, (err, updatedProject) => {
+                            if (err) {
+                                print("err:", err);
+                                reject({code: 400, result: "Bad Request"});
+                            } else {
+                                if (updatedProject) {
+                                    resolve({code: 200, result: newSession});
+                                } else {
+                                    print("No Project with id: ${projectId}");
+                                    reject({code: 404, result: "Project ${projectId} Not Found"});
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        print("500: server error:", error);
+                        reject({code: 500, result: "Server error"});
+                    }
+                })
+                .catch(result => {
+                    reject(result);
+                });
+            })
+            .catch(obj => {
+                print("500: server error:", obj);
+                reject({code: 500, result: "Server error"});
+            });
         });
     }
 
