@@ -31,6 +31,7 @@ export class ProjectController {
             .then(obj => {
                 let user = obj["result"];
                 let usersProjects = user["projects"];
+
                 try {
                     let condition = { id: { $eq: projectId } };
                     this.Project.findOne(condition, (err: any, project: mongoose.Document) => {
@@ -41,7 +42,6 @@ export class ProjectController {
                             if (project) {
                                 project = this.removeAllButSomeKeys(project, this.schemaKeys);
                                 project["userId"] = Number(userId);
-
                                 if (usersProjects.indexOf(projectId) == -1) {
                                     print("User doesn't have this project");
                                     reject({code: 404, result: "Project not found"});
@@ -49,7 +49,6 @@ export class ProjectController {
                                     resolve({code: 200, result: project});
                                 }
                             } else {
-                                print("here!!!!!!!!!!!!!!!!")
                                 print("Project not found:", projectId);
                                 reject({code: 404, result: "Project not found"});
                             }
@@ -193,6 +192,7 @@ export class ProjectController {
                 this.getProject(userId, projectId)
                 .then(result => {
                     //if user actually has this project, try to insert a new session
+                    newSession = this.removeAllButSomeKeys(newSession, this.sessionSchemaKeys);
                     let sessionId = obj["result"];
 
                     try {
