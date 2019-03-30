@@ -120,7 +120,7 @@ routes.route(`${baseUrl}/users/:userId/projects/:projectId/sessions`)
     });
 })
 
-routes.route(`${baseUrl}/users/:userId/projects/:projectId/sessions/sessionId`)
+routes.route(`${baseUrl}/users/:userId/projects/:projectId/sessions/:sessionId`)
 .put((req, res) => {
     projectController.updateSession(req.params["userId"], req.params["projectId"], req.params["sessionId"], req.body)
     .then(obj => {
