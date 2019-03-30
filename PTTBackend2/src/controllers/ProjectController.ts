@@ -217,8 +217,8 @@ export class ProjectController {
                                     } else if (result.length == 1) {
                                         let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
                                         
-                                        print(session);
-                                        print(this.changeDateFormatForFields(session, this.sessionDateKeys));
+                                        // print(session);
+                                        // print(this.changeDateFormatForFields(session, this.sessionDateKeys));
 
                                         resolve({code: 201, result: session});
                                     } else {
