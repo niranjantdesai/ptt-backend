@@ -43,7 +43,6 @@ export class ProjectController {
                                     project["userId"] = Number(userId);
                                     resolve({code: 200, result: project});
                                 } else {
-                                    print("here!!!!!!!!!!!!!!!!")
                                     print("Project not found:", projectId);
                                     reject({code: 404, result: "Project not found"});
                                 }
@@ -205,8 +204,8 @@ export class ProjectController {
                                 if (updatedProject) {
                                     resolve({code: 200, result: newSession});
                                 } else {
-                                    print("No Project with id: ${projectId}");
-                                    reject({code: 404, result: "Project ${projectId} Not Found"});
+                                    print(`No Project with id: ${projectId}`);
+                                    reject({code: 404, result: `Project ${projectId} Not Found`});
                                 }
                             }
                         });
