@@ -11,6 +11,9 @@ export class ProjectController {
     schemaKeys = ["id", "projectname"];
     updatedableKeys = ["projectname"];
 
+    sessionSchemaKeys = ["id", "startTime", "endTime", "counter"];
+    sessionUpdatedableKeys = ["startTime", "endTime", "counter"];
+
     constructor() {
         mongoose.set('useFindAndModify', false);
     }
@@ -27,31 +30,32 @@ export class ProjectController {
             .then(obj => {
                 let user = obj["result"];
                 let usersProjects = user["projects"];
-                if (usersProjects.indexOf(projectId) == -1) {
-                    print("User doesn't have this project");
-                    reject({code: 404, result: "Project not found"});
-                } else {
-                    try {
-                        let condition = { id: { $eq: projectId } };
-                        this.Project.findOne(condition, (err: any, project: mongoose.Document) => {
-                            if (err) {
-                                print("err:", err);
-                                reject({code: 400, result: "Bad request"});
-                            } else {
-                                if (project) {
-                                    project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                                    project["userId"] = Number(userId);
-                                    resolve({code: 200, result: project});
-                                } else {
-                                    print("Project not found:", projectId);
+
+                try {
+                    let condition = { id: { $eq: projectId } };
+                    this.Project.findOne(condition, (err: any, project: mongoose.Document) => {
+                        if (err) {
+                            print("err:", err);
+                            reject({code: 400, result: "Bad request"});
+                        } else {
+                            if (project) {
+                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                project["userId"] = Number(userId);
+                                if (usersProjects.indexOf(projectId) == -1) {
+                                    print("User doesn't have this project");
                                     reject({code: 404, result: "Project not found"});
+                                } else {
+                                    resolve({code: 200, result: project});
                                 }
+                            } else {
+                                print("Project not found:", projectId);
+                                reject({code: 404, result: "Project not found"});
                             }
-                        });
-                    } catch (e) {
-                        print("500: server error:", e);
-                        reject({code: 500, result: "Server error"});
-                    }
+                        }
+                    });
+                } catch (e) {
+                    print("500: server error:", e);
+                    reject({code: 500, result: "Server error"});
                 }
             })
             .catch(obj => {
@@ -61,7 +65,6 @@ export class ProjectController {
     }
 
     public addProject(userId: string, projectJSON: JSON): promise<ProjectResultInterface> {
-        print("add project");
         return new promise<ProjectResultInterface> ((resolve, reject) => {
             this.counterController.getNextProjectId()
             .then(obj => {
@@ -188,13 +191,14 @@ export class ProjectController {
                 this.getProject(userId, projectId)
                 .then(result => {
                     //if user actually has this project, try to insert a new session
+                    newSession = this.removeAllButSomeKeys(newSession, this.sessionSchemaKeys);
                     let sessionId = obj["result"];
 
                     try {
                         newSession["id"] = sessionId;
                         let filter = { id: { $eq: projectId } }
                         let update = { $addToSet: { sessions: newSession } };
-                        let options = {new: true};
+                        let options = { new: true };
                         
                         this.Project.findOneAndUpdate(filter, update, options, (err, updatedProject) => {
                             if (err) {
@@ -202,7 +206,21 @@ export class ProjectController {
                                 reject({code: 400, result: "Bad Request"});
                             } else {
                                 if (updatedProject) {
-                                    resolve({code: 200, result: newSession});
+                                    // resolve not with the newSession JSON but with the actual session that has been added in the array
+                                    let projectSessions = updatedProject["sessions"];
+
+                                    let result = projectSessions.filter(session => session["id"] == sessionId);
+                                    if (result.length == 0) {
+                                        print("500: server error, shouldn't happen");
+                                        reject({code: 500, result: "Server error"});
+                                    } else if (result.length == 1) {
+                                        let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
+                                        resolve({code: 200, result: session});
+                                    } else {
+                                        print("500: server error, shouldn't happen");
+                                        reject({code: 500, result: "Server error"});
+                                    }
+
                                 } else {
                                     print(`No Project with id: ${projectId}`);
                                     reject({code: 404, result: `Project ${projectId} Not Found`});
@@ -227,12 +245,58 @@ export class ProjectController {
 
     public updateSession(userId: string, projectId: string, sessionId: string, updatedSession: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
+            this.getProject(userId, projectId)
+            .then(obj => {
+                try {
+
+                    let conditions = {id: projectId, "sessions.id": sessionId};
+                    let attrUpdate = {};
+                    updatedSession = this.removeAllButSomeKeys(updatedSession, this.sessionUpdatedableKeys);
+                    Object.keys(updatedSession).forEach(key => {
+                        attrUpdate[`sessions.$.${key}`] = updatedSession[key];
+                    });
+                    let update = {$set: attrUpdate};
+                    let options = {new: true};
+                    this.Project.findOneAndUpdate(conditions, update, options)
+                    .exec((err, updatedProject) => {
+                        if (err) {
+                            print("err:", err);
+                            reject({code: 400, result: "Bad request"});
+                        } else {
+                            if (updatedProject) {
+                                let projectSessions = updatedProject["sessions"];
+                                let result = projectSessions.filter(session => session["id"] == sessionId);
+                                if (result.length == 0) {
+                                    print("500: server error, shouldn't happen");
+                                    reject({code: 500, result: "Server error"});
+                                } else if (result.length == 1) {
+                                    let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
+                                    resolve({code: 200, result: session});
+                                } else {
+                                    print("500: server error, shouldn't happen");
+                                    reject({code: 500, result: "Server error"});
+                                }
+                            } else {
+                                print("Session not found:", sessionId);
+                                reject({code: 404, result: "Session not found"});
+                            }
+                        }
+                    });
+
+                } catch (e) {
+                    print("500: server error:", e);
+                    reject({code: 500, result: "Server error"});
+                }
+            })
+            .catch(obj => {
+                reject(obj);
+            })
 
         });
     }
 
-    private removeAllButSomeKeys(userSchemaJSON, keepWhichKeys: string[]) {
-        let newObj = JSON.parse(JSON.stringify(userSchemaJSON));
+    private removeAllButSomeKeys(JSONObj, keepWhichKeys: string[]) {
+        let newObj = JSON.parse(JSON.stringify(JSONObj));
         // delete newObj._id;
         // delete newObj.projects;
         // return newObj;
