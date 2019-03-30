@@ -30,32 +30,33 @@ export class ProjectController {
             .then(obj => {
                 let user = obj["result"];
                 let usersProjects = user["projects"];
-                if (usersProjects.indexOf(projectId) == -1) {
-                    print("User doesn't have this project");
-                    reject({code: 404, result: "Project not found"});
-                } else {
-                    try {
-                        let condition = { id: { $eq: projectId } };
-                        this.Project.findOne(condition, (err: any, project: mongoose.Document) => {
-                            if (err) {
-                                print("err:", err);
-                                reject({code: 400, result: "Bad request"});
-                            } else {
-                                if (project) {
-                                    project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                                    project["userId"] = Number(userId);
-                                    resolve({code: 200, result: project});
-                                } else {
-                                    print("here!!!!!!!!!!!!!!!!")
-                                    print("Project not found:", projectId);
+                try {
+                    let condition = { id: { $eq: projectId } };
+                    this.Project.findOne(condition, (err: any, project: mongoose.Document) => {
+                        if (err) {
+                            print("err:", err);
+                            reject({code: 400, result: "Bad request"});
+                        } else {
+                            if (project) {
+                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                project["userId"] = Number(userId);
+
+                                if (usersProjects.indexOf(projectId) == -1) {
+                                    print("User doesn't have this project");
                                     reject({code: 404, result: "Project not found"});
+                                } else {
+                                    resolve({code: 200, result: project});
                                 }
+                            } else {
+                                print("here!!!!!!!!!!!!!!!!")
+                                print("Project not found:", projectId);
+                                reject({code: 404, result: "Project not found"});
                             }
-                        });
-                    } catch (e) {
-                        print("500: server error:", e);
-                        reject({code: 500, result: "Server error"});
-                    }
+                        }
+                    });
+                } catch (e) {
+                    print("500: server error:", e);
+                    reject({code: 500, result: "Server error"});
                 }
             })
             .catch(obj => {
@@ -198,7 +199,7 @@ export class ProjectController {
                         newSession["id"] = sessionId;
                         let filter = { id: { $eq: projectId } }
                         let update = { $addToSet: { sessions: newSession } };
-                        let options = {new: true};
+                        let options = { new: true };
                         
                         this.Project.findOneAndUpdate(filter, update, options, (err, updatedProject) => {
                             if (err) {
@@ -206,10 +207,11 @@ export class ProjectController {
                                 reject({code: 400, result: "Bad Request"});
                             } else {
                                 if (updatedProject) {
+                                    // TODO: resolve not with the newSession JSON but with the actual session that has been added in the array
                                     resolve({code: 200, result: newSession});
                                 } else {
-                                    print("No Project with id: ${projectId}");
-                                    reject({code: 404, result: "Project ${projectId} Not Found"});
+                                    print(`No Project with id: ${projectId}`);
+                                    reject({code: 404, result: `Project ${projectId} Not Found`});
                                 }
                             }
                         });
