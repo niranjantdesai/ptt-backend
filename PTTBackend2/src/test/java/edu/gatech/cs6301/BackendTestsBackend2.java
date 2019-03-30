@@ -1189,49 +1189,49 @@ public class BackendTestsBackend2 {
          }
      }
 
-    // // done by Niranjan
-    // @Test
-    // public void createSessionTest201() throws Exception{
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try{
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+    // done by Niranjan
+    @Test
+    public void createSessionTest201() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         response = createProject("CS6301",userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("CS6301",userId);
+            String projectId = Long.toString(getIdFromResponse(response));
+            response.close();
             
-    //         String startTime = "2019-02-18T20:00Z";
-    //         String endTime = startTime;
-    //         response = createSession(userId, projectId, startTime, endTime);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }else{
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 201");
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = startTime;
+            response = createSession(userId, projectId, startTime, endTime);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if(status == 201){
+                entity = response.getEntity();
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 201");
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println(
-    //                 "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         String id = getIdFromStringResponse(strResponse);
+            String id = getIdFromStringResponse(strResponse);
 
-    //         String expectedJson = "{\"id\":\"" + id + "\"," +
-    //             "\"startTime\":\"" + startTime + "\"," +
-    //             "\"endTime\":\"" + endTime + "\"," +
-    //             "\"counter\":0}";
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }finally{
-    //         httpclient.close();
-    //     }
-    // }
+            String expectedJson = "{\"id\":\"" + id + "\"," +
+                "\"startTime\":\"" + startTime + "\"," +
+                "\"endTime\":\"" + endTime + "\"," +
+                "\"counter\":0}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }finally{
+            httpclient.close();
+        }
+    }
 
     // // done by Niranjan
     // @Test
