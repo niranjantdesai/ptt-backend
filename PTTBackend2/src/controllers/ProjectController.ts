@@ -215,7 +215,7 @@ export class ProjectController {
                                         reject({code: 500, result: "Server error"});
                                     } else if (result.length == 1) {
                                         let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
-                                        resolve({code: 200, result: session});
+                                        resolve({code: 201, result: session});
                                     } else {
                                         print("500: server error, shouldn't happen");
                                         reject({code: 500, result: "Server error"});
