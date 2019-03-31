@@ -737,6 +737,7 @@ public class BackendTestsDevOps12 {
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
             }
+            // // shouldnt be comaring response for a bad request
 //            String strResponse = EntityUtils.toString(entity);
 //            String expected = "Bad request";
 //            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
@@ -760,6 +761,7 @@ public class BackendTestsDevOps12 {
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
             }
+            // // shouldnt be comaring response for a bad request
 //            String strResponse = EntityUtils.toString(entity);
 //            String expected = "Bad request";
 //            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
@@ -790,6 +792,7 @@ public class BackendTestsDevOps12 {
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 409");
             }
+            // // shouldnt be comaring response for a bad request
 //            String strResponse = EntityUtils.toString(entity);
 //            String expected = "Resource conflict";
 //            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
@@ -1301,6 +1304,7 @@ public class BackendTestsDevOps12 {
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status);
             }
+            // // shouldnt be comaring response for a bad request
 //            strResponse = EntityUtils.toString(entity);
 //            expected = "User or project not found";
 //            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
@@ -1339,6 +1343,7 @@ public class BackendTestsDevOps12 {
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 404");
             }
+            // // shouldnt be comaring response for a bad request
 //            String strResponse = EntityUtils.toString(entity);
 //            String expected = "Bad request";
 //            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
@@ -1394,6 +1399,7 @@ public class BackendTestsDevOps12 {
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 404");
             }
+            // // shouldnt be comaring response for a bad request
 //            String strResponse = EntityUtils.toString(entity);
 //            String expected = "Bad request";
 //            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
@@ -1456,6 +1462,7 @@ public class BackendTestsDevOps12 {
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
             }
+            // // shouldnt be comaring response for a bad request
 //            String strResponse = EntityUtils.toString(entity);
 //
 //            // Check project object content
