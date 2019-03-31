@@ -755,7 +755,7 @@ public class BackendTestsBackend1 {
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-            String userid = "123";
+            String userid = "1234abc";
             String userid1 = getIdFromResponse(response);
             response.close();
 
@@ -763,24 +763,24 @@ public class BackendTestsBackend1 {
             HttpEntity entity;
             String strResponse;
 
-//            // Wrong userId
-//            response = createProject("pj1", userid);
-//            // String projectid = getIdFromResponse(response);
-//
-//            status = response.getStatusLine().getStatusCode();
-//            if (status == 400) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status);
-//            }
-//            strResponse = EntityUtils.toString(entity);
-//
-//            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//
-//            expectedJson = "";
-//            JSONAssert.assertEquals(expectedJson,strResponse, false);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
+           // Wrong userId
+           response = createProject("pj1", userid);
+           // String projectid = getIdFromResponse(response);
+
+           status = response.getStatusLine().getStatusCode();
+           if (status == 400) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status);
+           }
+        //    strResponse = EntityUtils.toString(entity);
+
+        //    System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+        //    expectedJson = "";
+        //    JSONAssert.assertEquals(expectedJson,strResponse, false);
+        //    EntityUtils.consume(response.getEntity());
+        //    response.close();
 
             // Missing body variables
             response = createProject("", userid1);
@@ -1057,6 +1057,8 @@ public class BackendTestsBackend1 {
              expectedJson = "{\"id\":" + deleteid + ",\"projectname\":\"PTT Test case\",\"userId\":" + userId +
                      "}";
              JSONAssert.assertEquals(expectedJson,strResponse, false);
+
+             // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
 //             EntityUtils.consume(response.getEntity());
 //             response.close();
 //
