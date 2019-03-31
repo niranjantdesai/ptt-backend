@@ -216,10 +216,7 @@ export class ProjectController {
                                         reject({code: 500, result: "Server error"});
                                     } else if (result.length == 1) {
                                         let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
-                                        
-                                        // print(session);
-                                        // print(this.changeDateFormatForFields(session, this.sessionDateKeys));
-
+                                        session = this.changeDateFormatForFields(session, this.sessionDateKeys);
                                         resolve({code: 201, result: session});
                                     } else {
                                         print("500: server error, shouldn't happen");
@@ -276,6 +273,7 @@ export class ProjectController {
                                     reject({code: 500, result: "Server error"});
                                 } else if (result.length == 1) {
                                     let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
+                                    session = this.changeDateFormatForFields(session, this.sessionDateKeys);
                                     resolve({code: 200, result: session});
                                 } else {
                                     print("500: server error, shouldn't happen");
@@ -321,9 +319,7 @@ export class ProjectController {
             if (fields.indexOf(key) != -1) {
                 let dateObj = new Date(session[key]);
                 let dateString = dateObj.toISOString();
-                // print(dateString);
                 dateString = dateString.replace(/:[0-9]{2}\.[0-9]{3,}/, '');
-                // print(dateString);
                 newObj[key] = dateString;
             }
         });
