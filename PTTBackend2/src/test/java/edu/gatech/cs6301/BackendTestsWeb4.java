@@ -154,7 +154,6 @@ public class BackendTestsWeb4 {
     }
 
     @Test
-    // When adding a user, if the body email parameter isn't valid, the server should repsond 400 code and no input.
     public void addUserInvalidEmailTest() throws Exception {
         System.out.println("Running Test: addUserInvalidEmailTest");
         httpclient = HttpClients.createDefault();
@@ -167,177 +166,127 @@ public class BackendTestsWeb4 {
             Assert.assertEquals(400, status);
             EntityUtils.consume(response.getEntity());
             response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-            // Try to create user without properly formatted email address
-            // response = createUser("John", "Doe", "nodomain");
-            // status = response.getStatusLine().getStatusCode();
-            // Assert.assertEquals(400, status);
-            // EntityUtils.consume(response.getEntity());
-            // response.close();
+    @Test
+    // When adding a user, if a user with the same email exists, then the server should respond with with 409.
+    public void addUserAlreadyExistsTest() throws Exception {
+        System.out.println("Running Test:  addUserAlreadyExistsTest");
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+
+        try {
+            // Try to create user with firstname that is too long
+            CloseableHttpResponse response = createUser("John", "Doe", "" + "John@doe.com");
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            // Try to create user with lastname that is too long
+            response = createUser("John", "Doe", "" + "John@doe.com");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(409, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
         } finally {
             httpclient.close();
         }
     }
 
-    // // no such specification in the API
-    // @Test
-    // // When adding a user, if the body email parameter isn't valid, the server should repsond 400 code and no input.
-    // public void addUserValueTooLongTest() throws Exception {
-    //     System.out.println("Running Test:  addUserValueTooLongTest");
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    // When getting a user that exists, the server should return 200 and the correct user corresponding to the id we specified.
+    public void getExistingUserByIDTest() throws Exception {
+        System.out.println("Running Test:  getExistingUserByIDTest");
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        String expectedJson = null;
 
-    //     try {
+        try {
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe" , "john@doe.org");
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            long uId = getIdFromResponse(response);
+            response.close();
 
-    //         // Create a string that is longer than the maximum  length accomodated by the backend.  For now this is anything greater than 1024 characters.
-    //         String tooLong = "";
-    //         for(int i=0; i<1030; ++i){
-    //             tooLong += "a";
-    //         }
+            // Get the user
+            HttpEntity entity;
+            String strResponse;
+            response = getUser(uId);
 
-    //         // Try to create user with firstname that is too long
-    //         CloseableHttpResponse response = createUser(tooLong, "Doe", "long@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Verify we get code 200
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         // Try to create user with lastname that is too long
-    //         response = createUser("John", tooLong, "john@long.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Verify return body is as expected
+            //System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         // Try to create user with lastname that is too long
-    //         response = createUser("John", "Doe", tooLong + "@toolong.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            expectedJson = "{\"id\":" + uId + ",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // // When adding a user, if a user with the same email exists, then the server should respond with with 409.
-    // public void addUserAlreadyExistsTest() throws Exception {
-    //     System.out.println("Running Test:  addUserAlreadyExistsTest");
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    // When getting a user that exists, the server should return 200 and the correct user corresponding to the id we specified.
+    // This should work when the DB has only one user or when there are many users.
+    public void getExistingUserByIDFullDBTest() throws Exception {
+        System.out.println("Running Test:  getExistingUserByIDFullDBTest");
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        String expectedJson = null;
 
-    //     try {
-    //         // Try to create user with firstname that is too long
-    //         CloseableHttpResponse response = createUser("John", "Doe", "" + "John@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try {
+            // Create three users, record second id
+            CloseableHttpResponse response = createUser("Johnny", "Doe" , "johnny@doe.org");
+            response.close();
+            response = createUser("John", "Doe" , "john@doe.org");
+            long uId = getIdFromResponse(response);
+            response.close();
+            response = createUser("Thomas", "Doe" , "tom@doe.org");
+            response.close();
 
-    //         // Try to create user with lastname that is too long
-    //         response = createUser("John", "Doe", "" + "John@doe.com");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(409, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Get the user
+            int status;
+            HttpEntity entity;
+            String strResponse;
+            response = getUser(uId);
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Verify we get code 200
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    // @Test
-    // // When getting a user that exists, the server should return 200 and the correct user corresponding to the id we specified.
-    // public void getExistingUserByIDTest() throws Exception {
-    //     System.out.println("Running Test:  getExistingUserByIDTest");
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     String expectedJson = null;
+            // Verify return body is as expected
+            //System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //     try {
-    //         // Create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe" , "john@doe.org");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         long uId = getIdFromResponse(response);
-    //         response.close();
+            expectedJson = "{\"id\":" + uId + ",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Get the user
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         response = getUser(uId);
-
-    //         // Verify we get code 200
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
-
-    //         // Verify return body is as expected
-    //         //System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
-    //         expectedJson = "{\"id\":" + uId + ",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // // When getting a user that exists, the server should return 200 and the correct user corresponding to the id we specified.
-    // // This should work when the DB has only one user or when there are many users.
-    // public void getExistingUserByIDFullDBTest() throws Exception {
-    //     System.out.println("Running Test:  getExistingUserByIDFullDBTest");
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     String expectedJson = null;
-
-    //     try {
-    //         // Create three users, record second id
-    //         CloseableHttpResponse response = createUser("Johnny", "Doe" , "johnny@doe.org");
-    //         response.close();
-    //         response = createUser("John", "Doe" , "john@doe.org");
-    //         long uId = getIdFromResponse(response);
-    //         response.close();
-    //         response = createUser("Thomas", "Doe" , "tom@doe.org");
-    //         response.close();
-
-    //         // Get the user
-    //         int status;
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         response = getUser(uId);
-
-    //         // Verify we get code 200
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
-
-    //         // Verify return body is as expected
-    //         //System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
-    //         expectedJson = "{\"id\":" + uId + ",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@doe.org\"}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
     @Test
     // When getting a user that is not found in the DB, the server should report user not found.
@@ -887,17 +836,17 @@ public class BackendTestsWeb4 {
                  response.close();
              }
 
-//             // get project by id to make sure the addProject operation successes
-//             for (int i = 0; i < 100; i++) {
-//                 String projectname = "test project " + i;
-//                 response = getProject(userId, projectIds[i]);
-//                 status = response.getStatusLine().getStatusCode();
-//                 Assert.assertEquals(200, status);
-//                 String return_projectname = getProjectnameFromResponse(response);
-//                 Assert.assertEquals(projectname, return_projectname);
-//                 EntityUtils.consume(response.getEntity());
-//                 response.close();
-//             }
+            // get project by id to make sure the addProject operation successes
+            for (int i = 0; i < 100; i++) {
+                String projectname = "test project " + i;
+                response = getProject(userId, projectIds[i]);
+                status = response.getStatusLine().getStatusCode();
+                Assert.assertEquals(200, status);
+                String return_projectname = getProjectnameFromResponse(response);
+                Assert.assertEquals(projectname, return_projectname);
+                EntityUtils.consume(response.getEntity());
+                response.close();
+            }
 
          } finally {
              httpclient.close();
@@ -961,29 +910,29 @@ public class BackendTestsWeb4 {
                  response.close();
              }
 
-//             // get projects of user1
-//             for (int i = 0; i < 50; i++) {
-//                 String projectname = "test project " + i;
-//                 response = getProject(userId1, projectIds1[i]);
-//                 status = response.getStatusLine().getStatusCode();
-//                 Assert.assertEquals(200, status);
-//                 String return_projectname = getProjectnameFromResponse(response);
-//                 Assert.assertEquals(projectname, return_projectname);
-//                 EntityUtils.consume(response.getEntity());
-//                 response.close();
-//             }
-//
-//             // get projects of user1
-//             for (int i = 50; i < 100; i++) {
-//                 String projectname = "test project " + i;
-//                 response = getProject(userId2, projectIds2[i]);
-//                 status = response.getStatusLine().getStatusCode();
-//                 Assert.assertEquals(200, status);
-//                 String return_projectname = getProjectnameFromResponse(response);
-//                 Assert.assertEquals(projectname, return_projectname);
-//                 EntityUtils.consume(response.getEntity());
-//                 response.close();
-//             }
+            // get projects of user1
+            for (int i = 0; i < 50; i++) {
+                String projectname = "test project " + i;
+                response = getProject(userId1, projectIds1[i]);
+                status = response.getStatusLine().getStatusCode();
+                Assert.assertEquals(200, status);
+                String return_projectname = getProjectnameFromResponse(response);
+                Assert.assertEquals(projectname, return_projectname);
+                EntityUtils.consume(response.getEntity());
+                response.close();
+            }
+
+            // get projects of user2
+            for (int i = 50; i < 100; i++) {
+                String projectname = "test project " + i;
+                response = getProject(userId2, projectIds2[i]);
+                status = response.getStatusLine().getStatusCode();
+                Assert.assertEquals(200, status);
+                String return_projectname = getProjectnameFromResponse(response);
+                Assert.assertEquals(projectname, return_projectname);
+                EntityUtils.consume(response.getEntity());
+                response.close();
+            }
 
          } finally {
              httpclient.close();
@@ -2260,64 +2209,6 @@ public class BackendTestsWeb4 {
             httpclient.close();
         }
     }
-
-    // @Test
-    // //update user with firstname exceed 1024 characters
-    // public void updateUserWithInvalidFirstName() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         //create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         String tooLongFirstName = "";
-    //         for(int i=0; i<1030; ++i){
-    //             tooLongFirstName += "a";
-    //         }
-    //         response = updateUser(userId, tooLongFirstName, "Doe", "john@doe.org");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // //update user with lastname exceed 1024 characters
-    // public void updateUserWithInvalidLastNameTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         //create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         String tooLongLastName = "";
-    //         for(int i=0; i<1030; ++i){
-    //             tooLongLastName += "a";
-    //         }
-    //         response = updateUser(userId, "John", tooLongLastName, "john@doe.org");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
 
     @Test
     //Update multiple users
