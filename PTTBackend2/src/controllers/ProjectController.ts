@@ -24,7 +24,29 @@ export class ProjectController {
 
     public getAllProjects(userId: string): promise<ProjectResultInterface> {
         return new promise <ProjectResultInterface> ((resolve, reject) => {
-            
+            this.userController.getUser(userId, false)
+            .then(obj => {
+                let user = obj["result"];
+                let usersProjectIds = user["projects"];
+                let usersProjects = [];
+                
+                usersProjectIds.forEach((projectId, index) => {
+                    this.getProject(userId, projectId)
+                    .then(obj => {
+                        let aProject = obj["result"];
+                        usersProjects.push(aProject);
+                        if (index == usersProjectIds.length-1) {
+                            resolve({code: 200, result: usersProjects});
+                        }
+                    })
+                    .catch(obj => {
+                        reject(obj);
+                    })
+                });
+            })
+            .catch(obj => {
+                reject(obj);
+            })
         });
     }
 
@@ -33,7 +55,7 @@ export class ProjectController {
             this.userController.getUser(userId, false)
             .then(obj => {
                 let user = obj["result"];
-                let usersProjects = user["projects"];
+                let usersProjectIds = user["projects"];
 
                 try {
                     let condition = { id: { $eq: projectId } };
@@ -45,7 +67,7 @@ export class ProjectController {
                             if (project) {
                                 project = this.removeAllButSomeKeys(project, this.schemaKeys);
                                 project["userId"] = Number(userId);
-                                if (usersProjects.indexOf(projectId) == -1) {
+                                if (usersProjectIds.indexOf(projectId) == -1) {
                                     print("User doesn't have this project");
                                     reject({code: 404, result: "Project not found"});
                                 } else {
