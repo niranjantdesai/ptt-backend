@@ -333,6 +333,7 @@ public class BackendTestsMobile4 {
     @Test
     public void CreateMultipleUpdateOneUserTest() throws Exception {
         httpclient = HttpClients.createDefault();
+        deleteAllUsers();
 
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
