@@ -766,6 +766,7 @@ public class BackendTestsWeb1 {
              EntityUtils.consume(response3.getEntity());
              response3.close();
 
+             // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
 //             CloseableHttpResponse response4 = getAllProjects(user_id);
 //             status = response4.getStatusLine().getStatusCode();
 //             if (status == 200) {
@@ -830,6 +831,7 @@ public class BackendTestsWeb1 {
              EntityUtils.consume(response.getEntity());
              response.close();
 
+             // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
 //             response = getAllProjects(user_id);
 //             status = response.getStatusLine().getStatusCode();
 //             if (status == 200) {

@@ -69,6 +69,7 @@ public class BackendTestsWeb2 {
                 JSONObject json = new JSONObject(expectedResponse);
                 JSONAssert.assertEquals(json.toString() ,strResponse, strict);
             } else {
+                // // shouldnt be comaring response for an invalid request
                 // if (!"".equals(strResponse)){
                 //     throw new ClientProtocolException("Unexpected response body: " + strResponse);
                 // }
@@ -117,6 +118,7 @@ public class BackendTestsWeb2 {
             String strResponse = EntityUtils.toString(entity);
             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
             if (expectedStatus != 200){
+                // // shouldnt be comaring response for an invalid request
                 // if (!"".equals(strResponse)){
                 //     throw new ClientProtocolException("Unexpected response body: " + strResponse);
                 // }
@@ -196,6 +198,7 @@ public class BackendTestsWeb2 {
                 JSONObject json = new JSONObject(expectedResponse);
                 JSONAssert.assertEquals(json.toString() ,strResponse, strict);
             } else {
+                // // shouldnt be comaring response for an invalid request
                 // if (!"".equals(strResponse)){
                 //     throw new ClientProtocolException("Unexpected response body: " + strResponse);
                 // }
@@ -254,7 +257,7 @@ public class BackendTestsWeb2 {
             if (expectedStatus == 200){
                 JSONAssert.assertEquals(expectedResponse.toString(), strResponse, strict);
             } else {
-                                   
+                // // shouldnt be comaring response for an invalid request
             }
 
         } else {
@@ -652,6 +655,7 @@ public class BackendTestsWeb2 {
              EntityUtils.consume(response.getEntity());
              response.close();
 
+             // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
 //             response = getAllProjects(userId);
 //             status = response.getStatusLine().getStatusCode();
 //             if (status == 200) {
@@ -774,6 +778,7 @@ public class BackendTestsWeb2 {
              EntityUtils.consume(response.getEntity());
              response.close();
 
+             // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
 //             response = getAllProjects(userId);
 //             status = response.getStatusLine().getStatusCode();
 //             if (status == 200) {
