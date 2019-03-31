@@ -445,34 +445,34 @@ public class BackendTestsDevOps34 {
         }
     }
 
-    // @Test
-    // public void createProjectTest() throws Exception {
-    //     String userId = singleUserBeforeProjectTest();
+    @Test
+    public void createProjectTest() throws Exception {
+        String userId = singleUserBeforeProjectTest();
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
+        try {
+            CloseableHttpResponse response = createProject(userId, "Homework");
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if (status == 201) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         String strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            if (status == 201) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            String strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         String id = getIdFromStringResponse(strResponse);
+            String id = getIdFromStringResponse(strResponse);
 
-    //         String expectedJson = "{\"id\":" + id + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}";
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            String expectedJson = "{\"id\":" + id + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // @Test
     // public void updateProjectTest() throws Exception {
@@ -582,6 +582,7 @@ public class BackendTestsDevOps34 {
     //     }
     // }
 
+    // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
     // @Test
     // public void DeleteProjectTest() throws Exception {
     //     httpclient = HttpClients.createDefault();
@@ -598,7 +599,7 @@ public class BackendTestsDevOps34 {
     //         HttpEntity entity;
     //         String strResponse;
 
-    //         deleteProject(userId, deleteid);
+    //         // deleteProject(userId, deleteid);
 
     //         response = deleteProject(userId, deleteid);
     //         status = response.getStatusLine().getStatusCode();
@@ -636,6 +637,8 @@ public class BackendTestsDevOps34 {
     //     }
     // }
 
+
+    // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
     // @Test
     // public void CreateMultipleDeleteOneProjectTest() throws Exception {
     //     httpclient = HttpClients.createDefault();
@@ -694,6 +697,8 @@ public class BackendTestsDevOps34 {
     //         httpclient.close();
     //     }
     // }
+
+
 
     // @Test
     // public void CreateMultipleUpdateOneProjectTest() throws Exception {
@@ -785,36 +790,37 @@ public class BackendTestsDevOps34 {
     //     }
     // }
 
-    // @Test
-    // public void deleteMissingProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     String userId = singleUserBeforeProjectTest();
+    @Test
+    public void deleteMissingProjectTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        String userId = singleUserBeforeProjectTest();
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String id1 = getIdFromResponse(response);
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createProject(userId, "Homework");
+            // EntityUtils.consume(response.getEntity());
+            String id1 = getIdFromResponse(response);
+            response.close();
 
-    //         response = createProject(userId, "Programming");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String id2 = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(userId, "Programming");
+            // EntityUtils.consume(response.getEntity());
+            String id2 = getIdFromResponse(response);
+            response.close();
 
-    //         String missingId = id1 + id2; // making sure the ID is not present
+            String missingId = id1 + id2; // making sure the ID is not present
 
-    //         response = deleteProject(userId, missingId);
+            response = deleteProject(userId, missingId);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
+    // // TODO: uncomment after implementing getAProject which is for the next deliverable
     // @Test
     // public void getProjectWithMissingUserTest() throws Exception {
     //     httpclient = HttpClients.createDefault();
@@ -839,25 +845,25 @@ public class BackendTestsDevOps34 {
     //     }
     // }
 
-    // @Test
-    // public void createDuplicatedProjectsTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     String userId = singleUserBeforeProjectTest();
+    @Test
+    public void createDuplicatedProjectsTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        String userId = singleUserBeforeProjectTest();
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         response.close();
-    //         // try to create the same user the second time
-    //         response = createProject(userId, "Programming");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(409, status);
+        try {
+            CloseableHttpResponse response = createProject(userId, "Homework");
+            response.close();
+            // try to create the same user the second time
+            response = createProject(userId, "Homework");
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(409, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // @Test
     // public void updateToDuplicatedProjectsTest() throws Exception {
