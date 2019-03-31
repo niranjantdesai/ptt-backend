@@ -926,6 +926,7 @@ public class BackendTestsMobile2 {
              EntityUtils.consume(response.getEntity());
              response.close();
 
+             // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
 //             response = getAllProjects(userId);
 //             status = response.getStatusLine().getStatusCode();
 //             if (status == 200) {

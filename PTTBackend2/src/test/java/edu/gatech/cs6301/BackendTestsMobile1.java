@@ -1120,7 +1120,7 @@ public class BackendTestsMobile1 {
              JSONAssert.assertEquals(expectedJson,strResponse, false);
              EntityUtils.consume(response.getEntity());
              response.close();
-//The user is not been deleted, so the expectedJson is not "[]"
+// // The user has not been deleted, so the expectedJson is not "[]"
 //             response = getAllUsers();
 //             status = response.getStatusLine().getStatusCode();
 //             if (status == 200) {
