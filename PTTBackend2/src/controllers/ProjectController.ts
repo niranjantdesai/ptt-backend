@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 import { ProjectSchema } from "../models/Project";
+import { SessionSchema } from "../models/Session";
 import { IDCounterController } from "./IDCounterController";
 import { UserController } from "./UserController";
 import promise from "promise";
 
 export class ProjectController {
     Project: mongoose.Model<mongoose.Document> = mongoose.model('Project', ProjectSchema);
+    Session: mongoose.Model<mongoose.Document> = mongoose.model('Session', SessionSchema);
+
     counterController = new IDCounterController();
     userController = new UserController();
     schemaKeys = ["id", "projectname"];
@@ -197,36 +200,50 @@ export class ProjectController {
 
                     try {
                         newSession["id"] = sessionId;
-                        let filter = { id: { $eq: projectId } }
-                        let update = { $addToSet: { sessions: newSession } };
-                        let options = { new: true };
-                        
-                        this.Project.findOneAndUpdate(filter, update, options, (err, updatedProject) => {
-                            if (err) {
-                                print("err:", err);
-                                reject({code: 400, result: "Bad Request"});
+
+                        let sessionObj = new this.Session(newSession);
+                        sessionObj.save((error, dbSession) => {
+                            if (error) {
+                                print("Error:", error);
+                                reject({code: 400, result: "Bad request"});
                             } else {
-                                if (updatedProject) {
-                                    // resolve not with the newSession JSON but with the actual session that has been added in the array
-                                    let projectSessions = updatedProject["sessions"];
-
-                                    let result = projectSessions.filter(session => session["id"] == sessionId);
-                                    if (result.length == 0) {
-                                        print("500: server error, shouldn't happen");
-                                        reject({code: 500, result: "Server error"});
-                                    } else if (result.length == 1) {
-                                        let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
-                                        session = this.changeDateFormatForFields(session, this.sessionDateKeys);
-                                        resolve({code: 201, result: session});
+                                dbSession = this.removeAllButSomeKeys(dbSession, this.sessionSchemaKeys);
+                                dbSession = this.changeDateFormatForFields(dbSession, this.sessionDateKeys);
+                                
+                                let filter = { id: { $eq: projectId } }
+                                let update = { $addToSet: { sessions: dbSession } };
+                                let options = { new: true };
+                                
+                                this.Project.findOneAndUpdate(filter, update, options, (err, updatedProject) => {
+                                    if (err) {
+                                        print("err:", err);
+                                        reject({code: 400, result: "Bad Request"});
                                     } else {
-                                        print("500: server error, shouldn't happen");
-                                        reject({code: 500, result: "Server error"});
-                                    }
+                                        if (updatedProject) {
+                                            // resolve not with the newSession JSON but with the actual session that has been added in the array
+                                            let projectSessions = updatedProject["sessions"];
 
-                                } else {
-                                    print(`No Project with id: ${projectId}`);
-                                    reject({code: 404, result: `Project ${projectId} Not Found`});
-                                }
+                                            let result = projectSessions.filter(session => session["id"] == sessionId);
+                                            if (result.length == 0) {
+                                                print("500: server error, shouldn't happen");
+                                                reject({code: 500, result: "Server error"});
+                                            } else if (result.length == 1) {
+                                                let session = this.removeAllButSomeKeys(result[0], this.sessionSchemaKeys);
+                                                session = this.changeDateFormatForFields(session, this.sessionDateKeys);
+                                                resolve({code: 201, result: session});
+                                            } else {
+                                                print("500: server error, shouldn't happen");
+                                                reject({code: 500, result: "Server error"});
+                                            }
+
+                                        } else {
+                                            print(`No Project with id: ${projectId}`);
+                                            reject({code: 404, result: `Project ${projectId} Not Found`});
+                                        }
+                                    }
+                                });
+
+
                             }
                         });
                     } catch (error) {
@@ -312,7 +329,7 @@ export class ProjectController {
         return newObj;
     }
 
-    private changeDateFormatForFields(session: JSON, fields: string[]): JSON {
+    private changeDateFormatForFields(session: any, fields: string[]) {
         let newObj = JSON.parse(JSON.stringify(session));
         let allKeys = Object.keys(session);
         allKeys.forEach( key => {

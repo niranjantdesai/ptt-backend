@@ -7,11 +7,11 @@ export const SessionSchema = new Schema({
         required: 'ID is required'
     },
     startTime: {
-        type: Date,
+        type: String,
         required: 'Start time is required'
     },
     endTime: {
-        type: Date,
+        type: String,
         required: 'End time is required'
     },
     counter: { 
