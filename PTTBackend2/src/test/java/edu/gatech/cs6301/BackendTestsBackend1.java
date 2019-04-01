@@ -719,6 +719,7 @@ public class BackendTestsBackend1 {
         String expectedJson = null;
 
         try {
+            deleteUsers();
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userid = getIdFromResponse(response);
             response.close();
@@ -754,6 +755,7 @@ public class BackendTestsBackend1 {
         String expectedJson = null;
 
         try {
+            deleteUsers();
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userid = "1234abc";
             String userid1 = getIdFromResponse(response);
@@ -807,6 +809,7 @@ public class BackendTestsBackend1 {
         String expectedJson = null;
 
         try {
+            deleteUsers();
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userid = getIdFromResponse(response);
             response.close();
@@ -1028,6 +1031,7 @@ public class BackendTestsBackend1 {
      @Test
      public void deleteProjectTest() throws Exception {
          httpclient = HttpClients.createDefault();
+         deleteUsers();
          CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
          String userId = getIdFromResponse(response);
          response.close();
@@ -1086,6 +1090,7 @@ public class BackendTestsBackend1 {
      @Test
      public void deleteMissingProjectTest() throws Exception {
          httpclient = HttpClients.createDefault();
+         deleteUsers();
          CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
          String userId = getIdFromResponse(response);
          response.close();
@@ -1117,6 +1122,7 @@ public class BackendTestsBackend1 {
      @Test
      public void deleteInvalidProjectTest() throws Exception {
          httpclient = HttpClients.createDefault();
+         deleteUsers();
          CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
          String userId = getIdFromResponse(response);
          response.close();
@@ -1145,93 +1151,95 @@ public class BackendTestsBackend1 {
          }
      }
 
-    // @Test
-    // public void createPomodoroSessionTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //     String userId = getIdFromResponse(response);
-    //     response.close();
+    @Test
+    public void createPomodoroSessionTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+        String userId = getIdFromResponse(response);
+        response.close();
 
-    //     response = createProject("PTT Test case 2", userId);
-    //     String projectId = getIdFromResponse(response);
-    //     response.close();
+        response = createProject("PTT Test case 2", userId);
+        String projectId = getIdFromResponse(response);
+        response.close();
 
-    //     try {
+        try {
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         String id = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
+            response = createPomodoroSession(userId, projectId);
+            int status = response.getStatusLine().getStatusCode();
 
-    //         //returns 201
-    //         HttpEntity entity;
-    //         if (status == 201) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
+            //returns 201
+            HttpEntity entity;
+            if (status == 201) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
 
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         String expectedJson = "{\"id\":" + id + "\"startTime\": \"2019-02-18T20:00Z\"," +
-    //                 "\"endTime\": \"2019-02-18T20:00Z\",\"counter\": 0}";
+            String strResponse = EntityUtils.toString(entity);
+            String id = getIdFromStringResponse(strResponse);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String expectedJson = "{\"id\":" + id + ",\"startTime\": \"2019-02-18T20:00Z\"," +
+                    "\"endTime\": \"2019-02-18T20:00Z\",\"counter\": 0}";
 
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updatePomodoroSession() throws Exception {
-    //     try {
-    //         httpclient = HttpClients.createDefault();
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+    @Test
+    public void updatePomodoroSession() throws Exception {
+        try {
+            deleteUsers();
+            httpclient = HttpClients.createDefault();
+            CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+            String userId = getIdFromResponse(response);;
+            response.close();
 
-    //         response = createProject("PTT Test case 2", userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("PTT Test case 2", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         String id = getIdFromResponse(response);
-    //         String sessionId = id;
-    //         response.close();
+            response = createPomodoroSession(userId, projectId);
+            String id = getIdFromResponse(response);
+            String sessionId = id;
+            response.close();
 
-    //         String startTime = "2019-01-18T20:00Z";
-    //         String endTime = "2019-01-18T22:00Z";
-    //         int counter = 1;
-    //         response = updatePomodoro(userId, projectId, sessionId, startTime, endTime, counter);
-    //         id = getIdFromResponse(response);
+            String startTime = "2019-01-18T20:00Z";
+            String endTime = "2019-01-18T22:00Z";
+            int counter = 1;
+            response = updatePomodoro(userId, projectId, sessionId, startTime, endTime, counter);
 
-    //         int status = response.getStatusLine().getStatusCode();
+            int status = response.getStatusLine().getStatusCode();
 
-    //         //returns 200
-    //         HttpEntity entity;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
+            //returns 200
+            HttpEntity entity;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
 
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         String expectedJson = "{\"id\":\"" + projectId + "\",startTime:\"" + startTime +
-    //                 "\",\"endTime\":" + endTime + ",\"counter\":" + counter + "}";
+            String strResponse = EntityUtils.toString(entity);
+            id = getIdFromStringResponse(strResponse);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String expectedJson = "{\"id\":" + id + ",\"startTime\": \"" + startTime +
+                    "\",\"endTime\":\"" + endTime + "\",\"counter\":" + counter + "}";
 
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // @Test
     // public void getReports() throws Exception {
@@ -1360,182 +1368,182 @@ public class BackendTestsBackend1 {
     //     }
     // }
 
-    // @Test
-    // public void updatePomodoroSessionWithBadUserId() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updatePomodoroSessionWithBadUserId() throws Exception {
+        httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+            String userId = getIdFromResponse(response);;
+            response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("PTT Test case 2", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         String sessionId = getIdFromResponse(response);
-    //         response.close();
+            response = createPomodoroSession(userId, projectId);
+            String sessionId = getIdFromResponse(response);
+            response.close();
 
-    //         String badUserId = "BAD_USER_ID";
-    //         response = updatePomodoro(badUserId, projectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
+            String badUserId = "BAD_USER_ID";
+            response = updatePomodoro(badUserId, projectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updatePomodoroSessionWithBadProjectId() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updatePomodoroSessionWithBadProjectId() throws Exception {
+        httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+            String userId = getIdFromResponse(response);;
+            response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("PTT Test case 2", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         String sessionId = getIdFromResponse(response);
-    //         response.close();
+            response = createPomodoroSession(userId, projectId);
+            String sessionId = getIdFromResponse(response);
+            response.close();
 
-    //         String badProjectId = "BAD_PROJECT_ID";
+            String badProjectId = "BAD_PROJECT_ID";
 
-    //         response = updatePomodoro(userId, badProjectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
+            response = updatePomodoro(userId, badProjectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updatePomodoroSessionWithBadSessionId() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+    @Test
+    public void updatePomodoroSessionWithBadSessionId() throws Exception {
+        httpclient = HttpClients.createDefault();
+        try {
+            CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+            String userId = getIdFromResponse(response);;
+            response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("PTT Test case 2", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         response.close();
+            response = createPomodoroSession(userId, projectId);
+            response.close();
 
-    //         String badSessionId = "BAD_SESSION_ID";
-    //         response = updatePomodoro(userId, projectId, badSessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
+            String badSessionId = "BAD_SESSION_ID";
+            response = updatePomodoro(userId, projectId, badSessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updatePomodoroSessionWithInvalidUserId() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updatePomodoroSessionWithInvalidUserId() throws Exception {
+        httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+            String userId = getIdFromResponse(response);;
+            response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("PTT Test case 2", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         String sessionId = getIdFromResponse(response);
-    //         response.close();
+            response = createPomodoroSession(userId, projectId);
+            String sessionId = getIdFromResponse(response);
+            response.close();
 
-    //         response = updatePomodoro(userId + userId + "1234", projectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
+            response = updatePomodoro(userId + userId + "1234", projectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updatePomodoroSessionWithInvalidProjectId() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updatePomodoroSessionWithInvalidProjectId() throws Exception {
+        httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+            String userId = getIdFromResponse(response);;
+            response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("PTT Test case 2", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         String sessionId = getIdFromResponse(response);
-    //         response.close();
+            response = createPomodoroSession(userId, projectId);
+            String sessionId = getIdFromResponse(response);
+            response.close();
 
-    //         response = updatePomodoro(userId, projectId + projectId + "1234", sessionId,
-    //                 "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
+            response = updatePomodoro(userId, projectId + projectId + "1234", sessionId,
+                    "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updatePomodoroSessionWithInvalidSessionId() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+    @Test
+    public void updatePomodoroSessionWithInvalidSessionId() throws Exception {
+        httpclient = HttpClients.createDefault();
+        try {
+            CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+            String userId = getIdFromResponse(response);;
+            response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject("PTT Test case 2", userId);
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
-    //         String sessionId = getIdFromResponse(response);
-    //         response.close();
+            response = createPomodoroSession(userId, projectId);
+            String sessionId = getIdFromResponse(response);
+            response.close();
 
-    //         response = updatePomodoro(userId, projectId, sessionId + sessionId + "1234",
-    //                 "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
+            response = updatePomodoro(userId, projectId, sessionId + sessionId + "1234",
+                    "2019-02-18T20:00Z", "2019-02-18T21:00Z", 1);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            deleteUser(userId);
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // @Test
     // public void getReportWithInvalidProjectId() throws Exception {
@@ -1808,7 +1816,7 @@ public class BackendTestsBackend1 {
     }
 
     private CloseableHttpResponse createPomodoroSession(String userId, String projectId) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects" + projectId + "/sessions");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions");
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"startTime\":\"2019-02-18T20:00Z\"," +
                 "\"endTime\":\"2019-02-18T20:00Z\",\"counter\": 0}");
@@ -1822,7 +1830,7 @@ public class BackendTestsBackend1 {
     }
 
     private CloseableHttpResponse createPomodoroWithInvalidInputs(String userId, String projectId, String startTime) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects" + projectId + "/sessions");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions");
         httpRequest.addHeader("accept", "application/json");
 
         StringEntity input = new StringEntity("{\"startTime\":\"2019-02-18T20:00Z\",\"startTime\":\"" + startTime +
@@ -1839,11 +1847,11 @@ public class BackendTestsBackend1 {
 
     private CloseableHttpResponse updatePomodoro(String userId, String projectId, String sessionId, String startTime,
                                                  String endTime, int counter) throws IOException {
-        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userId + "/projects" + projectId + "/sessions" + sessionId);
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions/" + sessionId);
         httpRequest.addHeader("accept", "application/json");
 
-        StringEntity input = new StringEntity("{\"id\":\"" + projectId + "\",startTime:\"" + startTime +
-                "\",\"endTime\":" + endTime + ",\"counter\":" + counter + "}");
+        StringEntity input = new StringEntity("{\"id\":\"" + projectId + "\",\"startTime\":\"" + startTime +
+                "\",\"endTime\":\"" + endTime + "\",\"counter\":" + counter + "}");
 
         input.setContentType("application/json");
         httpRequest.setEntity(input);
