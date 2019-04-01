@@ -628,13 +628,6 @@ public class BackendTestsBackend2 {
     }
 
 
-
-
-
-
-
-
-
     // done by Billy
     @Test
     public void getAllProjectsTest200() throws Exception{
@@ -1014,23 +1007,7 @@ public class BackendTestsBackend2 {
     //     }
     // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     //done by Weihua
+    //done by Weihua
      @Test
      public void deleteProjectTest200_1() throws Exception{
          // CreateOneDeleteOneProjectTest
@@ -1190,11 +1167,6 @@ public class BackendTestsBackend2 {
              response = createProject("CS6301", userId);
              String projectId = Long.toString(getIdFromResponse(response));
              response.close();
-
-            //  char[] idChars = projectId.toCharArray();
-            //  idChars[projectId.length()-1] = '1';
-            //  idChars[projectId.length()-2] = '2';
-            //  projectId = String.valueOf(idChars);
 
              response = deleteProject(projectId+"1000", userId);
              int status = response.getStatusLine().getStatusCode();
