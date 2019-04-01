@@ -177,180 +177,178 @@ public class BackendTestsMobile2 {
     //     }
     // }
 
-    // @Test
-    // public void updateSessionTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+    @Test
+    public void updateSessionTest() throws Exception {
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         Date d2 = addHoursToCurrentDate(2);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
-    //         String toDate2 = getDateString(d2);
+            //Dates from and to
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
+            String toDate2 = "2019-02-18T22:00Z";
+            
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
+            //update this session
+            response = updateSession(userId,projectId,sessionId,fromDate, toDate2, 1);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
+            int id = getIdFromStringResponse(strResponse);
 
-    //         //update this session
-    //         response = updateSession(userId,projectId,sessionId,fromDate, toDate2, 1);
-    //         int id = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String expectedJson = "{\"id\":" + id + ",\"startTime\": \""+fromDate+"\",\"endTime\": \""+toDate2+"\",\"counter\": 1}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         String expectedJson = "{\"id\":\"" + id + "\",\"startTime\": \""+fromDate+"\",\"endTime\": \""+toDate2+"\",\"counter\": 1}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+    //update invalid session
+    @Test
+    public void updateSessionInvalidTest() throws Exception {
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    // //update invalid session
-    // @Test
-    // public void updateSessionInvalidTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
+            String toDate2 = "2019-02-18T22:00Z";
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         Date d2 = addHoursToCurrentDate(2);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
-    //         String toDate2 = getDateString(d2);
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
+            //update this session
+            response = updateSession(userId,projectId,sessionId+1,fromDate, toDate2, 1);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         //update this session
-    //         response = updateSession(userId,projectId,sessionId+1,fromDate, toDate2, 1);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-    // //update session with invalid user
-    // @Test
-    // public void updateSessionInvalidUserTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         Date d2 = addHoursToCurrentDate(2);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
-    //         String toDate2 = getDateString(d2);
+    //update session with invalid user
+    @Test
+    public void updateSessionInvalidUserTest() throws Exception {
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
+            String toDate2 = "2019-02-18T22:00Z";
 
-    //         //update this session
-    //         response = updateSession(userId+1,projectId,sessionId,fromDate, toDate2, 1);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-    // //update session with invalid project
-    // @Test
-    // public void updateSessionInvalidProjectTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         Date d2 = addHoursToCurrentDate(2);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
-    //         String toDate2 = getDateString(d2);
+            //update this session
+            response = updateSession(userId+1,projectId,sessionId,fromDate, toDate2, 1);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
 
-    //         //update this session
-    //         response = updateSession(userId,projectId + 1,sessionId,fromDate, toDate2, 1);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+    //update session with invalid project
+    @Test
+    public void updateSessionInvalidProjectTest() throws Exception {
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    // //update session with invalid date
-    // @Test
-    // public void updateSessionInvalidDateTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+            // //Dates from and to
+            // Date d = addHoursToCurrentDate(1);
+            // Date d2 = addHoursToCurrentDate(2);
+            // String fromDate = getDateString(new Date());
+            // String toDate = getDateString(d);
+            // String toDate2 = getDateString(d2);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         Date d2 = addHoursToCurrentDate(2);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
-    //         String toDate2 = getDateString(d2);
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
+            String toDate2 = "2019-02-18T22:00Z";
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         //update this session
-    //         response = updateSession(userId,projectId ,sessionId,fromDate+"sdf", toDate2, 1);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            //update this session
+            response = updateSession(userId,projectId + 1,sessionId,fromDate, toDate2, 1);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    //update session with invalid date
+    @Test
+    public void updateSessionInvalidDateTest() throws Exception {
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
+
+            //Dates from and to
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
+            String toDate2 = "2019-02-18T22:00Z";
+
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
+
+            //update this session
+            response = updateSession(userId,projectId ,sessionId,fromDate+"sdf", toDate2, 1);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
 
     // @Test

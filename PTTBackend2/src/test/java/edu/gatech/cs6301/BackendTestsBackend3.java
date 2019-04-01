@@ -746,178 +746,179 @@ public class BackendTestsBackend3 {
     //     }
     // }
     
-    // @Test
-    // public void updateSessionTest() throws Exception{
-    //     System.out.println("----- Start testing PUT session -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateSessionTest() throws Exception{
+        System.out.println("----- Start testing PUT session -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
+        try{
+            deleteUsers();
+            // 1. Create a user
+            CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+            int status = response.getStatusLine().getStatusCode();
             
-    //         if(status != 201)
-    //         	throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+            if(status != 201)
+            	throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
             
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+            String userId = getIdFromResponse(response);
+            response.close();
             
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
+            // 2. Create a project
+            response = createProject(userId, "Project 1");
+            status = response.getStatusLine().getStatusCode();
             
-    //         if(status != 201)
-    //         	throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+            if(status != 201)
+            	throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
             
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
+            // 3. Create a session and associate it to a user and project
+            response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
             
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-    //         String sessionId = getIdFromResponse(response);
-    //         HttpEntity entity;
+            // 4. Check the response status, if correct get the response body
+            status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
 
-    //         if(status == 201){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+            if(status == 201){
+                entity = response.getEntity();
+            }
+            else throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
             
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Get server-side generated id
-    //         String id = getIdFromStringResponse(strResponse);
-    //         // Expected response body
-    //         String expectedJson = "{\"id\":\"" + id + "\",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T20:00Z\",\"counter\":1}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Convert response body to string (in purpose of comparing)
+            String strResponse = EntityUtils.toString(entity);
+            String sessionId = getIdFromStringResponse(strResponse);
+            System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+            // Get server-side generated id
+            String id = getIdFromStringResponse(strResponse);
+            // Expected response body
+            String expectedJson = "{\"id\":" + id + ",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T20:00Z\",\"counter\":1}";
+            // Compare
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         response = updateSession(userId, projectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T23:00Z", "2");
-    //         status = response.getStatusLine().getStatusCode();
+            response = updateSession(userId, projectId, sessionId, "2019-02-18T20:00Z", "2019-02-18T23:00Z", "2");
+            status = response.getStatusLine().getStatusCode();
 
-    //         if(status == 200){
-    //             entity = response.getEntity();
-    //         }
-    //         else throw new ClientProtocolException("Unexpected POST response status while updating a session: " + status);
+            if(status == 200){
+                entity = response.getEntity();
+            }
+            else throw new ClientProtocolException("Unexpected POST response status while updating a session: " + status);
 
-    //         strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Get server-side generated id
-    //         String updatedId = getIdFromStringResponse(strResponse);
-    //         // Expected response body
-    //         expectedJson = "{\"id\":\"" + updatedId + "\",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T23:00Z\",\"counter\":\"2\"}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
+            strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+            // Get server-side generated id
+            String updatedId = getIdFromStringResponse(strResponse);
+            // Expected response body
+            expectedJson = "{\"id\":" + updatedId + ",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T23:00Z\",\"counter\":2}";
+            // Compare
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            //EntityUtils.consume(response.getEntity());
+            response.close();
             
             
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Delete project
+            response = deleteProject(userId, projectId);
+            EntityUtils.consume(response.getEntity());
+            response.close();
             
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Delete created user
+            response = deleteUser(userId);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
     
-    // @Test
-    // public void updateSessionBadRequestTest() throws Exception{
-    //     System.out.println("----- Start testing PUT session for ill-formed request body -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateSessionBadRequestTest() throws Exception{
+        System.out.println("----- Start testing PUT session for ill-formed request body -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         // Post user with bad request
-    //         CloseableHttpResponse response = updateSessionBadRequest();
-    //         int status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 400) System.out.println("*** Response code correct ***");
-    //         else System.out.println("*** Response code wrong: " + status + "***");
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+        try{
+            // Post user with bad request
+            CloseableHttpResponse response = updateSessionBadRequest();
+            int status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
     
-    // @Test
-    // public void updateSessionNonExistentUserTest() throws Exception{
-    //     System.out.println("----- Start testing PUT session for non-existent user -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateSessionNonExistentUserTest() throws Exception{
+        System.out.println("----- Start testing PUT session for non-existent user -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         // 1. Post user with non-existent userId = 101
-    //         CloseableHttpResponse response = updateSession("101", "projectId", "sessionId", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
+        try{
+            // 1. Post user with non-existent userId = 101
+            CloseableHttpResponse response = updateSession("10101010", "projectId", "sessionId", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
             
-    //         // 2. Check the response status, if correct get the response body
-    //         int status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 404) System.out.println("*** Response code correct ***");
-    //         else System.out.println("*** Response code wrong: " + status + "***");
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // 2. Check the response status, if correct get the response body
+            int status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 404 || status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
     
-    // @Test
-    // public void updateSessionNonExistentProjectTest() throws Exception{
-    //     System.out.println("----- Start testing POST session for non-existent project -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateSessionNonExistentProjectTest() throws Exception{
+        System.out.println("----- Start testing POST session for non-existent project -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         // 1. Post user with non-existent userId = 101
-    //         CloseableHttpResponse response = updateSession("userId", "101", "sessionId", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
+        try{
+            // 1. Post user with non-existent userId = 101
+            CloseableHttpResponse response = updateSession("userId", "101010101", "sessionId", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
             
-    //         // 2. Check the response status, if correct get the response body
-    //         int status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 404) System.out.println("*** Response code correct ***");
-    //         else System.out.println("*** Response code wrong: " + status + "***");
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // 2. Check the response status, if correct get the response body
+            int status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 404 || status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
     
-    // @Test
-    // public void updateSessionNonExistentSessionTest() throws Exception{
-    //     System.out.println("----- Start testing POST session for non-existent session -----");
-    //     httpclient = HttpClients.createDefault();
+    @Test
+    public void updateSessionNonExistentSessionTest() throws Exception{
+        System.out.println("----- Start testing POST session for non-existent session -----");
+        httpclient = HttpClients.createDefault();
 
-    //     try{
-    //         // 1. Post user with non-existent userId = 101
-    //         CloseableHttpResponse response = updateSession("userId", "projectId", "101", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
+        try{
+            // 1. Post user with non-existent userId = 101
+            CloseableHttpResponse response = updateSession("userId", "projectId", "101010101", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
             
-    //         // 2. Check the response status, if correct get the response body
-    //         int status = response.getStatusLine().getStatusCode();
-    //         System.out.println("*** Response code: " + status + " ***");
-    //         if(status == 404) System.out.println("*** Response code correct ***");
-    //         else System.out.println("*** Response code wrong: " + status + "***");
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-    // /* Session related test -- END */
+            // 2. Check the response status, if correct get the response body
+            int status = response.getStatusLine().getStatusCode();
+            System.out.println("*** Response code: " + status + " ***");
+            if(status == 404 || status == 400) System.out.println("*** Response code correct ***");
+            else throw new ClientProtocolException("*** Response code wrong: " + status + "***");
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        }
+        finally {
+            httpclient.close();
+        }
+    }
+    /* Session related test -- END */
     
 
     // // ------------------------------  Projects test ----------------------------------
@@ -3189,7 +3190,7 @@ public class BackendTestsBackend3 {
     }
     
     private CloseableHttpResponse updateSession(String userId, String projectId, String sessionId, String startTime, String endTime, String counter) throws IOException{
-        HttpPut httpPut = new HttpPut(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions" + sessionId);
+        HttpPut httpPut = new HttpPut(baseUrl + "/users/" + userId + "/projects/" + projectId + "/sessions/" + sessionId);
         httpPut.addHeader("accpet", "application/json");
         StringEntity input = new StringEntity("{\"startTime\":\"" + startTime + "\"," +
                 								"\"endTime\":\"" + endTime + "\"," +
@@ -3204,7 +3205,7 @@ public class BackendTestsBackend3 {
     }
     
     private CloseableHttpResponse updateSessionBadRequest() throws IOException{
-    	HttpPut httpPut = new HttpPut(baseUrl + "/users/" + "userId" + "/projects/" + "projectId" + "/sessions" + "sessionId");
+    	HttpPut httpPut = new HttpPut(baseUrl + "/users/" + "userId" + "/projects/" + "projectId" + "/sessions/" + "sessionId");
     	httpPut.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("Ill-formed request body. This should be rejected.");
         input.setContentType("application/json");

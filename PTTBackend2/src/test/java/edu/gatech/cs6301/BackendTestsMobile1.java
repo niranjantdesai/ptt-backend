@@ -763,73 +763,71 @@ public class BackendTestsMobile1 {
     //     }          
     // }
     
-    // @Test
-    // public void updateSessionForMissingUserTest() throws Exception{
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void updateSessionForMissingUserTest() throws Exception{
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
         
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
-    //         userId = userId + "xyz";
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
             
-    //         response = createProject(userId,"Project 1");
-    //         String projectId = getIdFromResponse(response);
-    //         String startTime = "2019-02-18T18:00Z";
-    //         String endTime = "2019-02-18T19:00Z";
-    //         int counter = 2;            
-    //         response = createSession(userId, projectId, startTime, endTime, counter);
-    //         String sessionId = getIdFromResponse(response);
-    //         endTime = "2019-02-18T20:00Z";
-    //         counter = 4;
+            response = createProject(userId, "Project 1");
+            String projectId = getIdFromResponse(response);
+            String startTime = "2019-02-18T18:00Z";
+            String endTime = "2019-02-18T19:00Z";
+            int counter = 2;            
+            response = createSession(userId, projectId, startTime, endTime, counter);
+            String sessionId = getIdFromResponse(response);
+            endTime = "2019-02-18T20:00Z";
+            counter = 4;
             
-    //         response = updateSession(userId, projectId, sessionId, startTime, endTime, counter);
+            response = updateSession(userId + "1234", projectId, sessionId, startTime, endTime, counter);
             
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }          
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }          
+    }
     
-    // @Test
-    // public void updateSessionForMissingProjectTest() throws Exception{
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void updateSessionForMissingProjectTest() throws Exception{
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
         
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
             
-    //         response = createProject(userId,"Project 1");
-    //         String projectId = getIdFromResponse(response) + "xyz";
-    //         String startTime = "2019-02-18T18:00Z";
-    //         String endTime = "";
-    //         int counter = 0;            
-    //         response = createSession(userId, projectId, startTime, endTime, counter);
-    //         String sessionId = getIdFromResponse(response);
+            response = createProject(userId,"Project 1");
+            String projectId = getIdFromResponse(response);
+            String startTime = "2019-02-18T18:00Z";
+            String endTime = "2019-02-18T20:00Z";
+            int counter = 0;            
+            response = createSession(userId, projectId, startTime, endTime, counter);
+            String sessionId = getIdFromResponse(response);
             
-    //         endTime = "2019-02-18T20:30Z";
-    //         counter = 5;
+            counter = 5;
             
-    //         response = updateSession(userId, projectId, sessionId, startTime, endTime, counter);
+            response = updateSession(userId, projectId + "1234", sessionId, startTime, endTime, counter);
             
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }          
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }          
+    }
     
     // @Test
     // public void postSessionForMissingProjectTest() throws Exception{
