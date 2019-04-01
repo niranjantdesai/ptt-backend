@@ -1097,134 +1097,134 @@ public class BackendTestsWeb4 {
      }
 
 
-    // @Test
-    // // When getting a project that is not found in the DB, the server should report user or project not found (404)
-    // // This test checks for this in both an empty DB and a DB containing users.
-    // public void getProjectByIDNotFoundTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    // When getting a project that is not found in the DB, the server should report user or project not found (404)
+    // This test checks for this in both an empty DB and a DB containing users.
+    public void getProjectByIDNotFoundTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     try {
-    //         // Get on an empty DB
-    //         CloseableHttpResponse response = getProject(111, 222);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try {
+            // Get on an empty DB
+            CloseableHttpResponse response = getProject(111, 222);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Get on DB with user of no project
-    //         response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Get on DB with user of no project
+            response = createUser("John", "Doe", "john@doe.org");
+            long userId = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         response = getProject(userId, 222);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            response = getProject(userId, 222);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // Get on DB with user that contains project
-    //         response = createProject("test project", userId);
-    //         long projectId = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Get on DB with user that contains project
+            response = createProject("test project", userId);
+            long projectId = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         response = getProject(userId, projectId+1);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            response = getProject(userId, projectId+1);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-
-    // @Test
-    // // When getting a project that exists in server DB with correct projectID and userID
-    // // the server should return the correspondin project body (200)
-    // public void getValidProjectByIDTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         // add user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // add project
-    //         response = createProject( "test project", userId);
-    //         long projectId = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // getProjectByID, check if the server really store the correct project
-    //         response = getProject(userId, projectId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         String projectname = getProjectnameFromResponse(response);
-    //         Assert.assertEquals("test project", projectname);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
 
-    // @Test
-    // // When getting a project, if the userId or projectId isn't Long (int64) type
-    // // the server should report bad request (400)
-    // public void getProjectByIDBadRequestTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    // When getting a project that exists in server DB with correct projectID and userID
+    // the server should return the correspondin project body (200)
+    public void getValidProjectByIDTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     try {
-    //         // get project with string userId
-    //         HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + "astring" + "/projects/" + 222);
-    //         httpRequest.addHeader("accept", "application/json");
+        try {
+            // add user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         CloseableHttpResponse response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+            // add project
+            response = createProject( "test project", userId);
+            long projectId = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // getProjectByID, check if the server really store the correct project
+            response = getProject(userId, projectId);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(200, status);
+            String projectname = getProjectnameFromResponse(response);
+            Assert.assertEquals("test project", projectname);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // get project with string projectId
-    //         httpRequest = new HttpGet(baseUrl + "/users/" + 222 + "/projects/" + "()-+=");
-    //         httpRequest.addHeader("accept", "application/json");
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+    @Test
+    // When getting a project, if the userId or projectId isn't Long (int64) type
+    // the server should report bad request (400)
+    public void getProjectByIDBadRequestTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        try {
+            // get project with string userId
+            HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + "astring" + "/projects/" + 222);
+            httpRequest.addHeader("accept", "application/json");
+
+            System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+            CloseableHttpResponse response = httpclient.execute(httpRequest);
+            System.out.println("*** Raw response " + response + "***");
+
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            // get project with string projectId
+            httpRequest = new HttpGet(baseUrl + "/users/" + 222222222 + "/projects/" + "abcd");
+            httpRequest.addHeader("accept", "application/json");
+
+            System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+            response = httpclient.execute(httpRequest);
+            System.out.println("*** Raw response " + response + "***");
+
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // @Test
     // public void getReportUserOrProjectNotFound() throws Exception {
