@@ -33,19 +33,22 @@ export class ProjectController {
                 if (usersProjectIds.length == 0) {
                     resolve({code: 200, result: usersProjects});
                 } else {
-                    usersProjectIds.forEach((projectId, index) => {
+                    for (let i = 0; i < usersProjectIds.length; i++) {
+                        let projectId = usersProjectIds[i];
+
                         this.getProject(userId, projectId)
                         .then(obj => {
                             let aProject = obj["result"];
                             usersProjects.push(aProject);
-                            if (index == usersProjectIds.length-1) {
+
+                            if (i == usersProjectIds.length-1) {
                                 resolve({code: 200, result: usersProjects});
                             }
                         })
                         .catch(obj => {
                             reject(obj);
                         })
-                    });
+                    }
                 }
             })
             .catch(obj => {
