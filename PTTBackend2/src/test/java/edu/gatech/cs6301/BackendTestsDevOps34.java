@@ -583,121 +583,121 @@ public class BackendTestsDevOps34 {
     //     }
     // }
 
-    // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
-    // @Test
-    // public void DeleteProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     String userId = singleUserBeforeProjectTest();
-    //     String expectedJson;
+     // TODO: uncomment after implementing getAllProjects which is for the next deliverable
+     @Test
+     public void DeleteProjectTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         String userId = singleUserBeforeProjectTest();
+         String expectedJson;
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String deleteid = getIdFromResponse(response);
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createProject(userId, "Homework");
+             // EntityUtils.consume(response.getEntity());
+             String deleteid = getIdFromResponse(response);
+             response.close();
 
-    //         int status;
-    //         HttpEntity entity;
-    //         String strResponse;
+             int status;
+             HttpEntity entity;
+             String strResponse;
 
-    //         // deleteProject(userId, deleteid);
+             // deleteProject(userId, deleteid);
 
-    //         response = deleteProject(userId, deleteid);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+             response = deleteProject(userId, deleteid);
+             status = response.getStatusLine().getStatusCode();
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
+             strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         expectedJson = "{\"id\":" + deleteid + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             expectedJson = "{\"id\":" + deleteid + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}";
+             JSONAssert.assertEquals(expectedJson,strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         response = getAllProjects(userId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+             response = getAllProjects(userId);
+             status = response.getStatusLine().getStatusCode();
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
+             strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         expectedJson = "[]";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             expectedJson = "[]";
+             JSONAssert.assertEquals(expectedJson,strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
-    // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
-    // @Test
-    // public void CreateMultipleDeleteOneProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     String userId = singleUserBeforeProjectTest();
-    //     String expectedJson = "";
+     // TODO: uncomment after implementing getAllProjects which is for the next deliverable
+     @Test
+     public void CreateMultipleDeleteOneProjectTest() throws Exception {
+         httpclient = HttpClients.createDefault();
+         String userId = singleUserBeforeProjectTest();
+         String expectedJson = "";
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String deleteId = getIdFromResponse(response);
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createProject(userId, "Homework");
+             // EntityUtils.consume(response.getEntity());
+             String deleteId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createProject(userId, "Programming");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String id = getIdFromResponse(response);
-    //         expectedJson += "[{\"id\":" + id + ",\"projectname\":\"Programming\",\"userId\":"+ userId +"}]";
-    //         response.close();
+             response = createProject(userId, "Programming");
+             // EntityUtils.consume(response.getEntity());
+             String id = getIdFromResponse(response);
+             expectedJson += "[{\"id\":" + id + ",\"projectname\":\"Programming\",\"userId\":"+ userId +"}]";
+             response.close();
 
-    //         int status;
-    //         HttpEntity entity;
-    //         String strResponse;
+             int status;
+             HttpEntity entity;
+             String strResponse;
 
-    //         response = deleteProject(userId, deleteId);
+             response = deleteProject(userId, deleteId);
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+             status = response.getStatusLine().getStatusCode();
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
+             strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         String expectedJson2 = "{\"id\":" + id + ",\"projectname\":\"Programming\",\"userId\":"+ userId +"}";
-    //         JSONAssert.assertEquals(expectedJson2,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             String expectedJson2 = "{\"id\":" + deleteId + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}";
+             JSONAssert.assertEquals(expectedJson2,strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         response = getAllProjects(userId);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+             response = getAllProjects(userId);
+             status = response.getStatusLine().getStatusCode();
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
+             strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         // expectedJson = "[]";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             // expectedJson = "[]";
+             JSONAssert.assertEquals(expectedJson,strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
 
@@ -911,34 +911,35 @@ public class BackendTestsDevOps34 {
         return projectId;
     }
 
-//     @Test
-//     public void createSessionTest() throws Exception {
-//         String userId = singleUserBeforeProjectTest();
-//         String projectId = singleProjectBeforeSessionTest(userId);
-//         try {
-//             CloseableHttpResponse response = createSession(userId, projectId,"2019-02-18T20:00Z","2019-02-18T20:00Z",0);
+     @Test
+     public void createSessionTest() throws Exception {
+        deleteAllUsers();
+         String userId = singleUserBeforeProjectTest();
+         String projectId = singleProjectBeforeSessionTest(userId);
+         try {
+             CloseableHttpResponse response = createSession(userId, projectId,"2019-02-18T20:00Z","2019-02-18T20:00Z",0);
 
-//             int status = response.getStatusLine().getStatusCode();
-//             HttpEntity entity;
-//             if (status == 201) {
-//                 entity = response.getEntity();
-//             } else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status);
-//             }
-//             String strResponse = EntityUtils.toString(entity);
+             int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             if (status == 201) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
+             String strResponse = EntityUtils.toString(entity);
 
-//             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-//             String id = getIdFromStringResponse(strResponse);
+             String id = getIdFromStringResponse(strResponse);
 
-//             String expectedJson = "{\"id\":" + id + ",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T20:00Z\",\"counter\":0}";
-//             JSONAssert.assertEquals(expectedJson, strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-//         } finally {
-//             httpclient.close();
-//         }
-//     }
+             String expectedJson = "{\"id\":" + id + ",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T20:00Z\",\"counter\":0}";
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
         @Test
             public void updateSessionTest() throws Exception {
