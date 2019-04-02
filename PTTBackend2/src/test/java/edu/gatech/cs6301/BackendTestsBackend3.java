@@ -661,7 +661,7 @@ public class BackendTestsBackend3 {
              // Get server-side generated id
              String id = getIdFromStringResponse(strResponse);
              // Expected response body
-             String expectedJson = "{\"id\":\"" + id + "\",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T20:00Z\",\"counter\":1}";
+             String expectedJson = "{\"id\":" + id + ",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T20:00Z\",\"counter\":1}";
              // Compare
              JSONAssert.assertEquals(expectedJson, strResponse, false);
              //EntityUtils.consume(response.getEntity());
@@ -730,14 +730,28 @@ public class BackendTestsBackend3 {
          httpclient = HttpClients.createDefault();
 
          try{
-             // 1. Post user with non-existent projectId = 101
-             CloseableHttpResponse response = createSession("userId", "101", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             response = createSession(userId, "101", "2019-02-18T20:00Z", "2019-02-18T20:00Z", "1");
             
              // 2. Check the response status, if correct get the response body
-             int status = response.getStatusLine().getStatusCode();
+             status = response.getStatusLine().getStatusCode();
              System.out.println("*** Response code: " + status + " ***");
              if(status == 404) System.out.println("*** Response code correct ***");
              else System.out.println("*** Response code wrong: " + status + "***");
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // 3. Delete created user
+             response = deleteUser(userId);
              EntityUtils.consume(response.getEntity());
              response.close();
          }
@@ -1027,11 +1041,7 @@ public class BackendTestsBackend3 {
              else throw new ClientProtocolException("Unexpected response status: " + status);
              // Convert response body to string (in purpose of comparing)
              response.close();
-//             String id = getIdFromResponse(response);
-//             // Delete created project and user
-//             response = deleteProject(userId ,id);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
+
              response = deleteUser(userId);
              EntityUtils.consume(response.getEntity());
              response.close();
@@ -1104,12 +1114,7 @@ public class BackendTestsBackend3 {
                  System.out.println("----- Pass createProjectExist test -----");
              }
              else throw new ClientProtocolException("Unexpected response status: " + status);
-//             String id = getIdFromResponse(response);
-//             // Delete created project and user
-//             response = deleteProject(userId ,id);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-             // Delete created project and user
+
              response = deleteUser(userId);
              EntityUtils.consume(response.getEntity());
              response.close();
