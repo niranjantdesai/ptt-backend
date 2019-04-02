@@ -775,14 +775,6 @@ public class BackendTestsBackend1 {
            } else {
                throw new ClientProtocolException("Unexpected response status: " + status);
            }
-        //    strResponse = EntityUtils.toString(entity);
-
-        //    System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
-        //    expectedJson = "";
-        //    JSONAssert.assertEquals(expectedJson,strResponse, false);
-        //    EntityUtils.consume(response.getEntity());
-        //    response.close();
 
             // Missing body variables
             response = createProject("", userid1);
@@ -1062,23 +1054,22 @@ public class BackendTestsBackend1 {
                      "}";
              JSONAssert.assertEquals(expectedJson,strResponse, false);
 
-             // // TODO: uncomment after implementing getAllProjects which is for the next deliverable
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-//
-//             response = getAllProjects(userId);
-//             status = response.getStatusLine().getStatusCode();
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             } else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status);
-//             }
-//             strResponse = EntityUtils.toString(entity);
-//
-//             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//
-//             expectedJson = "[]";
-//             JSONAssert.assertEquals(expectedJson,strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             response = getAllProjects(userId);
+             status = response.getStatusLine().getStatusCode();
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
+             strResponse = EntityUtils.toString(entity);
+
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+             expectedJson = "[]";
+             JSONAssert.assertEquals(expectedJson,strResponse, false);
              EntityUtils.consume(response.getEntity());
              deleteUser(userId);
              response.close();
@@ -1285,88 +1276,88 @@ public class BackendTestsBackend1 {
     //     }
     // }
 
-    // @Test
-    // public void createPomodoroSessionWithInvalidUserIdTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+     @Test
+     public void createPomodoroSessionWithInvalidUserIdTest() throws Exception {
+         httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createProject("PTT Test case 2", userId + userId + "12345");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+             response = createProject("PTT Test case 2", userId);
+             String projectId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createPomodoroSession(userId, projectId);
+             response = createPomodoroSession(userId + "1234", projectId);
 
-    //         HttpEntity entity;
-    //         int status = response.getStatusLine().getStatusCode();
+             HttpEntity entity;
+             int status = response.getStatusLine().getStatusCode();
 
-    //         if (status == 404) {
-    //             entity = response.getEntity();
-    //             EntityUtils.consume(entity);
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
+             if (status == 404) {
+                 entity = response.getEntity();
+                 EntityUtils.consume(entity);
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             deleteUser(userId);
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void createPomodoroSessionBadRequestTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+     @Test
+     public void createPomodoroSessionBadRequestTest() throws Exception {
+         httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+             response = createProject("PTT Test case 2", userId);
+             String projectId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createPomodoroWithInvalidInputs(userId, projectId,"");
+             response = createPomodoroWithInvalidInputs(userId, projectId,"");
 
-    //         HttpEntity entity;
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+             HttpEntity entity;
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             deleteUser(userId);
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void createPomodoroSessionWithInvalidProjectIdTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+     @Test
+     public void createPomodoroSessionWithInvalidProjectIdTest() throws Exception {
+         httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+             response = createProject("PTT Test case 2", userId);
+             String projectId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createPomodoroWithInvalidInputs(userId, projectId + projectId + "1234","2019-02-18T20:00Z");
+             response = createPomodoroWithInvalidInputs(userId, projectId + projectId + "abc","2019-02-18T20:00Z");
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             deleteUser(userId);
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
     @Test
     public void updatePomodoroSessionWithBadUserId() throws Exception {

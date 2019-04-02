@@ -671,9 +671,10 @@ public class BackendTestsBackend2 {
                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200");
             }
             strResponse = EntityUtils.toString(entity);
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n");
             System.out.println(
                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n");
             String expectedJson = "[" + "{\"id\":" + projectId1
                     + ",\"projectname\":\"CS6301\",\"userId\":" + userId + "}" + "," +
                     "{\"id\":" + projectId2
@@ -1063,23 +1064,23 @@ public class BackendTestsBackend2 {
              JSONAssert.assertEquals(expectedJson, strResponse, false);
              EntityUtils.consume(response.getEntity());
              response.close();
-//             //Haven't implement endpoint GET "/users/userId/projects"
-//             response = getAllProjects(userId);
-//             status = response.getStatusLine().getStatusCode();
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             } else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
-//             }
-//             strResponse = EntityUtils.toString(entity);
-//
-//             System.out.println(
-//                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//
-//             expectedJson = "[]";
-//             JSONAssert.assertEquals(expectedJson, strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
+
+             response = getAllProjects(userId);
+             status = response.getStatusLine().getStatusCode();
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
+             }
+             strResponse = EntityUtils.toString(entity);
+
+             System.out.println(
+                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+             expectedJson = "[]";
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
          } finally{
              httpclient.close();
          }
@@ -1124,23 +1125,23 @@ public class BackendTestsBackend2 {
              EntityUtils.consume(response.getEntity());
              response.close();
 
-//             response = getAllProjects(userId);
-//             status = response.getStatusLine().getStatusCode();
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             } else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
-//             }
-//             strResponse = EntityUtils.toString(entity);
-//
-//             System.out.println(
-//                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//
-//             expectedJson = "[{\"id\":" + projectId
-//                     + ",\"projectname\":\"CS6301\",\"userId\":" + projectId + "}]";
-//             JSONAssert.assertEquals(expectedJson, strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
+             response = getAllProjects(userId);
+             status = response.getStatusLine().getStatusCode();
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
+             }
+             strResponse = EntityUtils.toString(entity);
+
+             System.out.println(
+                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+             expectedJson = "[{\"id\":" + projectId
+                     + ",\"projectname\":\"CS6301\",\"userId\":" + userId + "}]";
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
          } finally{
              httpclient.close();
          }
@@ -1226,7 +1227,7 @@ public class BackendTestsBackend2 {
             response = createProject("CS6301",userId);
             String projectId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             String startTime = "2019-02-18T20:00Z";
             String endTime = startTime;
             response = createSession(userId, projectId, startTime, endTime);
@@ -1270,7 +1271,7 @@ public class BackendTestsBackend2 {
             response = createProject("CS6301",userId);
             String projectId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             String endTime = "2019-02-18T20:00Z";
             response = createSessionIncorrect(userId, projectId, endTime);
             int status = response.getStatusLine().getStatusCode();
@@ -1297,7 +1298,7 @@ public class BackendTestsBackend2 {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a project
             response = createProject("CS6301", userId);
             String projectId = Long.toString(getIdFromResponse(response));
@@ -1306,7 +1307,7 @@ public class BackendTestsBackend2 {
             // Corrupt the userId
             int temp = Integer.parseInt(userId);
             userId = String.valueOf(temp + 1000);
-            
+
             // Create a session
             String startTime = "2019-02-18T20:00Z";
             String endTime = startTime;
@@ -1336,7 +1337,7 @@ public class BackendTestsBackend2 {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a project
             response = createProject("CS6301", userId);
             String projectId = Long.toString(getIdFromResponse(response));
@@ -1345,7 +1346,7 @@ public class BackendTestsBackend2 {
             // Corrupt the project ID
             int temp = Integer.parseInt(projectId);
             projectId = String.valueOf(temp + 1000);
-            
+
             // Create a session
             String startTime = "2019-02-18T20:00Z";
             String endTime = startTime;
@@ -1378,13 +1379,13 @@ public class BackendTestsBackend2 {
             response = createProject("CS6301",userId);
             String projectId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             String startTime = "2019-02-18T20:00Z";
             String endTime = startTime;
             response = createSession(userId, projectId, startTime, endTime);
             String sessionId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             String newStartTime = "2019-03-18T20:00Z";
             String newEndTime = newStartTime;
             String counter = "1";
@@ -1426,12 +1427,12 @@ public class BackendTestsBackend2 {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a project
             response = createProject("CS6301", userId);
             String projectId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a session
             String startTime = "2019-02-18T20:00Z";
             String endTime = startTime;
@@ -1473,12 +1474,12 @@ public class BackendTestsBackend2 {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a project
             response = createProject("CS6301", userId);
             String projectId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a session
             String startTime = "2019-02-18T20:00Z";
             String endTime = startTime;
@@ -1520,12 +1521,12 @@ public class BackendTestsBackend2 {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a project
             response = createProject("CS6301", userId);
             String projectId = Long.toString(getIdFromResponse(response));
             response.close();
-            
+
             // Create a session
             String startTime = "2019-02-18T20:00Z";
             String endTime = startTime;
@@ -1573,7 +1574,7 @@ public class BackendTestsBackend2 {
     //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
     //         String userId = getIdFromResponse(response);
     //         response.close();
-            
+
     //         // Create a project
     //         response = createProject("CS6301",userId);
     //         String projectId = getIdFromResponse(response);
@@ -1655,7 +1656,7 @@ public class BackendTestsBackend2 {
     //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
     //         String userId = getIdFromResponse(response);
     //         response.close();
-            
+
     //         // Create a project
     //         response = createProject("CS6301",userId);
     //         String projectId = getIdFromResponse(response);
@@ -1726,7 +1727,7 @@ public class BackendTestsBackend2 {
     //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
     //         String userId = getIdFromResponse(response);
     //         response.close();
-            
+
     //         // Create a project
     //         response = createProject("CS6301",userId);
     //         String projectId = getIdFromResponse(response);
@@ -1803,7 +1804,7 @@ public class BackendTestsBackend2 {
     //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
     //         String userId = getIdFromResponse(response);
     //         response.close();
-            
+
     //         // Create a project
     //         response = createProject("CS6301",userId);
     //         String projectId = getIdFromResponse(response);
