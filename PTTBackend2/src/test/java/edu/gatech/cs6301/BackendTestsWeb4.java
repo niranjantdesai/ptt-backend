@@ -1395,219 +1395,219 @@ public class BackendTestsWeb4 {
     //     }
     // }
 
-    // @Test
-    // public void addSessionUserOrProjectNotFound() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+     @Test
+     public void addSessionUserOrProjectNotFound() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //     try {
-    //         // Get on an empty DB
-    //         CloseableHttpResponse response = getUser(999);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+         try {
+             // Get on an empty DB
+             CloseableHttpResponse response = getUser(999);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         response = createSession(999, 100, "2013-03-01T23:59:59", "2013-03-02T23:59:59", 1);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+             response = createSession(999, 100, "2013-03-01T23:59Z", "2013-03-02T23:59Z", 1);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // add one user
-    //         response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         response.close();
+             // add one user
+             response = createUser("John", "Doe", "john@doe.org");
+             long userId1 = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             response.close();
 
-    //         response = createSession(userId1, 100, "2013-03-01T23:59:59", "2013-03-02T23:59:59", 1);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             response = createSession(userId1, 100, "2013-03-01T23:59Z", "2013-03-02T23:59Z", 1);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // add one project
-    //         response = createProject( "aa", userId1);
-    //         long projectId1 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         response.close();
+             // add one project
+             response = createProject( "aa", userId1);
+             long projectId1 = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             response.close();
 
-    //         response = createSession(100, projectId1, "2013-03-01T23:59:59", "2013-03-02T23:59:59", 1);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             response = createSession(100, projectId1, "2013-03-01T23:59Z", "2013-03-02T23:59Z", 1);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-
-    // @Test
-    // public void addSessionInvalidParameterType() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + "aa" + "/projects/" + "aa" + "/sessions");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         StringEntity input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59:59" + "\"," +
-    //                 "\"endTime\":\"" + "2013-03-02T23:59:59" +
-    //                 "\"counter\":\"" + "1" + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         CloseableHttpResponse response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+     @Test
+     public void addSessionInvalidParameterType() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // add one user
-    //         response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         response.close();
-
-    //         httpRequest = new HttpPost(baseUrl + "/users/" + userId1 + "/projects/" + "aa" + "/sessions");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59:59" + "\"," +
-    //                 "\"endTime\":\"" + "2013-03-02T23:59:59" +
-    //                 "\"counter\":\"" + 1 + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+         try {
+             HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + "aa" + "/projects/" + "aa" + "/sessions");
+             httpRequest.addHeader("accept", "application/json");
+             StringEntity input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59Z" + "\"," +
+                     "\"endTime\":\"" + "2013-03-02T23:59Z" +
+                     "\"counter\":" + "1" + "}");
+             input.setContentType("application/json");
+             httpRequest.setEntity(input);
 
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             CloseableHttpResponse response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // add one project
-    //         response = createProject( "testProject", userId1);
-    //         long projectId1 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         response.close();
+             // add one user
+             response = createUser("John", "Doe", "john@doe.org");
+             long userId1 = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             response.close();
 
-    //         httpRequest = new HttpPost(baseUrl + "/users/" + "aa" + "/projects/" + projectId1 + "/sessions");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59:59" + "\"," +
-    //                 "\"endTime\":\"" + "2013-03-02T23:59:59" +
-    //                 "\"counter\":\"" + 1 + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
-
-
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
-
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // check for invalid type of time
-    //         httpRequest = new HttpPost(baseUrl + "/users/" + userId1 + "/projects/" + projectId1 + "/sessions");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         input = new StringEntity("{\"startTime\":\"" + "2013/03-01T23:59:59" + "\"," +
-    //                 "\"endTime\":\"" + "2013/03-02T23:59:59" +
-    //                 "\"counter\":\"" + 1 + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+             httpRequest = new HttpPost(baseUrl + "/users/" + userId1 + "/projects/" + "aa" + "/sessions");
+             httpRequest.addHeader("accept", "application/json");
+             input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59Z" + "\"," +
+                     "\"endTime\":\"" + "2013-03-02T23:59Z" +
+                     "\"counter\":" + 1 + "}");
+             input.setContentType("application/json");
+             httpRequest.setEntity(input);
 
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
+             // add one project
+             response = createProject( "testProject", userId1);
+             long projectId1 = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void addSessionInvalidParameterLength() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-
-    //     try {
-    //         // add one user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         response.close();
-
-    //         // add one project
-    //         response = createProject( "testProject", userId1);
-    //         long projectId1 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         response.close();
-
-    //         HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + (Long.MAX_VALUE + 12) + "/projects/" + projectId1 + "/sessions");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         StringEntity input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59:59" + "\"," +
-    //                 "\"endTime\":\"" + "2013-03-02T23:59:59" +
-    //                 "\"counter\":\"" + 1 + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+             httpRequest = new HttpPost(baseUrl + "/users/" + "aa" + "/projects/" + projectId1 + "/sessions");
+             httpRequest.addHeader("accept", "application/json");
+             input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59Z" + "\"," +
+                     "\"endTime\":\"" + "2013-03-02T23:59Z" +
+                     "\"counter\":" + 1 + "}");
+             input.setContentType("application/json");
+             httpRequest.setEntity(input);
 
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
 
-    //         // check for invalid type of time
-    //         httpRequest = new HttpPost(baseUrl + "/users/" + userId1 + "/projects/" + (Long.MAX_VALUE + 12) + "/sessions");
-    //         httpRequest.addHeader("accept", "application/json");
-    //         input = new StringEntity("{\"startTime\":\"" + "2013/03-01T23:59:59" + "\"," +
-    //                 "\"endTime\":\"" + "2013/03-02T23:59:59" +
-    //                 "\"counter\":\"" + 1 + "\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
-
-
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
-
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+             // check for invalid type of time
+             httpRequest = new HttpPost(baseUrl + "/users/" + userId1 + "/projects/" + projectId1 + "/sessions");
+             httpRequest.addHeader("accept", "application/json");
+             input = new StringEntity("{\"startTime\":\"" + "2013/03-01T23:59Z" + "\"," +
+                     "\"endTime\":\"" + "2013/03-02T23:59Z" +
+                     "\"counter\":" + 1 + "}");
+             input.setContentType("application/json");
+             httpRequest.setEntity(input);
 
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
+
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+
+         } finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void addSessionInvalidParameterLength() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try {
+             // add one user
+             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+             long userId1 = getIdFromResponse(response);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             response.close();
+
+             // add one project
+             response = createProject( "testProject", userId1);
+             long projectId1 = getIdFromResponse(response);
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(201, status);
+             response.close();
+
+             HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + (Long.MAX_VALUE + 12) + "/projects/" + projectId1 + "/sessions");
+             httpRequest.addHeader("accept", "application/json");
+             StringEntity input = new StringEntity("{\"startTime\":\"" + "2013-03-01T23:59:59" + "\"," +
+                     "\"endTime\":\"" + "2013-03-02T23:59:59" +
+                     "\"counter\":" + 1 + "}");
+             input.setContentType("application/json");
+             httpRequest.setEntity(input);
+
+
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
+
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+             // check for invalid type of time
+             httpRequest = new HttpPost(baseUrl + "/users/" + userId1 + "/projects/" + (Long.MAX_VALUE + 12) + "/sessions");
+             httpRequest.addHeader("accept", "application/json");
+             input = new StringEntity("{\"startTime\":\"" + "2013/03-01T23:59:59" + "\"," +
+                     "\"endTime\":\"" + "2013/03-02T23:59:59" +
+                     "\"counter\":" + 1 + "}");
+             input.setContentType("application/json");
+             httpRequest.setEntity(input);
+
+
+             System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+             response = httpclient.execute(httpRequest);
+             System.out.println("*** Raw response " + response + "***");
+
+             status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(400, status);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+
+
+         } finally {
+             httpclient.close();
+         }
+     }
 
     // @Test
     // public void addSessionParameterBody() throws Exception {
