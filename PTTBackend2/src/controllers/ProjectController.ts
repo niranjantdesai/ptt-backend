@@ -44,10 +44,6 @@ export class ProjectController {
                             usersProjects.push(aProject);
                             count += 1;
 
-                            // if (i == usersProjectIds.length-1) {
-                            //     resolve({code: 200, result: usersProjects});
-                            // }
-                            // TODO: check if this works too. if it works, replace the above if statement by this
                             if (count == usersProjectIds.length) {
                                 resolve({code: 200, result: usersProjects});
                             }
@@ -404,46 +400,68 @@ export class ProjectController {
 
     public getReport(userId: string, projectId: string, from: string, to: string, includeCompletedPomodoros: boolean, includeTotalHoursWorkedOnProject: boolean): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-            // this.getProject(userId, projectId, false)
-            // .then(obj => {
-            //     let usersProject = obj["result"];
-            //     let usersSessions = usersProject["sessions"];
-            //     let report = {"sessions": []};
+            
+            
+            
+            // Haamid's implementation of the report
+            this.getProject(userId, projectId, false)
+            .then(obj => {
+                let usersProject = obj["result"];
+                let usersSessions = usersProject["sessions"];
 
-            //     let dummySession = {"startTime": from, "endTime": to};
-            //     if (this.areDatesValid(dummySession, this.sessionDateKeys)) {
-            //         usersSessions.forEach(session => {
-            //             let sessionStartTime: string = session["startTime"];
-            //             let sessionEndTime: string = session["endTime"];
+                let report = {"sessions": []};
+                let sumCounter: number = 0;
+                let totalTimeForProject: number = 0;
 
-            //             if (this.areDatesOverlapping(from, to, sessionStartTime, sessionEndTime)) {
-            //                 let reportSession = {};
-            //                 reportSession["startingTime"] = sessionStartTime;
-            //                 reportSession["endingTime"] = sessionEndTime;
+                let dummySession = {"startTime": from, "endTime": to};
+                if (this.areDatesValid(dummySession, this.sessionDateKeys)) {
+                    usersSessions.forEach(session => {
+                        let sessionStartTime: string = session["startTime"];
+                        let sessionEndTime: string = session["endTime"];
 
-            //                 let sessionEndTimeDate = new Date(sessionEndTime);
-            //                 let sessionStartTimeDate = new Date(sessionStartTime);
-            //                 let hoursWorked = (sessionEndTimeDate.getTime() - sessionStartTimeDate.getTime()) / 3600000;
-            //                 let hoursWorked2dp: Number = this.get2dpNumber(hoursWorked);
-            //                 reportSession["hoursWorked"] = hoursWorked2dp;
-            //                 report.sessions.push(reportSession);
-            //             }
-            //         })
-            //         print(report);
-            //         resolve({code: 200, result: "Report"});
-            //     } else {
-            //         print(`Some invalid date: ${from} or ${to}`);
-            //         reject({code: 400, result: "Bad request"});
-            //     }
-            // })
-            // .catch(obj => {
-            //     reject(obj);
-            // })
+                        if (this.areDatesOverlapping(from, to, sessionStartTime, sessionEndTime)) {
+                            let reportSession = {};
+                            reportSession["startingTime"] = sessionStartTime;
+                            reportSession["endingTime"] = sessionEndTime;
+
+                            let sessionEndTimeDate = new Date(sessionEndTime);
+                            let sessionStartTimeDate = new Date(sessionStartTime);
+                            let hoursWorked: number = (sessionEndTimeDate.getTime() - sessionStartTimeDate.getTime()) / 3600000;
+                            let hoursWorked2dp: Number = this.get2dpNumber(hoursWorked);
+                            reportSession["hoursWorked"] = hoursWorked2dp;
+                            report.sessions.push(reportSession);
+
+                            sumCounter += session["counter"];
+                        }
+                        
+                        let aSessionEndTimeDate = new Date(sessionEndTime);
+                        let aSessionStartTimeDate = new Date(sessionStartTime);
+                        let aSessionHoursWorked: number = (aSessionEndTimeDate.getTime() - aSessionStartTimeDate.getTime()) / 3600000;
+                        totalTimeForProject += aSessionHoursWorked;
+                    })
+
+                    if (includeCompletedPomodoros) {
+                        report["completedPomodoros"] = Math.floor(sumCounter);
+                    }
+
+                    if (includeTotalHoursWorkedOnProject) {
+                        report["totalHoursWorkedOnProject"] = this.get2dpNumber(totalTimeForProject);
+                    }
+
+                    resolve({code: 200, result: report});
+                } else {
+                    print(`Some invalid date: either ${from} or ${to}`);
+                    reject({code: 400, result: "Bad request"});
+                }
+            })
+            .catch(obj => {
+                reject(obj);
+            })
         });
     }
 
     // // helper functions
-    private get2dpNumber(num): Number {
+    private get2dpNumber(num: number): Number {
         return + parseFloat((Math.round(num * 100) / 100).toString()).toFixed(2);
     }
 
