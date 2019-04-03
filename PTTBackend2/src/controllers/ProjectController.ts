@@ -402,7 +402,7 @@ export class ProjectController {
         });
     }
 
-    public getReportHaamid(userId: string, projectId: string, from: string, to: string, includeCompletedPomodoros: boolean, includeTotalHoursWorkedOnProject: boolean): promise<ProjectResultInterface> {
+    public getReport(userId: string, projectId: string, from: string, to: string, includeCompletedPomodoros: boolean, includeTotalHoursWorkedOnProject: boolean): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
             // this.getProject(userId, projectId, false)
             // .then(obj => {
