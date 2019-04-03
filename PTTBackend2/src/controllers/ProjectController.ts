@@ -222,7 +222,44 @@ export class ProjectController {
 
     public updateProject(userId: string, projectId: string, updatedProject: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
+            this.userController.getUser(userId, false)
+            .then(obj => {
+                let user = obj["result"];
+                let usersProjectIds = user["projects"];
 
+                try {
+                    updatedProject = this.removeAllButSomeKeys(updatedProject, this.updatedableKeys);
+                    let condition = { id: { $eq: projectId } };
+                    let options = {new: true};
+                    this.Project.findOneAndUpdate(condition, updatedProject, options, (err: any, project: mongoose.Document) => {
+                        if (err) {
+                            print("err:", err);
+                            reject({code: 400, result: "Bad request"});
+                        } else {
+                            if (project) {
+                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                project["userId"] = Number(userId);
+                                if (usersProjectIds.indexOf(projectId) == -1) {
+                                    print("User doesn't have this project");
+                                    reject({code: 404, result: "Project not found"});
+                                } else {
+                                    resolve({code: 200, result: project});
+                                }
+                               
+                            } else {
+                                print("Project not found:", projectId);
+                                reject({code: 404, result: "Project not found"});
+                            }
+                        }
+                    });
+                } catch (e) {
+                    print("500: server error:", e);
+                    reject({code: 500, result: "Server error"});
+                }
+            })
+            .catch(obj => {
+                reject(obj);
+            });
         });
     }
 
