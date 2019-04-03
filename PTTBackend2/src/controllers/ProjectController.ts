@@ -44,13 +44,13 @@ export class ProjectController {
                             usersProjects.push(aProject);
                             count += 1;
 
-                            if (i == usersProjectIds.length-1) {
-                                resolve({code: 200, result: usersProjects});
-                            }
-                            // // TODO: check if this works too. if it works, replace the above if statement by this
-                            // if (count == usersProjectIds.length) {
+                            // if (i == usersProjectIds.length-1) {
                             //     resolve({code: 200, result: usersProjects});
                             // }
+                            // TODO: check if this works too. if it works, replace the above if statement by this
+                            if (count == usersProjectIds.length) {
+                                resolve({code: 200, result: usersProjects});
+                            }
                         })
                         .catch(obj => {
                             reject(obj);
