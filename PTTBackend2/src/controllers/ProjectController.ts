@@ -13,6 +13,7 @@ export class ProjectController {
     userController = new UserController();
     schemaKeys = ["id", "projectname"];
     updatedableKeys = ["projectname"];
+    exposeSessionKeys = ["id", "projectname", "sessions"];
 
     sessionSchemaKeys = ["id", "startTime", "endTime", "counter"];
     sessionUpdatedableKeys = ["startTime", "endTime", "counter"];
@@ -36,7 +37,7 @@ export class ProjectController {
                     for (let i = 0; i < usersProjectIds.length; i++) {
                         let projectId = usersProjectIds[i];
 
-                        this.getProject(userId, projectId)
+                        this.getProject(userId, projectId, true)
                         .then(obj => {
                             let aProject = obj["result"];
                             usersProjects.push(aProject);
@@ -57,7 +58,7 @@ export class ProjectController {
         });
     }
 
-    public getProject(userId: string, projectId: string): promise<ProjectResultInterface> {
+    public getProject(userId: string, projectId: string, hideSessions: boolean): promise<ProjectResultInterface> {
         return new promise <ProjectResultInterface> ((resolve, reject) => {
             this.userController.getUser(userId, false)
             .then(obj => {
@@ -72,7 +73,10 @@ export class ProjectController {
                             reject({code: 400, result: "Bad request"});
                         } else {
                             if (project) {
-                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                project = this.removeAllButSomeKeys(project, this.exposeSessionKeys);
+                                if (hideSessions) {
+                                    project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                }
                                 project["userId"] = Number(userId);
                                 if (usersProjectIds.indexOf(projectId) == -1) {
                                     print("User doesn't have this project");
@@ -221,7 +225,7 @@ export class ProjectController {
             this.counterController.getNextSessionId()
             .then(obj => {
                 //Check if user actually has this project
-                this.getProject(userId, projectId)
+                this.getProject(userId, projectId, true)
                 .then(result => {
                     //if user actually has this project, try to insert a new session
                     newSession = this.removeAllButSomeKeys(newSession, this.sessionSchemaKeys);
@@ -298,7 +302,7 @@ export class ProjectController {
 
     public updateSession(userId: string, projectId: string, sessionId: string, updatedSession: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-            this.getProject(userId, projectId)
+            this.getProject(userId, projectId, true)
             .then(obj => {
                 try {
 
@@ -355,6 +359,19 @@ export class ProjectController {
         });
     }
 
+    public getReport(userId: string, projectId: string, from: string, to: string, includeCompletedPomodoros: boolean, includeTotalHoursWorkedOnProject: boolean): promise<ProjectResultInterface> {
+        return new promise<ProjectResultInterface> ((resolve, reject) => {
+            this.getProject(userId, projectId, false)
+            .then(obj => {
+                print(obj["result"]);
+            })
+            .catch(obj => {
+                reject(obj);
+            })
+        });
+    }
+
+    // // helper functions
     private removeAllButSomeKeys(JSONObj, keepWhichKeys: string[]) {
         let newObj = JSON.parse(JSON.stringify(JSONObj));
         // delete newObj._id;
