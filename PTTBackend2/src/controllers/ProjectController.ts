@@ -13,6 +13,7 @@ export class ProjectController {
     userController = new UserController();
     schemaKeys = ["id", "projectname"];
     updatedableKeys = ["projectname"];
+    exposeSessionKeys = ["id", "projectname", "sessions"];
 
     sessionSchemaKeys = ["id", "startTime", "endTime", "counter"];
     sessionUpdatedableKeys = ["startTime", "endTime", "counter"];
@@ -29,23 +30,28 @@ export class ProjectController {
                 let user = obj["result"];
                 let usersProjectIds = user["projects"];
                 let usersProjects = [];
+                let count = 0;
 
                 if (usersProjectIds.length == 0) {
                     resolve({code: 200, result: usersProjects});
                 } else {
-                    usersProjectIds.forEach((projectId, index) => {
-                        this.getProject(userId, projectId)
+                    for (let i = 0; i < usersProjectIds.length; i++) {
+                        let projectId = usersProjectIds[i];
+
+                        this.getProject(userId, projectId, true)
                         .then(obj => {
                             let aProject = obj["result"];
                             usersProjects.push(aProject);
-                            if (index == usersProjectIds.length-1) {
+                            count += 1;
+
+                            if (count == usersProjectIds.length) {
                                 resolve({code: 200, result: usersProjects});
                             }
                         })
                         .catch(obj => {
                             reject(obj);
                         })
-                    });
+                    }
                 }
             })
             .catch(obj => {
@@ -54,7 +60,7 @@ export class ProjectController {
         });
     }
 
-    public getProject(userId: string, projectId: string): promise<ProjectResultInterface> {
+    public getProject(userId: string, projectId: string, hideSessions: boolean): promise<ProjectResultInterface> {
         return new promise <ProjectResultInterface> ((resolve, reject) => {
             this.userController.getUser(userId, false)
             .then(obj => {
@@ -69,7 +75,10 @@ export class ProjectController {
                             reject({code: 400, result: "Bad request"});
                         } else {
                             if (project) {
-                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                project = this.removeAllButSomeKeys(project, this.exposeSessionKeys);
+                                if (hideSessions) {
+                                    project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                }
                                 project["userId"] = Number(userId);
                                 if (usersProjectIds.indexOf(projectId) == -1) {
                                     print("User doesn't have this project");
@@ -209,7 +218,44 @@ export class ProjectController {
 
     public updateProject(userId: string, projectId: string, updatedProject: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
+            this.userController.getUser(userId, false)
+            .then(obj => {
+                let user = obj["result"];
+                let usersProjectIds = user["projects"];
 
+                try {
+                    updatedProject = this.removeAllButSomeKeys(updatedProject, this.updatedableKeys);
+                    let condition = { id: { $eq: projectId } };
+                    let options = {new: true};
+                    this.Project.findOneAndUpdate(condition, updatedProject, options, (err: any, project: mongoose.Document) => {
+                        if (err) {
+                            print("err:", err);
+                            reject({code: 400, result: "Bad request"});
+                        } else {
+                            if (project) {
+                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                project["userId"] = Number(userId);
+                                if (usersProjectIds.indexOf(projectId) == -1) {
+                                    print("User doesn't have this project");
+                                    reject({code: 404, result: "Project not found"});
+                                } else {
+                                    resolve({code: 200, result: project});
+                                }
+                               
+                            } else {
+                                print("Project not found:", projectId);
+                                reject({code: 404, result: "Project not found"});
+                            }
+                        }
+                    });
+                } catch (e) {
+                    print("500: server error:", e);
+                    reject({code: 500, result: "Server error"});
+                }
+            })
+            .catch(obj => {
+                reject(obj);
+            });
         });
     }
 
@@ -218,7 +264,7 @@ export class ProjectController {
             this.counterController.getNextSessionId()
             .then(obj => {
                 //Check if user actually has this project
-                this.getProject(userId, projectId)
+                this.getProject(userId, projectId, true)
                 .then(result => {
                     //if user actually has this project, try to insert a new session
                     newSession = this.removeAllButSomeKeys(newSession, this.sessionSchemaKeys);
@@ -232,16 +278,16 @@ export class ProjectController {
                             reject({code: 400, result: "Bad request"});
                         } else {
                             let sessionObj = new this.Session(newSession);
-                            sessionObj.save((error, dbSession) => {
+                            sessionObj.save((error, __) => {
                                 if (error) {
                                     print("Error:", error);
                                     reject({code: 400, result: "Bad request"});
                                 } else {
-                                    dbSession = this.removeAllButSomeKeys(dbSession, this.sessionSchemaKeys);
-                                    dbSession = this.changeDateFormatForFields(dbSession, this.sessionDateKeys);
+                                    newSession = this.removeAllButSomeKeys(newSession, this.sessionSchemaKeys);
+                                    newSession = this.changeDateFormatForFields(newSession, this.sessionDateKeys);
                                     
                                     let filter = { id: { $eq: projectId } }
-                                    let update = { $addToSet: { sessions: dbSession } };
+                                    let update = { $push: { sessions: newSession } };
                                     let options = { new: true };
                                     
                                     this.Project.findOneAndUpdate(filter, update, options, (err, updatedProject) => {
@@ -253,7 +299,7 @@ export class ProjectController {
                                                 // resolve not with the newSession JSON but with the actual session that has been added in the array
                                                 let projectSessions = updatedProject["sessions"];
 
-                                                let result = projectSessions.filter(session => session["id"] == sessionId);
+                                                let result = projectSessions.filter(aSession => aSession["id"] == sessionId);
                                                 if (result.length == 0) {
                                                     print("500: server error, shouldn't happen");
                                                     reject({code: 500, result: "Server error"});
@@ -295,7 +341,7 @@ export class ProjectController {
 
     public updateSession(userId: string, projectId: string, sessionId: string, updatedSession: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-            this.getProject(userId, projectId)
+            this.getProject(userId, projectId, true)
             .then(obj => {
                 try {
 
@@ -350,6 +396,81 @@ export class ProjectController {
             })
 
         });
+    }
+
+    public getReport(userId: string, projectId: string, from: string, to: string, includeCompletedPomodoros: boolean, includeTotalHoursWorkedOnProject: boolean): promise<ProjectResultInterface> {
+        return new promise<ProjectResultInterface> ((resolve, reject) => {
+            
+            
+            
+            // Haamid's implementation of the report
+            this.getProject(userId, projectId, false)
+            .then(obj => {
+                let usersProject = obj["result"];
+                let usersSessions = usersProject["sessions"];
+
+                let report = {"sessions": []};
+                let sumCounter: number = 0;
+                let totalTimeForProject: number = 0;
+
+                let dummySession = {"startTime": from, "endTime": to};
+                if (this.areDatesValid(dummySession, this.sessionDateKeys)) {
+                    usersSessions.forEach(session => {
+                        let sessionStartTime: string = session["startTime"];
+                        let sessionEndTime: string = session["endTime"];
+
+                        if (this.areDatesOverlapping(from, to, sessionStartTime, sessionEndTime)) {
+                            let reportSession = {};
+                            reportSession["startingTime"] = sessionStartTime;
+                            reportSession["endingTime"] = sessionEndTime;
+
+                            let sessionEndTimeDate = new Date(sessionEndTime);
+                            let sessionStartTimeDate = new Date(sessionStartTime);
+                            let hoursWorked: number = (sessionEndTimeDate.getTime() - sessionStartTimeDate.getTime()) / 3600000;
+                            let hoursWorked2dp: Number = this.get2dpNumber(hoursWorked);
+                            reportSession["hoursWorked"] = hoursWorked2dp;
+                            report.sessions.push(reportSession);
+
+                            sumCounter += session["counter"];
+                        }
+                        
+                        let aSessionEndTimeDate = new Date(sessionEndTime);
+                        let aSessionStartTimeDate = new Date(sessionStartTime);
+                        let aSessionHoursWorked: number = (aSessionEndTimeDate.getTime() - aSessionStartTimeDate.getTime()) / 3600000;
+                        totalTimeForProject += aSessionHoursWorked;
+                    })
+
+                    if (includeCompletedPomodoros) {
+                        report["completedPomodoros"] = Math.floor(sumCounter);
+                    }
+
+                    if (includeTotalHoursWorkedOnProject) {
+                        report["totalHoursWorkedOnProject"] = this.get2dpNumber(totalTimeForProject);
+                    }
+
+                    resolve({code: 200, result: report});
+                } else {
+                    print(`Some invalid date: either ${from} or ${to}`);
+                    reject({code: 400, result: "Bad request"});
+                }
+            })
+            .catch(obj => {
+                reject(obj);
+            })
+        });
+    }
+
+    // // helper functions
+    private get2dpNumber(num: number): Number {
+        return + parseFloat((Math.round(num * 100) / 100).toString()).toFixed(2);
+    }
+
+    private areDatesOverlapping(start1: string, end1: string, start2: string, end2: string) {
+        let startDate1 = new Date(start1);
+        let endDate1 = new Date(end1);
+        let startDate2 = new Date(start2);
+        let endDate2 = new Date(end2);
+        return ((startDate1 <= endDate2) && (endDate1 >= startDate2));
     }
 
     private removeAllButSomeKeys(JSONObj, keepWhichKeys: string[]) {

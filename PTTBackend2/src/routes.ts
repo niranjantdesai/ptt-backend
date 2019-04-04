@@ -82,7 +82,7 @@ routes.route(`${baseUrl}/users/:userId/projects`)
 
 routes.route(`${baseUrl}/users/:userId/projects/:projectId`)
 .get((req, res) => {
-    projectController.getProject(req.params["userId"], req.params["projectId"])
+    projectController.getProject(req.params["userId"], req.params["projectId"], true)
     .then(obj => {
         res.status(obj["code"]).send(obj["result"]);
     })
@@ -131,13 +131,19 @@ routes.route(`${baseUrl}/users/:userId/projects/:projectId/sessions/:sessionId`)
     });
 })
 
-// routes.route(`${baseUrl}/users/:userId/projects/:projectId/report`)
-// .get((req, res) => {
-//     projectController.getReport(req.params["userId"], req.params["projectId"])
-//     .then(obj => {
-//         res.status(obj["code"]).send(obj["result"]);
-//     })
-//     .catch(obj => {
-//         res.status(obj["code"]).send(obj["result"]);
-//     });
-// })
+routes.route(`${baseUrl}/users/:userId/projects/:projectId/report`)
+.get((req, res) => {
+    let userId: string = req.params["userId"];
+    let projectId: string = req.params["projectId"];
+    let from: string = req.query["from"];
+    let to: string = req.query["to"];
+    let includeCompletedPomodoros: boolean = req.query["includeCompletedPomodoros"]=="true";
+    let includeTotalHoursWorkedOnProject: boolean = req.query["includeTotalHoursWorkedOnProject"]=="true";
+    projectController.getReport(userId, projectId, from, to, includeCompletedPomodoros, includeTotalHoursWorkedOnProject)
+    .then(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    })
+    .catch(obj => {
+        res.status(obj["code"]).send(obj["result"]);
+    });
+})
