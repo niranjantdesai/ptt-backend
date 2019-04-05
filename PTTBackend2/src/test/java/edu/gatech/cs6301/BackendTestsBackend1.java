@@ -1529,59 +1529,59 @@ public class BackendTestsBackend1 {
         }
     }
 
-    // @Test
-    // public void getReportWithInvalidProjectId() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+     @Test
+     public void getReportWithInvalidProjectId() throws Exception {
+         httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+             String userId = getIdFromResponse(response);;
+             response.close();
 
-    //         response = createProject(userId, "PTT Test case 2");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+             response = createProject("PTT Test case 2", userId);
+             String projectId = getIdFromResponse(response);
+             response.close();
 
-    //         //create pomodoro
-    //         response = createPomodoroSession(userId, projectId);
-    //         response.close();
+             //create pomodoro
+             response = createPomodoroSession(userId, projectId);
+             response.close();
 
-    //         // Get report
-    //         response = getSessionReports(userId, projectId + projectId + "1234");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+             // Get report
+             response = getSessionReports(userId, projectId + projectId + "1234");
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             deleteUser(userId);
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
-    // @Test
-    // public void getReportWithInvalidUserIdTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+     @Test
+     public void getReportWithInvalidUserIdTest() throws Exception {
+         httpclient = HttpClients.createDefault();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+             String userId = getIdFromResponse(response);
+             response.close();
 
-    //         response = createProject("PTT Test case 2", userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+             response = createProject("PTT Test case 2", userId);
+             String projectId = getIdFromResponse(response);
+             response.close();
 
-    //         response = getSessionReports(userId + userId + "1234", projectId);
+             response = getSessionReports(userId + userId + "1234", projectId);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+             int status = response.getStatusLine().getStatusCode();
+             Assert.assertEquals(404, status);
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+             deleteUser(userId);
+             response.close();
+         } finally {
+             httpclient.close();
+         }
+     }
 
 
     // Request functions to create and send the HTTP Requests to the server
