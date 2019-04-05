@@ -1535,313 +1535,362 @@ public class BackendTestsBackend2 {
 
 
 
+    //done by Niranjan
+    @Test
+    public void getReportTest200() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    // // done by Niranjan
-    // @Test
-    // public void getReportTest200() throws Exception{
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try{
-    //         // Create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+            // Create a project
+            response = createProject("CS6301",userId);
+            String projectId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create a project
-    //         response = createProject("CS6301",userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            // Create session 1 (completely within the timeframe)
+            String startTime1 = "2019-02-18T20:00Z";
+            String endTime1 = startTime1;
+            response = createSession(userId, projectId, startTime1, endTime1);
+            String sessionId1 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 1 (completely within the timeframe)
-    //         String startTime1 = "2019-02-18T20:00Z";
-    //         String endTime1 = startTime1;
-    //         response = createSession(userId, projectId, startTime1, endTime1);
-    //         String sessionId1 = getIdFromResponse(response);
-    //         response.close();
+            // Update session 1
+            String newStartTime1 = startTime1;
+            String newEndTime1 = "2019-02-18T20:30Z";
+            String counter1 = "1";
+            response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+            response.close();
 
-    //         // Update session 1
-    //         String newStartTime1 = startTime1;
-    //         String newEndTime1 = "2019-02-18T20:30Z";
-    //         String counter1 = "1";
-    //         response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+            // Create session 2 (partially within the timeframe)
+            String startTime2 = "2019-02-18T21:00Z";
+            String endTime2 = startTime2;
+            response = createSession(userId, projectId, startTime2, endTime2);
+            String sessionId2 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 2 (partially within the timeframe)
-    //         String startTime2 = "2019-02-18T21:00Z";
-    //         String endTime2 = startTime2;
-    //         response = createSession(userId, projectId, startTime2, endTime2);
-    //         String sessionId2 = getIdFromResponse(response);
-    //         response.close();
+            // Update session 2
+            String newStartTime2 = startTime2;
+            String newEndTime2 = "2019-02-18T22:00Z";
+            String counter2 = "2";
+            response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            response.close();
 
-    //         // Update session 2
-    //         String newStartTime2 = startTime2;
-    //         String newEndTime2 = "2019-02-18T22:00Z";
-    //         String counter2 = "2";
-    //         response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            // Create session 3 (outside the timeframe)
+            String startTime3 = "2019-02-18T22:30Z";
+            String endTime3 = startTime3;
+            response = createSession(userId, projectId, startTime3, endTime3);
+            String sessionId3 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 3 (outside the timeframe)
-    //         String startTime3 = "2019-02-18T22:30Z";
-    //         String endTime3 = startTime3;
-    //         response = createSession(userId, projectId, startTime3, endTime3);
-    //         String sessionId3 = getIdFromResponse(response);
-    //         response.close();
+            // Update session 3
+            String newStartTime3 = startTime3;
+            String newEndTime3 = "2019-02-18T23:00Z";
+            String counter3 = "1";
+            response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            response.close();
 
-    //         // Update session 3
-    //         String newStartTime3 = startTime3;
-    //         String newEndTime3 = "2019-02-18T23:00Z";
-    //         String counter3 = "1";
-    //         response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            String reportStartTime = "2019-02-18T19:30Z";
+            String reportEndTime = "2019-02-18T21:30Z";
+            response = getReport(userId, projectId, reportStartTime, reportEndTime, true, true);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if(status == 200){
+                entity = response.getEntity();
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200");
+            }
+            strResponse = EntityUtils.toString(entity);
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String expectedJson = "{\"sessions\":[{\"startingTime\":\"" + newStartTime1 + "\",\"endingTime\":\"" + newEndTime1 + "\",\"hoursWorked\":0.5}," +
+                    "{\"startingTime\":\"" + newStartTime2 + "\",\"endingTime\":\"" + newEndTime2 + "\",\"hoursWorked\":1}]," +
+                    "\"completedPomodoros\":3," +
+                    "\"totalHoursWorkedOnProject\":2}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+            String expectedJson = "{\"id\":" + projectId
+                    + ",\"projectname\":\"CS6301\",\"userId\":" + userId + "}";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         String reportStartTime = "2019-02-18T19:30Z";
-    //         String reportEndTime = "2019-02-18T21:30Z";
-    //         response = getReport(userId, projectId, reportStartTime, reportEndTime, true, true);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if(status == 200){
-    //             entity = response.getEntity();
-    //         }else{
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200");
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
-    //         System.out.println(
-    //                 "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            response = getAllProjects(userId);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         String expectedJson = "{\"sessions\":[{\"startingTime\":\"" + newStartTime1 + "\",\"endingTime\":\"" + newEndTime1 + "\",\"hoursWorked\":0.5}," +
-    //                 "{\"startingTime\":\"" + newStartTime2 + "\",\"endingTime\":\"" + newEndTime2 + "\",\"hoursWorked\":1}]," +
-    //                 "\"completedPomodoros\":3," +
-    //                 "\"totalHoursWorkedOnProject\":1.5}";
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally{
-    //         httpclient.close();
-    //     }
-    // }
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    // // done by Niranjan
-    // @Test
-    // public void getReportTest400() throws Exception{
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try{
-    //         // Create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+            expectedJson = "[]";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
 
-    //         // Create a project
-    //         response = createProject("CS6301",userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+    // done by Niranjan
+    @Test
+    public void getReportTest400() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 1 (completely within the timeframe)
-    //         String startTime1 = "2019-02-18T20:00Z";
-    //         String endTime1 = startTime1;
-    //         response = createSession(userId, projectId, startTime1, endTime1);
-    //         String sessionId1 = getIdFromResponse(response);
-    //         response.close();
+            // Create a project
+            response = createProject("CS6301",userId);
+            String projectId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Update session 1
-    //         String newStartTime1 = startTime1;
-    //         String newEndTime1 = "2019-02-18T20:30Z";
-    //         String counter1 = "1";
-    //         response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+            // Create session 1 (completely within the timeframe)
+            String startTime1 = "2019-02-18T20:00Z";
+            String endTime1 = startTime1;
+            response = createSession(userId, projectId, startTime1, endTime1);
+            String sessionId1 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 2 (partially within the timeframe)
-    //         String startTime2 = "2019-02-18T21:00Z";
-    //         String endTime2 = startTime2;
-    //         response = createSession(userId, projectId, startTime2, endTime2);
-    //         String sessionId2 = getIdFromResponse(response);
-    //         response.close();
+            // Update session 1
+            String newStartTime1 = startTime1;
+            String newEndTime1 = "2019-02-18T20:30Z";
+            String counter1 = "1";
+            response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+            response.close();
 
-    //         // Update session 2
-    //         String newStartTime2 = startTime2;
-    //         String newEndTime2 = "2019-02-18T22:00Z";
-    //         String counter2 = "2";
-    //         response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            // Create session 2 (partially within the timeframe)
+            String startTime2 = "2019-02-18T21:00Z";
+            String endTime2 = startTime2;
+            response = createSession(userId, projectId, startTime2, endTime2);
+            String sessionId2 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 3 (outside the timeframe)
-    //         String startTime3 = "2019-02-18T22:30Z";
-    //         String endTime3 = startTime3;
-    //         response = createSession(userId, projectId, startTime3, endTime3);
-    //         String sessionId3 = getIdFromResponse(response);
-    //         response.close();
+            // Update session 2
+            String newStartTime2 = startTime2;
+            String newEndTime2 = "2019-02-18T22:00Z";
+            String counter2 = "2";
+            response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            response.close();
 
-    //         // Update session 3
-    //         String newStartTime3 = startTime3;
-    //         String newEndTime3 = "2019-02-18T23:00Z";
-    //         String counter3 = "1";
-    //         response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            // Create session 3 (outside the timeframe)
+            String startTime3 = "2019-02-18T22:30Z";
+            String endTime3 = startTime3;
+            response = createSession(userId, projectId, startTime3, endTime3);
+            String sessionId3 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Send bad request
-    //         response = getReportIncorrect(userId, projectId, true, false);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status == 400){
-    //             System.out.println(
-    //                     "*** Correct! Expected response status: 400 since the starting and ending times for the report were not sent to the server.***");
-    //         }else{
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since the starting and ending times for the report were not sent to the server.***");
-    //         }
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally{
-    //         httpclient.close();
-    //     }
-    // }
+            // Update session 3
+            String newStartTime3 = startTime3;
+            String newEndTime3 = "2019-02-18T23:00Z";
+            String counter3 = "1";
+            response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            response.close();
 
-    // // done by Niranjan
-    // @Test
-    // public void getReportTest404_1() throws Exception{
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try{
-    //         // Create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+            // Send bad request
+            response = getReportIncorrect(userId, projectId, true, false);
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 400){
+                System.out.println(
+                        "*** Correct! Expected response status: 400 since the starting and ending times for the report were not sent to the server.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 400 since the starting and ending times for the report were not sent to the server.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+            response = getAllProjects(userId);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         // Create a project
-    //         response = createProject("CS6301",userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         // Create session 1 (completely within the timeframe)
-    //         String startTime1 = "2019-02-18T20:00Z";
-    //         String endTime1 = startTime1;
-    //         response = createSession(userId, projectId, startTime1, endTime1);
-    //         String sessionId1 = getIdFromResponse(response);
-    //         response.close();
+            expectedJson = "[{\"id\":" + projectId
+                    + ",\"projectname\":\"CS6301\",\"userId\":" + userId + "}]";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
 
-    //         // Update session 1
-    //         String newStartTime1 = startTime1;
-    //         String newEndTime1 = "2019-02-18T20:30Z";
-    //         String counter1 = "1";
-    //         response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+    // done by Niranjan
+    @Test
+    public void getReportTest404_1() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 2 (partially within the timeframe)
-    //         String startTime2 = "2019-02-18T21:00Z";
-    //         String endTime2 = startTime2;
-    //         response = createSession(userId, projectId, startTime2, endTime2);
-    //         String sessionId2 = getIdFromResponse(response);
-    //         response.close();
+            // Create a project
+            response = createProject("CS6301",userId);
+            String projectId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Update session 2
-    //         String newStartTime2 = startTime2;
-    //         String newEndTime2 = "2019-02-18T22:00Z";
-    //         String counter2 = "2";
-    //         response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            // Create session 1 (completely within the timeframe)
+            String startTime1 = "2019-02-18T20:00Z";
+            String endTime1 = startTime1;
+            response = createSession(userId, projectId, startTime1, endTime1);
+            String sessionId1 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 3 (outside the timeframe)
-    //         String startTime3 = "2019-02-18T22:30Z";
-    //         String endTime3 = startTime3;
-    //         response = createSession(userId, projectId, startTime3, endTime3);
-    //         String sessionId3 = getIdFromResponse(response);
-    //         response.close();
+            // Update session 1
+            String newStartTime1 = startTime1;
+            String newEndTime1 = "2019-02-18T20:30Z";
+            String counter1 = "1";
+            response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+            response.close();
 
-    //         // Update session 3
-    //         String newStartTime3 = startTime3;
-    //         String newEndTime3 = "2019-02-18T23:00Z";
-    //         String counter3 = "1";
-    //         response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            // Create session 2 (partially within the timeframe)
+            String startTime2 = "2019-02-18T21:00Z";
+            String endTime2 = startTime2;
+            response = createSession(userId, projectId, startTime2, endTime2);
+            String sessionId2 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Corrupt the userID
-    //         int temp = Integer.parseInt(userId);
-    //         userId = String.valueOf(temp - 1);
+            // Update session 2
+            String newStartTime2 = startTime2;
+            String newEndTime2 = "2019-02-18T22:00Z";
+            String counter2 = "2";
+            response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            response.close();
 
-    //         // Send request
-    //         String reportStartTime = "2019-02-18T19:30Z";
-    //         String reportEndTime = "2019-02-18T21:30Z";
-    //         response = getReport(userId, projectId, reportStartTime, reportEndTime, true, true);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status == 404){
-    //             System.out.println(
-    //                     "*** Correct! Expected response status: 404 since the userId " + userId + " does not exist.***");
-    //         }else{
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the userId " + userId + " does not exist.***");
-    //         }
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally{
-    //         httpclient.close();
-    //     }
-    // }
+            // Create session 3 (outside the timeframe)
+            String startTime3 = "2019-02-18T22:30Z";
+            String endTime3 = startTime3;
+            response = createSession(userId, projectId, startTime3, endTime3);
+            String sessionId3 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    // // done by Niranjan
-    // @Test
-    // public void getReportTest404_2() throws Exception{
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try{
-    //         // Create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+            // Update session 3
+            String newStartTime3 = startTime3;
+            String newEndTime3 = "2019-02-18T23:00Z";
+            String counter3 = "1";
+            response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            response.close();
 
-    //         // Create a project
-    //         response = createProject("CS6301",userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            // Corrupt the userID
+            int temp = Integer.parseInt(userId);
+            userId = String.valueOf(temp - 1);
 
-    //         // Create session 1 (completely within the timeframe)
-    //         String startTime1 = "2019-02-18T20:00Z";
-    //         String endTime1 = startTime1;
-    //         response = createSession(userId, projectId, startTime1, endTime1);
-    //         String sessionId1 = getIdFromResponse(response);
-    //         response.close();
+            // Send request
+            String reportStartTime = "2019-02-18T19:30Z";
+            String reportEndTime = "2019-02-18T21:30Z";
+            response = getReport(userId, projectId, reportStartTime, reportEndTime, true, true);
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 404){
+                System.out.println(
+                        "*** Correct! Expected response status: 404 since the userId " + userId + " does not exist.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the userId " + userId + " does not exist.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
 
-    //         // Update session 1
-    //         String newStartTime1 = startTime1;
-    //         String newEndTime1 = "2019-02-18T20:30Z";
-    //         String counter1 = "1";
-    //         response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+    // done by Niranjan
+    @Test
+    public void getReportTest404_2() throws Exception{
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try{
+            // Create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 2 (partially within the timeframe)
-    //         String startTime2 = "2019-02-18T21:00Z";
-    //         String endTime2 = startTime2;
-    //         response = createSession(userId, projectId, startTime2, endTime2);
-    //         String sessionId2 = getIdFromResponse(response);
-    //         response.close();
+            // Create a project
+            response = createProject("CS6301",userId);
+            String projectId = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Update session 2
-    //         String newStartTime2 = startTime2;
-    //         String newEndTime2 = "2019-02-18T22:00Z";
-    //         String counter2 = "2";
-    //         response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            // Create session 1 (completely within the timeframe)
+            String startTime1 = "2019-02-18T20:00Z";
+            String endTime1 = startTime1;
+            response = createSession(userId, projectId, startTime1, endTime1);
+            String sessionId1 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Create session 3 (outside the timeframe)
-    //         String startTime3 = "2019-02-18T22:30Z";
-    //         String endTime3 = startTime3;
-    //         response = createSession(userId, projectId, startTime3, endTime3);
-    //         String sessionId3 = getIdFromResponse(response);
-    //         response.close();
+            // Update session 1
+            String newStartTime1 = startTime1;
+            String newEndTime1 = "2019-02-18T20:30Z";
+            String counter1 = "1";
+            response = updateSession(userId, projectId, sessionId1, newStartTime1, newEndTime1, counter1);
+            response.close();
 
-    //         // Update session 3
-    //         String newStartTime3 = startTime3;
-    //         String newEndTime3 = "2019-02-18T23:00Z";
-    //         String counter3 = "1";
-    //         response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            // Create session 2 (partially within the timeframe)
+            String startTime2 = "2019-02-18T21:00Z";
+            String endTime2 = startTime2;
+            response = createSession(userId, projectId, startTime2, endTime2);
+            String sessionId2 = Long.toString(getIdFromResponse(response));
+            response.close();
 
-    //         // Corrupt the projectId
-    //         int temp = Integer.parseInt(projectId);
-    //         projectId = String.valueOf(temp - 1);
+            // Update session 2
+            String newStartTime2 = startTime2;
+            String newEndTime2 = "2019-02-18T22:00Z";
+            String counter2 = "2";
+            response = updateSession(userId, projectId, sessionId2, newStartTime2, newEndTime2, counter2);
+            response.close();
 
-    //         // Send request
-    //         String reportStartTime = "2019-02-18T19:30Z";
-    //         String reportEndTime = "2019-02-18T21:30Z";
-    //         response = getReport(userId, projectId, reportStartTime, reportEndTime, true, true);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if(status == 404){
-    //             System.out.println(
-    //                     "*** Correct! Expected response status: 404 since the projectId " + projectId + " does not exist.***");
-    //         }else{
-    //             throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the projectId " + projectId + " does not exist.***");
-    //         }
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally{
-    //         httpclient.close();
-    //     }
-    // }
+            // Create session 3 (outside the timeframe)
+            String startTime3 = "2019-02-18T22:30Z";
+            String endTime3 = startTime3;
+            response = createSession(userId, projectId, startTime3, endTime3);
+            String sessionId3 = Long.toString(getIdFromResponse(response));
+            response.close();
+
+            // Update session 3
+            String newStartTime3 = startTime3;
+            String newEndTime3 = "2019-02-18T23:00Z";
+            String counter3 = "1";
+            response = updateSession(userId, projectId, sessionId3, newStartTime3, newEndTime3, counter3);
+            response.close();
+
+            // Corrupt the projectId
+            int temp = Integer.parseInt(projectId);
+            projectId = String.valueOf(temp - 1);
+
+            // Send request
+            String reportStartTime = "2019-02-18T19:30Z";
+            String reportEndTime = "2019-02-18T21:30Z";
+            response = getReport(userId, projectId, reportStartTime, reportEndTime, true, true);
+            int status = response.getStatusLine().getStatusCode();
+            if(status == 404){
+                System.out.println(
+                        "*** Correct! Expected response status: 404 since the projectId " + projectId + " does not exist.***");
+            }else{
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 404 since the projectId " + projectId + " does not exist.***");
+            }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally{
+            httpclient.close();
+        }
+    }
 
     
     private CloseableHttpResponse createUser(String firstname, String lastname, String email) throws IOException {
