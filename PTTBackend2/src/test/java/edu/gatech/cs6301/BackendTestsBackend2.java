@@ -1614,7 +1614,7 @@ public class BackendTestsBackend2 {
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
             response.close();
-            String expectedJson = "{\"id\":" + projectId
+            expectedJson = "{\"id\":" + projectId
                     + ",\"projectname\":\"CS6301\",\"userId\":" + userId + "}";
             JSONAssert.assertEquals(expectedJson, strResponse, false);
             EntityUtils.consume(response.getEntity());
@@ -1647,6 +1647,9 @@ public class BackendTestsBackend2 {
         httpclient = HttpClients.createDefault();
         deleteUsers();
         try{
+            String strResponse;
+            HttpEntity entity;
+            String expectedJson;
             // Create a user
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userId = Long.toString(getIdFromResponse(response));
