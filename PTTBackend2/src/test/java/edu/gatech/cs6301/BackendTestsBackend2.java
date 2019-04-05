@@ -1042,22 +1042,22 @@ public class BackendTestsBackend2 {
              EntityUtils.consume(response.getEntity());
              response.close();
 
-             response = getAllProjects(userId);
-             status = response.getStatusLine().getStatusCode();
-             if (status == 200) {
-                 entity = response.getEntity();
-             } else {
-                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
-             }
-             strResponse = EntityUtils.toString(entity);
+            response = getAllProjects(userId);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
+            }
+            strResponse = EntityUtils.toString(entity);
 
-             System.out.println(
-                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-             expectedJson = "[]";
-             JSONAssert.assertEquals(expectedJson, strResponse, false);
-             EntityUtils.consume(response.getEntity());
-             response.close();
+            expectedJson = "[]";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
          } finally{
              httpclient.close();
          }
@@ -1102,23 +1102,23 @@ public class BackendTestsBackend2 {
              EntityUtils.consume(response.getEntity());
              response.close();
 
-             response = getAllProjects(userId);
-             status = response.getStatusLine().getStatusCode();
-             if (status == 200) {
-                 entity = response.getEntity();
-             } else {
-                 throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
-             }
-             strResponse = EntityUtils.toString(entity);
+            response = getAllProjects(userId);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status + ", expecting 200 since getAllProjects should return all projects with code 200 even if no project exists");
+            }
+            strResponse = EntityUtils.toString(entity);
 
-             System.out.println(
-                     "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-             expectedJson = "[{\"id\":" + projectId
-                     + ",\"projectname\":\"CS6301\",\"userId\":" + userId + "}]";
-             JSONAssert.assertEquals(expectedJson, strResponse, false);
-             EntityUtils.consume(response.getEntity());
-             response.close();
+            expectedJson = "[{\"id\":" + projectId
+                    + ",\"projectname\":\"CS6301\",\"userId\":" + userId + "}]";
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
          } finally{
              httpclient.close();
          }
