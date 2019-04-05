@@ -803,101 +803,101 @@ public class BackendTestsMobile2 {
     }
 
 
-    // @Test
-    // public void updateProjectTest() throws Exception {
-    //     deleteUsers();
-    //     try {
+    @Test
+    public void updateProjectTest() throws Exception {
+        deleteUsers();
+        try {
 
-    //         CloseableHttpResponse response = createUser(0,"nf","ng","naawdd@gmail.com");
-    //         int userId = getIdFromResponse(response);
-    //         response.close();
-    //         response = addProject(0,"projectnA", userId);
-    //         int id = getIdFromResponse(response);
-    //         response.close();
-
-
-    //         response = updateProject(id, "newProjectName",userId,id);
-
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
-
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
-    //         String expectedJson = "{\"id\":\"" + id + "\",\"projectname\":\"newProjectName\",\"userId\":\""+userId+"\"}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void updateProjectBadRequestTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-
-    //         CloseableHttpResponse response;
-    //         response = updateProject(-1, null, -1,-1);
-
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            CloseableHttpResponse response = createUser(0,"nf","ng","naawdd@gmail.com");
+            int userId = getIdFromResponse(response);
+            response.close();
+            response = addProject(0,"projectnA", userId);
+            int id = getIdFromResponse(response);
+            response.close();
 
 
+            response = updateProject(id, "newProjectName",userId,id);
 
-    // @Test
-    // public void updateProjectProjectNotFoundTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response = createUser(0,"nf","ng","naawdd@gmail.com");
-    //         int userId = getIdFromResponse(response);
-    //         response.close();
-    //         deleteProject(userId,5);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         response = updateProject(5, "theProjectName", userId,5);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            String expectedJson = "{\"id\":" + id + ",\"projectname\":\"newProjectName\",\"userId\":"+userId+"}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+    @Test
+    public void updateProjectBadRequestTest() throws Exception {
+        deleteUsers();
+        try {
 
-    // @Test
-    // public void updateProjectUserNotFoundTest() throws Exception {
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response;
-    //         deleteUser(""+3);
+            CloseableHttpResponse response;
+            response = updateProject(-1, null, -1,-1);
 
-    //         response = updateProject(5, "theProjectName", 3,5);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+
+
+    @Test
+    public void updateProjectProjectNotFoundTest() throws Exception {
+        deleteUsers();
+        try {
+            CloseableHttpResponse response = createUser(0,"nf","ng","naawdd@gmail.com");
+            int userId = getIdFromResponse(response);
+            response.close();
+            deleteProject(userId,5);
+
+            response = updateProject(5, "theProjectName", userId,5);
+
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    @Test
+    public void updateProjectUserNotFoundTest() throws Exception {
+        deleteUsers();
+        try {
+            CloseableHttpResponse response;
+            deleteUser(""+3);
+
+            response = updateProject(5, "theProjectName", 3,5);
+
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
 
      @Test
