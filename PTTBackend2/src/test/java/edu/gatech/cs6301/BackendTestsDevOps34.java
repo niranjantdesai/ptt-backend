@@ -474,37 +474,37 @@ public class BackendTestsDevOps34 {
         }
     }
 
-    // @Test
-    // public void updateProjectTest() throws Exception {
-    //     String userId = singleUserBeforeProjectTest();
+    @Test
+    public void updateProjectTest() throws Exception {
+        String userId = singleUserBeforeProjectTest();
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createProject(userId, "Homework");
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         response = updateProject(userId, id, "Programming");
+            response = updateProject(userId, id, "Programming");
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         String expectedJson = "{\"id\":" + id + ",\"projectname\":\"Programming\",\"userId\":"+ userId +"}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            String expectedJson = "{\"id\":" + id + ",\"projectname\":\"Programming\",\"userId\":"+ userId +"}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     @Test
     public void getProjectTest() throws Exception {
@@ -866,32 +866,32 @@ public class BackendTestsDevOps34 {
         }
     }
 
-    // @Test
-    // public void updateToDuplicatedProjectsTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     String userId = singleUserBeforeProjectTest();
+    @Test
+    public void updateToDuplicatedProjectsTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        String userId = singleUserBeforeProjectTest();
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         // EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createProject(userId, "Homework");
+            // EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         response = createProject(userId, "Programming");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String updatedId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(userId, "Programming");
+            // EntityUtils.consume(response.getEntity());
+            String updatedId = getIdFromResponse(response);
+            response.close();
 
-    //         response = updateProject(userId, updatedId, "Homework");
+            response = updateProject(userId, updatedId, "Homework");
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(409, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     private String singleUserBeforeProjectTest() throws IOException, JSONException{
         deleteAllUsers();
