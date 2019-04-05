@@ -1224,144 +1224,148 @@ public class BackendTestsMobile1 {
 
 
 
-    // @Test
-    // public void getReportForProjectsForUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void getReportForProjectsForUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
 
-    //     try {
-    //         String expectedJson = "\"sessions\": [";
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
+        try {
+            String expectedJson = "{\"sessions\": [";
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
 
-    //         response = createProject(userId,"Project 1");
-    //         String projectId = getIdFromResponse(response);
+            response = createProject(userId,"Project 1");
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
-    //         expectedJson += "{\"startingTime\":\"\"2019-02-18T20:00Z\"\",\"endTime\":\"\"2019-02-18T21:00Z\"\",\"counter\": 2\", \"hoursWorked\":\"1\"},";
+            response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
+            expectedJson += "{\"startingTime\":\"2019-02-18T20:00Z\",\"endingTime\":\"2019-02-18T21:00Z\", \"hoursWorked\":1},";
+            response.close();
 
-    //         response = createSession(userId,projectId,"2019-02-20T20:00Z","2019-02-21T01:00Z",6);
-    //         String sessionId2 = getIdFromResponse(response);
-    //         expectedJson += "{\"startTime\":\"\"2019-02-20T20:00Z\"\",\"endTime\":\"\"2019-02-21T01:00Z\"\",\"counter\": 6\", \"hoursWorked\":\"5\"}";
+            response = createSession(userId,projectId,"2019-02-20T20:00Z","2019-02-21T01:00Z",6);
+            String sessionId2 = getIdFromResponse(response);
+            expectedJson += "{\"startingTime\":\"2019-02-20T20:00Z\",\"endingTime\":\"2019-02-21T01:00Z\" , \"hoursWorked\":5}";
+            response.close();
 
-    //         response = createSession(userId,projectId,"2019-02-23T20:00Z","",0);
-    //         String sessionId3 = getIdFromResponse(response);
+            // response = createSession(userId,projectId,"2019-02-23T20:00Z","",0);
+            // String sessionId3 = getIdFromResponse(response);
+            // response.close();
 
-    //         response = getReport(userId,projectId,"2019-02-18T20:00Z","2019-02-21T01:00Z",true,true);
+            response = getReport(userId,projectId,"2019-02-18T20:00Z","2019-02-21T01:00Z",true,true);
 
-    //         expectedJson += "], \"completedPomodoros\": 8,\n" +
-    //                 "  \"totalHoursWorkedOnProject\": \"6\"}";
+            expectedJson += "], \"completedPomodoros\": 8," +
+                    "  \"totalHoursWorkedOnProject\": 6}";
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         String strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            String strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
 
-    // @Test
-    // public void getReportForProjectForMissingUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void getReportForProjectForMissingUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
 
-    //         response = createProject(userId,"Project 1");
-    //         String projectId = getIdFromResponse(response);
+            response = createProject(userId,"Project 1");
+            String projectId = getIdFromResponse(response);
 
-    //         response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
+            response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
 
-    //         String missingId ="xyz"+ userId; //User ID should not exist
+            String missingId ="123412341234"+ userId; //User ID should not exist
 
-    //         response = getReport(missingId,projectId,"","",true,true);
+            response = getReport(missingId,projectId,"2019-02-18T20:00Z","2019-02-18T20:00Z",true,true);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void getReportForMissingProjectForMissingUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void getReportForMissingProjectForMissingUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
 
-    //         response = createProject(userId,"Project 1");
-    //         String projectId = getIdFromResponse(response);
+            response = createProject(userId,"Project 1");
+            String projectId = getIdFromResponse(response);
 
-    //         response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
+            response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
 
-    //         String missingId ="xyz"+ userId; //User ID should not exist
+            String missingId ="123412341234"+ projectId; //User ID should not exist
 
-    //         response = getReport(missingId,projectId,"","",true,true);
+            response = getReport(missingId,missingId,"2019-02-18T20:00Z","2019-02-18T20:00Z",true,true);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void getReportForMissingProjectForUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void getReportForMissingProjectForUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
 
-    //         response = createProject(userId,"Project 1");
-    //         String projectId = getIdFromResponse(response);
+            response = createProject(userId,"Project 1");
+            String projectId = getIdFromResponse(response);
 
-    //         response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
+            response = createSession(userId,projectId,"2019-02-18T20:00Z","2019-02-18T21:00Z",2);
 
-    //         String missingId ="xyz"+ projectId; //Project ID should not exist
+            String missingId ="123412341234"+ projectId; //Project ID should not exist
 
-    //         response = getReport(userId,missingId,"","",true,true);
+            response = getReport(userId,missingId,"2019-02-18T20:00Z","2019-02-18T20:00Z",true,true);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     private CloseableHttpResponse createUser(String firstname, String lastname, String email) throws IOException {
         HttpPost httpRequest = new HttpPost(baseUrl + "/users");
@@ -1578,8 +1582,8 @@ public class BackendTestsMobile1 {
 
     private CloseableHttpResponse getReport(String userId, String projectId, String startTime, String endTime, boolean completed, boolean totalHrs) throws IOException {
         String url = baseUrl + "/users/" + userId + "/projects/" + projectId + "/report?";
-        url += "&startTime="+startTime+"&endTime="+endTime+"&optCompletedPomodoros="+completed;
-        url += "&optTotalHoursWorkedOnProject="+totalHrs;
+        url += "&from="+startTime+"&to="+endTime+"&includeCompletedPomodoros="+completed;
+        url += "&includeTotalHoursWorkedOnProject="+totalHrs;
         HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader("accept", "application/json");
 
