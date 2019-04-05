@@ -549,85 +549,88 @@ public class BackendTestsMobile2 {
     //     }
     // }
 
-    // /////////////////////////////////////////////////////////////////
-    // //******Project Test Start Here*********************
+    /////////////////////////////////////////////////////////////////
+    //******Project Test Start Here*********************
 
-    // @Test
-    // public void getAllProjectsTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     String expectedJson = "";
+    @Test
+    public void getAllProjectsTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        String expectedJson = "";
 
-    //     try {
-    //         CloseableHttpResponse response = createUser(0,"na","nv","nawdd@gmail.com");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"projectnA", userId);
-    //         int id1 = getIdFromResponse(response);
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser(0,"na","nv","nawdd@gmail.com");
+            int userId = getIdFromResponse(response);
+            response.close();
 
-    //         response = addProject(0,"projectnB", userId);
-    //         int id2 = getIdFromResponse(response);
-    //         response.close();
+            response = addProject(0,"projectnA", userId);
+            int id1 = getIdFromResponse(response);
+            response.close();
 
-    //         expectedJson += "[{\"id\":\"" + id1 + "\",\"projectname\":\"projectA\",\"userId\":\""+userId+"\"}";
-    //         expectedJson += ",{\"id\":\"" + id2 + "\",\"projectname\":\"projectA\",\"userId\":\""+userId+"\"}]";
+            response = addProject(0,"projectnB", userId);
+            int id2 = getIdFromResponse(response);
+            response.close();
 
-    //         response = getAllProjects(userId);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            expectedJson += "[{\"id\":" + id1 + ",\"projectname\":\"projectnA\",\"userId\":" + userId + "}";
+            expectedJson += ",{\"id\":" + id2 + ",\"projectname\":\"projectnB\",\"userId\":" + userId + "}]";
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            response = getAllProjects(userId);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    // @Test
-    // public void getAllProjectsBadRequestTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response;
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         response = getAllProjects(-1);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+    // This is a test for bad requests. Because getAllProjects expects an int, we can't pass a bad request so return 404 
+    @Test
+    public void getAllProjectsBadRequestTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response;
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            response = getAllProjects(-1);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    // @Test
-    // public void getAllProjectsUserNotFoundTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response;
-    //         deleteUser(""+10);
-    //         response = getAllProjects(10);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+    @Test
+    public void getAllProjectsUserNotFoundTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response;
+            deleteUser(""+10);
+            response = getAllProjects(10);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
 
      @Test
@@ -1404,7 +1407,7 @@ public class BackendTestsMobile2 {
 
     //get all projects of a given userId
     private CloseableHttpResponse getAllProjects(int userId) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/users/"+userId+"/projects");
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects");
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");

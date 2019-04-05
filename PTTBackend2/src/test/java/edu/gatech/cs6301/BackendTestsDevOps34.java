@@ -541,49 +541,48 @@ public class BackendTestsDevOps34 {
         }
     }
 
-    // @Test
-    // public void getAllProjectsTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     String userId = singleUserBeforeProjectTest();
-    //     String id;
-    //     String expectedJson = "";
+    @Test
+    public void getAllProjectsTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        String userId = singleUserBeforeProjectTest();
+        String id;
+        String expectedJson = "";
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         // EntityUtils.consume(response.getEntity());
-    //         id = getIdFromResponse(response);
-    //         expectedJson += "[{\"id\":" + id + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}";
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createProject(userId, "Homework");
+            // EntityUtils.consume(response.getEntity());
+            id = getIdFromResponse(response);
+            expectedJson += "[{\"id\":" + id + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}";
+            response.close();
 
-    //         response = createProject(userId, "Programming");
-    //         // EntityUtils.consume(response.getEntity());
-    //         id = getIdFromResponse(response);
-    //         expectedJson += ",{\"id\":" + id + ",\"projectname\":\"Homework\",\"userId\":"+ userId +"}]";
-    //         response.close();
+            response = createProject(userId, "Programming");
+            // EntityUtils.consume(response.getEntity());
+            id = getIdFromResponse(response);
+            expectedJson += ",{\"id\":" + id + ",\"projectname\":\"Programming\",\"userId\":"+ userId +"}]";
+            response.close();
 
-    //         response = getAllProjects(userId);
+            response = getAllProjects(userId);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-     // TODO: uncomment after implementing getAllProjects which is for the next deliverable
      @Test
      public void DeleteProjectTest() throws Exception {
          httpclient = HttpClients.createDefault();
@@ -599,8 +598,6 @@ public class BackendTestsDevOps34 {
              int status;
              HttpEntity entity;
              String strResponse;
-
-             // deleteProject(userId, deleteid);
 
              response = deleteProject(userId, deleteid);
              status = response.getStatusLine().getStatusCode();
@@ -638,8 +635,6 @@ public class BackendTestsDevOps34 {
          }
      }
 
-
-     // TODO: uncomment after implementing getAllProjects which is for the next deliverable
      @Test
      public void CreateMultipleDeleteOneProjectTest() throws Exception {
          httpclient = HttpClients.createDefault();
@@ -690,7 +685,6 @@ public class BackendTestsDevOps34 {
 
              System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-             // expectedJson = "[]";
              JSONAssert.assertEquals(expectedJson,strResponse, false);
              EntityUtils.consume(response.getEntity());
              response.close();
