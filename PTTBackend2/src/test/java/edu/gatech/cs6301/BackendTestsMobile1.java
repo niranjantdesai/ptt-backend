@@ -516,24 +516,30 @@ public class BackendTestsMobile1 {
     // @Test
     // public void getAllProjectsForUserTest() throws Exception {
     //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
+    //     // deleteAllUsers();
     //     deleteOurUsers();
 
     //     try {
     //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
     //         String userId = getIdFromResponse(response);
+    //         response.close();
     //         createdIDs.add(userId);
     //         String expectedJson;
 
     //         response = createProject(userId,"Project 1");
     //         String projectId1 = getIdFromResponse(response);
-    //         expectedJson = "[{\"id\":\"" + projectId1 + "\",\"projectname\":\"Project 1\",\"userId\":" + userId +"\"},";
+    //         response.close();
+    //         expectedJson = "[{\"id\":" + projectId1 + ",\"projectname\":\"Project 1\",\"userId\":" + userId +"\"},";
+            
     //         response = createProject(userId,"Project 1");
     //         String projectId2 = getIdFromResponse(response);
-    //         expectedJson += "{\"id\":\"" + projectId2 + "\",\"projectname\":\"Project 1\",\"userId\":" + userId +"\"},";
+    //         response.close();
+    //         expectedJson += "{\"id\":" + projectId2 + ",\"projectname\":\"Project 1\",\"userId\":" + userId +"\"},";
+            
     //         response = createProject(userId,"Project 1");
     //         String projectId3 = getIdFromResponse(response);
-    //         expectedJson = "{\"id\":\"" + projectId3 + "\",\"projectname\":\"Project 1\",\"userId\":" + userId +"\"}]";
+    //         response.close();
+    //         expectedJson = "{\"id\":" + projectId3 + ",\"projectname\":\"Project 1\",\"userId\":" + userId +"\"}]";
 
     //         response = getAllProjects(userId);
 
@@ -547,8 +553,6 @@ public class BackendTestsMobile1 {
     //         String strResponse = EntityUtils.toString(entity);
 
     //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
-    //         String id = getIdFromStringResponse(strResponse);
 
     //         JSONAssert.assertEquals(expectedJson,strResponse, false);
     //         EntityUtils.consume(response.getEntity());
