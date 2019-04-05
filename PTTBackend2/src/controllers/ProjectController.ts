@@ -400,10 +400,6 @@ export class ProjectController {
 
     public getReport(userId: string, projectId: string, from: string, to: string, includeCompletedPomodoros: boolean, includeTotalHoursWorkedOnProject: boolean): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-            
-            
-            
-            // Haamid's implementation of the report
             this.getProject(userId, projectId, false)
             .then(obj => {
                 let usersProject = obj["result"];
@@ -452,7 +448,6 @@ export class ProjectController {
                         if (includeTotalHoursWorkedOnProject) {
                             report["totalHoursWorkedOnProject"] = this.get2dpNumber(totalTimeForProject);
                         }
-    
                         resolve({code: 200, result: report});
                     }
                 } else {
