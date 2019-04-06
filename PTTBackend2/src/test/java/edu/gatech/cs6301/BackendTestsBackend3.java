@@ -2014,990 +2014,855 @@ public class BackendTestsBackend3 {
 
 
 
-    // /* Report related test -- START */
-    // @Test
-    // public void getReportTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Finally get a report
-    //         HttpEntity entity;
-    //         response = getReport(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
-    //         entity = response.getEntity();
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 200){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
-    //                 				"\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1" + "}]}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithInvalidProjectTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with invalid project ID
-    //         response = getReport(userId, "1859301234985293", "2019-02-18T19:00Z", "2019-02-18T21:00Z");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 404){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithInvalidUserTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with invalid user ID
-    //         response = getReport("1859301234985293", projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 404){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithInvalidStartTimeTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with invalid user ID
-    //         response = getReport(userId, projectId, "gobbledygook", "2019-02-18T21:00Z");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 400){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithInvalidEndTimeTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with invalid user ID
-    //         response = getReport(userId, projectId, "2019-02-18T21:00Z", "gobbledygook");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 400){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithStartTimeAfterEndTimeTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with invalid user ID
-    //         response = getReport(userId, projectId, "2019-02-18T21:00Z", "2019-02-18T19:00Z");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 400){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithEmptyStartTimeTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with invalid user ID
-    //         response = getReport(userId, projectId, "", "2019-02-18T21:00Z");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 400){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithEmptyEndTimeTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with invalid user ID
-    //         response = getReport(userId, projectId, "2019-02-18T21:00Z", "");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 400){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithProjectFromOtherUserTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create two users
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         response = createUser("John", "Doe", "john@doe.com");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String otherUserId = getIdFromResponse(response);
-    //         response.close();
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Call a report with other user ID
-    //         response = getReport(otherUserId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 400){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithNoSessionTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Try to get a report
-    //         HttpEntity entity;
-    //         response = getReport(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
-    //         entity = response.getEntity();
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 200){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"sessions\": []}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithStartTimeAfterSessionStartTimeTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Finally get a report
-    //         HttpEntity entity;
-    //         response = getReport(userId, projectId, "2019-02-18T20:01Z", "2019-02-18T21:00Z");
-    //         entity = response.getEntity();
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 200){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
-    //                 "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithEndTimeBeforeSessionEndTimeTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Finally get a report
-    //         HttpEntity entity;
-    //         response = getReport(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T20:59Z");
-    //         entity = response.getEntity();
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 200){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
-    //                 "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithHoursAndPomodorosTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Finally get a report
-    //         HttpEntity entity;
-    //         response = getReportWithPomodorosAndHours(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z", true, true);
-    //         entity = response.getEntity();
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 200){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
-    //                 "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]," +
-    //                 "\"completedPomodoros\": 1," + "\"totalHoursWorkedOnProject\": 1}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithPomodorosTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Finally get a report
-    //         HttpEntity entity;
-    //         response = getReportWithPomodoros(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z", true);
-    //         entity = response.getEntity();
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 200){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
-    //                 "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]," +
-    //                 "\"completedPomodoros\": 1}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // public void getReportWithHoursTest() throws Exception{
-    //     System.out.println("----- Start testing GET report-----");
-    //     httpclient = HttpClients.createDefault();
-
-    //     try{
-    //         // 1. Create a user
-    //         CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
-    //         int status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
-
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 2. Create a project
-    //         response = createProject(userId, "Project 1");
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201)
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
-
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
-
-    //         // 3. Create a session and associate it to a user and project
-    //         response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
-
-    //         // 4. Check the response status, if correct get the response body
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 201){
-    //             throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
-    //         }
-
-    //         // 5. Finally get a report
-    //         HttpEntity entity;
-    //         response = getReportWithHours(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z", true);
-    //         entity = response.getEntity();
-    //         status = response.getStatusLine().getStatusCode();
-
-    //         if(status != 200){
-    //             throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
-    //         }
-
-    //         // Convert response body to string (in purpose of comparing)
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + status + ") ***");
-    //         // Expected response body
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
-    //                 "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]," +
-    //                 "\"totalHoursWorkedOnProject\": 1}";
-    //         // Compare
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         //EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete project
-    //         response = deleteProject(userId, projectId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         // Delete created user
-    //         response = deleteUser(userId);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     }
-    //     finally {
-    //         httpclient.close();
-    //     }
-    // }
+     /* Report related test -- START */
+     @Test
+     public void getReportTest() throws Exception{
+         deleteUsers();
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Finally get a report
+             HttpEntity entity;
+             response = getReport(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
+             entity = response.getEntity();
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 200){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+             // Expected response body
+             String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
+                     				"\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1" + "}]}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithInvalidProjectTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with invalid project ID
+             response = getReport(userId, "1859301234985293", "2019-02-18T19:00Z", "2019-02-18T21:00Z");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 404){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithInvalidUserTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with invalid user ID
+             response = getReport("1859301234985293", projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 404){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithInvalidStartTimeTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with invalid user ID
+             response = getReport(userId, projectId, "gobbledygook", "2019-02-18T21:00Z");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 400){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithInvalidEndTimeTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with invalid user ID
+             response = getReport(userId, projectId, "2019-02-18T21:00Z", "gobbledygook");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 400){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithStartTimeAfterEndTimeTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with invalid user ID
+             response = getReport(userId, projectId, "2019-02-18T21:00Z", "2019-02-18T19:00Z");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 400){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithEmptyStartTimeTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with empty startTime
+             response = getReport(userId, projectId, "", "2019-02-18T21:00Z");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 400){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithEmptyEndTimeTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with empty endTime
+             response = getReport(userId, projectId, "2019-02-18T21:00Z", "");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 400){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithProjectFromOtherUserTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create two users
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             response = createUser("John", "Doe", "john@doe.com");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String otherUserId = getIdFromResponse(response);
+             response.close();
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Call a report with other user ID
+             response = getReport(otherUserId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 404){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithNoSessionTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Try to get a report
+             HttpEntity entity;
+             response = getReport(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z");
+             entity = response.getEntity();
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 200){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+             // Expected response body
+             String expectedJson = "{\"sessions\": []}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithStartTimeAfterSessionStartTimeTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Finally get a report
+             HttpEntity entity;
+             response = getReport(userId, projectId, "2019-02-18T20:01Z", "2019-02-18T21:00Z");
+             entity = response.getEntity();
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 200){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+             // Expected response body
+             String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
+                     "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithEndTimeBeforeSessionEndTimeTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Finally get a report
+             HttpEntity entity;
+             response = getReport(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T20:59Z");
+             entity = response.getEntity();
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 200){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+             // Expected response body
+             String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
+                     "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithHoursAndPomodorosTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Finally get a report
+             HttpEntity entity;
+             response = getReportWithPomodorosAndHours(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z", true, true);
+             entity = response.getEntity();
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 200){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+             // Expected response body
+             String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
+                     "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]," +
+                     "\"completedPomodoros\": 1," + "\"totalHoursWorkedOnProject\": 1}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             //EntityUtils.consume(response.getEntity());
+             response.close();
+
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithPomodorosTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Finally get a report
+             HttpEntity entity;
+             response = getReportWithPomodoros(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z", true);
+             entity = response.getEntity();
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 200){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+             // Expected response body
+             String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
+                     "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]," +
+                     "\"completedPomodoros\": 1}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
+
+     @Test
+     public void getReportWithHoursTest() throws Exception{
+         System.out.println("----- Start testing GET report-----");
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
+
+         try{
+             // 1. Create a user
+             CloseableHttpResponse response = createUser("Jane", "Doe", "jane@doe.com");
+             int status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a user: " + status);
+
+             String userId = getIdFromResponse(response);
+             response.close();
+
+             // 2. Create a project
+             response = createProject(userId, "Project 1");
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201)
+                 throw new ClientProtocolException("Unexpected POST response status while creating a project: " + status);
+
+             String projectId = getIdFromResponse(response);
+             response.close();
+
+             // 3. Create a session and associate it to a user and project
+             response = createSession(userId, projectId, "2019-02-18T20:00Z", "2019-02-18T21:00Z", "1");
+
+             // 4. Check the response status, if correct get the response body
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 201){
+                 throw new ClientProtocolException("Unexpected POST response status while creating a session: " + status);
+             }
+
+             // 5. Finally get a report
+             HttpEntity entity;
+             response = getReportWithHours(userId, projectId, "2019-02-18T19:00Z", "2019-02-18T21:00Z", true);
+             entity = response.getEntity();
+             status = response.getStatusLine().getStatusCode();
+
+             if(status != 200){
+                 throw new ClientProtocolException("Unexpected GET response status while getting a report: " + status);
+             }
+
+             // Convert response body to string (in purpose of comparing)
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + status + ") ***");
+             // Expected response body
+             String expectedJson = "{\"sessions\": [{\"startingTime\": \"2019-02-18T20:00Z\"," +
+                     "\"endingTime\": \"2019-02-18T21:00Z\"," + "\"hoursWorked\": 1}]," +
+                     "\"totalHoursWorkedOnProject\": 1}";
+             // Compare
+             JSONAssert.assertEquals(expectedJson, strResponse, false);
+             EntityUtils.consume(response.getEntity());
+             response.close();
+         }
+         finally {
+             httpclient.close();
+         }
+     }
 
     //-------------------------------------------- Requests ----------------------------------------------
     // Users Requests
@@ -3233,7 +3098,7 @@ public class BackendTestsBackend3 {
     
     // Report Requests
     private CloseableHttpResponse getReport(String id, String projectId, String startTime, String endTime) throws IOException {
-        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&?to=" + endTime);
+        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&to=" + endTime + "&includeCompletedPomodoros=false&includeTotalHoursWorkedOnProject=false");
         httpGet.addHeader("accept", "application/json");
         System.out.println("*** Executing request " + httpGet.getRequestLine() + " ***");
         CloseableHttpResponse response = httpclient.execute(httpGet);
@@ -3242,7 +3107,7 @@ public class BackendTestsBackend3 {
     }
 
     private CloseableHttpResponse getReportWithPomodoros(String id, String projectId, String startTime, String endTime, boolean pomodoros) throws IOException {
-        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&?to=" + endTime + "&?includeCompletedPomodoros=" + pomodoros);
+        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&to=" + endTime + "&includeCompletedPomodoros=" + Boolean.toString(pomodoros) + "&includeTotalHoursWorkedOnProject=false");
         httpGet.addHeader("accept", "application/json");
         System.out.println("*** Executing request " + httpGet.getRequestLine() + " ***");
         CloseableHttpResponse response = httpclient.execute(httpGet);
@@ -3251,7 +3116,7 @@ public class BackendTestsBackend3 {
     }
 
     private CloseableHttpResponse getReportWithHours(String id, String projectId, String startTime, String endTime, boolean hours) throws IOException {
-        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&?to=" + endTime + "&?includeTotalHoursWorkedOnProject=" + hours);
+        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&to=" + endTime + "&includeCompletedPomodoros=false&includeTotalHoursWorkedOnProject=" + Boolean.toString(hours));
         httpGet.addHeader("accept", "application/json");
         System.out.println("*** Executing request " + httpGet.getRequestLine() + " ***");
         CloseableHttpResponse response = httpclient.execute(httpGet);
@@ -3260,7 +3125,7 @@ public class BackendTestsBackend3 {
     }
 
     private CloseableHttpResponse getReportWithPomodorosAndHours(String id, String projectId, String startTime, String endTime, boolean pomodoros, boolean hours) throws IOException {
-        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&?to=" + endTime + "&?includeCompletedPomodoros=" + pomodoros + "&?includeTotalHoursWorkedOnProject=" + hours);
+        HttpGet httpGet = new HttpGet(baseUrl + "/users/" + id + "/projects/" + projectId + "/report/?from=" + startTime + "&to=" + endTime + "&includeCompletedPomodoros=" + Boolean.toString(pomodoros) + "&includeTotalHoursWorkedOnProject=" + Boolean.toString(hours));
         httpGet.addHeader("accept", "application/json");
         System.out.println("*** Executing request " + httpGet.getRequestLine() + " ***");
         CloseableHttpResponse response = httpclient.execute(httpGet);
