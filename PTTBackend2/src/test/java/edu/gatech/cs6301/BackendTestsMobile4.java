@@ -845,53 +845,53 @@ public class BackendTestsMobile4 {
 
     
 
-    // // REPORT HERE
-    // @Test
-    // public void getReportTest() throws Exception {
-    //     String strResponse, id, projectid, sessionid, expectedJson;
-    //     HttpEntity entity;
+    // REPORT HERE
+    @Test
+    public void getReportTest() throws Exception {
+        String strResponse, id, projectid, sessionid, expectedJson;
+        HttpEntity entity;
+        deleteAllUsers();
 
 
-    //     try {
-    //         //Create a User first
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         id = getIdFromResponse(response);
-    //         response.close();
+        try {
+            //Create a User first
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            id = getIdFromResponse(response);
+            response.close();
 
-    //         //Create a project based on the user's id
-    //         response =  createProject(id, "project 1");
-    //         projectid = getIdFromResponse(response);
-    //         response.close();
-    //         //Create session based on user and project's id
+            //Create a project based on the user's id
+            response =  createProject(id, "project 1");
+            projectid = getIdFromResponse(response);
+            response.close();
+            //Create session based on user and project's id
 
-    //         response = createSession(id, projectid,"2019-02-18T20:00Z","2019-02-18T21:00Z",1);
-    //         sessionid = getIdFromResponse(response);
-    //         expectedJson = "[{\"id\":" + sessionid + ",\"startTime\":\"2019-02-18T20:00Z\",\"endTime\":\"2019-02-18T21:00Z\",\"counter\":1}]";
-    //         response.close();
+            response = createSession(id, projectid,"2019-02-18T20:00Z","2019-02-18T21:00Z",1);
+            expectedJson = "{\"sessions\": [{\"startingTime\":\"2019-02-18T20:00Z\",\"endingTime\":\"2019-02-18T21:00Z\",\"hoursWorked\":1}], \"completedPomodoros\": 1, \"totalHoursWorkedOnProject\": 1}";
+            response.close();
 
-    //         //Query 
-    //         response = getReport(id, projectid,"2019-02-18T20:00Z","2019-02-18T21:00Z", true, true);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //Query 
+            response = getReport(id, projectid,"2019-02-18T20:00Z","2019-02-18T21:00Z", true, true);
+            int status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // delete all users that are created in this test
-    //         response = deleteProject(id, projectid);
-    //         response.close();
-    //         response = deleteUser(id);
-    //         response.close();
+            // delete all users that are created in this test
+            response = deleteProject(id, projectid);
+            response.close();
+            response = deleteUser(id);
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
             
 
 
@@ -1107,7 +1107,7 @@ public class BackendTestsMobile4 {
         } else {
         	ithwop = "false";
         }
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid + "report?from=" + from + "&to=" + to + "&includeCompletedPomodoros=" + icp + "&includeTotalHoursWorkedOnProject=" + ithwop);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid + "/report?from=" + from + "&to=" + to + "&includeCompletedPomodoros=" + icp + "&includeTotalHoursWorkedOnProject=" + ithwop);
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");

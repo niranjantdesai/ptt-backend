@@ -362,193 +362,187 @@ public class BackendTestsMobile2 {
     }
 
 
-    // @Test
-    // public void getReportTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+    @Test
+    public void getReportTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(userId, "project", userId);
+            int projectId = getIdFromResponse(response);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
+            //Dates from and to
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         response = getReport(userId,projectId,fromDate,toDate,false,true);
+            response = getReport(userId,projectId,fromDate,toDate,false,true);
 
-    //         int id = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String expectedJson = "{\"sessions\": [{\"startingTime\": \""+fromDate+"\",\"endingTime\": \""+toDate+"\",\"hoursWorked\": 1 }],\"totalHoursWorkedOnProject\": 1}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \""+fromDate+"\",\"endingTime\": \""+toDate+"\",\"hoursWorked\": 1 }],\"totalHoursWorkedOnProject\": 1}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-    // //get report with completed pomodoros
-    // @Test
-    // public void getReportIncompletePomodoroTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
+    //get report with completed pomodoros
+    @Test
+    public void getReportIncompletePomodoroTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, null, 0);
-    //         int sessionId = getIdFromResponse(response);
+            //Dates from and to
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
 
-    //         response = getReport(userId,projectId,fromDate,toDate,true,true);
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         int id = getIdFromResponse(response);
+            response = getReport(userId,projectId,fromDate,toDate,true,true);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         HttpEntity entity;
-    //         String strResponse;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         String expectedJson = "{\"sessions\": [{\"startingTime\": \""+fromDate+"\",\"endingTime\": \""+toDate+"\",\"hoursWorked\": 1 }],\"completedPomodoros\": 0,\"totalHoursWorkedOnProject\": 1}";
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-    // //get report invalid user
-    // @Test
-    // public void getReportInvalidUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String expectedJson = "{\"sessions\": [{\"startingTime\": \""+fromDate+"\",\"endingTime\": \""+toDate+"\",\"hoursWorked\": 1 }],\"completedPomodoros\": 0,\"totalHoursWorkedOnProject\": 1}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
+    //get report invalid user
+    @Test
+    public void getReportInvalidUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    //         response = getReport(userId+1,projectId,fromDate,toDate,false,false);
+            //Dates from and to
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
 
-    //         int id = getIdFromResponse(response);
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-    // //get report invalid project
-    // @Test
-    // public void getReportInvalidProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+            response = getReport(userId+100000000,projectId,fromDate,toDate,false,false);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
+    //get report invalid project
+    @Test
+    public void getReportInvalidProjectTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    //         response = getReport(userId,projectId+1,fromDate,toDate,false,false);
+            //Dates from and to
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
 
-    //         int id = getIdFromResponse(response);
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-    // //get report invalid date
-    // @Test
-    // public void getReportInvalidDateTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response =
-    //                 createUser(0, "John", "Doe" , "john@doe.org");
-    //         int userId = getIdFromResponse(response);
-    //         response = addProject(0,"project", userId);
-    //         int projectId = getIdFromResponse(response);
+            response = getReport(userId,projectId+10000,fromDate,toDate,false,false);
 
-    //         //Dates from and to
-    //         Date d = addHoursToCurrentDate(1);
-    //         String fromDate = getDateString(new Date());
-    //         String toDate = getDateString(d);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         //create a session
-    //         response = createSession(userId,projectId,0,fromDate, toDate, 0);
-    //         int sessionId = getIdFromResponse(response);
 
-    //         response = getReport(userId,projectId,fromDate+"adf",toDate,false,false);
+    //get report invalid date
+    @Test
+    public void getReportInvalidDateTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response =
+                    createUser(0, "John", "Doe" , "john@doe.org");
+            int userId = getIdFromResponse(response);
+            response = addProject(0,"project", userId);
+            int projectId = getIdFromResponse(response);
 
-    //         int id = getIdFromResponse(response);
+            //Dates from and to
+            String fromDate = "2019-02-18T20:00Z";
+            String toDate = "2019-02-18T21:00Z";
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            //create a session
+            response = createSession(userId,projectId,0,fromDate, toDate, 0);
+            int sessionId = getIdFromResponse(response);
 
+            response = getReport(userId,projectId,fromDate+"adf",toDate,false,false);
+
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    
+    
     /////////////////////////////////////////////////////////////////
     //******Project Test Start Here*********************
 
@@ -1630,7 +1624,7 @@ public class BackendTestsMobile2 {
     private CloseableHttpResponse getReport(int userId, int projectId, String from,String to, boolean includeCompletedPomodoros ,boolean includeTotalHoursWorkedOnProject) throws IOException {
         String reqString = baseUrl + "/users/"+userId+"/projects/"+projectId+"/report";
         reqString += "?from="+from+"&to="+to;
-        reqString += "&includeTotalHoursWorked="+includeTotalHoursWorkedOnProject;
+        reqString += "&includeTotalHoursWorkedOnProject="+includeTotalHoursWorkedOnProject;
         reqString += "&includeCompletedPomodoros="+includeCompletedPomodoros;
         HttpGet httpRequest = new HttpGet(reqString);
         httpRequest.addHeader("accept", "application/json");
