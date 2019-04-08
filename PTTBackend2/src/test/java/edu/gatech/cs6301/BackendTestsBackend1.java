@@ -1225,49 +1225,52 @@ public class BackendTestsBackend1 {
         }
     }
 
-    // @Test
-    // public void getReports() throws Exception {
-    //     httpclient = HttpClients.createDefault();
+     @Test
+     public void getReports() throws Exception {
+         httpclient = HttpClients.createDefault();
+         deleteUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
-    //         String userId = getIdFromResponse(response);;
-    //         response.close();
+         try {
+             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
+             String userId = getIdFromResponse(response);;
+             response.close();
 
-    //         response = createProject("PTT Test case 2", userId);
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+             response = createProject("PTT Test case 2", userId);
+             String projectId = getIdFromResponse(response);
+             response.close();
 
-    //         //create pomodoro
-    //         response = createPomodoroSession(userId, projectId);
-    //         String id1 = getIdFromResponse(response);
-    //         response.close();
+             //create pomodoro
+             response = createPomodoroSession(userId, projectId);
+             int status = response.getStatusLine().getStatusCode();
+             if (status != 201){
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
+             String id1 = getIdFromResponse(response);
+             response.close();
 
-    //         response = getSessionReports(userId, projectId);
-    //         int status = response.getStatusLine().getStatusCode();
+             response = getSessionReports(userId, projectId);
+             status = response.getStatusLine().getStatusCode();
 
-    //         //returns 201
-    //         HttpEntity entity;
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
+             //returns 201
+             HttpEntity entity;
+             if (status == 200) {
+                 entity = response.getEntity();
+             } else {
+                 throw new ClientProtocolException("Unexpected response status: " + status);
+             }
 
-    //         String strResponse = EntityUtils.toString(entity);
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-    //         String expectedJson = "{\"sessions\":[{\"startingTime\":\"2019-02-18T20:00Z\",\"endingTime\":\"2019-02-18T20:00Z\"," +
-    //                 "\"hoursWorked\": 0.75}],\"completedPomodoros\":3,\"totalHoursWorkedOnProject\":0.75}";
+             String strResponse = EntityUtils.toString(entity);
+             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+             String expectedJson = "{\"sessions\":[{\"startingTime\":\"2019-02-18T20:00Z\",\"endingTime\":\"2019-02-18T20:00Z\"," +
+                     "\"hoursWorked\": 0}],\"completedPomodoros\":0,\"totalHoursWorkedOnProject\":0}";
 
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
+             JSONAssert.assertEquals(expectedJson,strResponse, false);
+             EntityUtils.consume(response.getEntity());
 
-    //         deleteUser(userId);
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+         } finally {
+             httpclient.close();
+         }
+     }
 
      @Test
      public void createPomodoroSessionWithInvalidUserIdTest() throws Exception {
@@ -1847,7 +1850,7 @@ public class BackendTestsBackend1 {
     }
 
     private CloseableHttpResponse getSessionReports(String userId, String projectId) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report");
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report?from=2019-02-18T20:00Z&to=2019-02-18T21:00Z&includeCompletedPomodoros=true&includeTotalHoursWorkedOnProject=true");
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
