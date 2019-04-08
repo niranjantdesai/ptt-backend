@@ -218,11 +218,9 @@ export class ProjectController {
 
     public updateProject(userId: string, projectId: string, updatedProject: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-            this.userController.getUser(userId, false)
+            this.getProject(userId, projectId, true)
             .then(obj => {
-                let user = obj["result"];
-                let usersProjectIds = user["projects"];
-
+                
                 try {
                     updatedProject = this.removeAllButSomeKeys(updatedProject, this.updatedableKeys);
                     let condition = { id: { $eq: projectId } };
@@ -237,26 +235,15 @@ export class ProjectController {
                                     print("unknown MongoError:", err);
                                     reject({code: 400, result: "Bad request"});
                                 }
-                            } else if (err.name === 'ValidationError') {
+                            } else {
                                 // when some necessary field is absent
                                 print("ValidationError:", err); 
                                 reject({code: 400, result: "Bad request"});
                             }
                         } else {
-                            if (project) {
-                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                                project["userId"] = Number(userId);
-                                if (usersProjectIds.indexOf(projectId) == -1) {
-                                    print("User doesn't have this project");
-                                    reject({code: 404, result: "Project not found"});
-                                } else {
-                                    resolve({code: 200, result: project});
-                                }
-                               
-                            } else {
-                                print("Project not found:", projectId);
-                                reject({code: 404, result: "Project not found"});
-                            }
+                            project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                            project["userId"] = Number(userId);
+                            resolve({code: 200, result: project});
                         }
                     });
                 } catch (e) {

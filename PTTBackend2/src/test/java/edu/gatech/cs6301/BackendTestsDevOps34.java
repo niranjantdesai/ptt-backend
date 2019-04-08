@@ -878,7 +878,7 @@ public class BackendTestsDevOps34 {
             response = updateProject(userId, updatedId, "Homework");
 
             int status = response.getStatusLine().getStatusCode();
-            Assert.assertEquals(400, status);
+            Assert.assertEquals(409, status);
 
             EntityUtils.consume(response.getEntity());
             response.close();
