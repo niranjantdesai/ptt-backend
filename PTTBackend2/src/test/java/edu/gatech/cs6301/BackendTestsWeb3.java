@@ -1705,51 +1705,51 @@ public class BackendTestsWeb3 {
     //  * End of Project API unit tests
     //  */
 
-    // @Test
-    // /**
-    //  * generateReportTest_1: no ptt worked.
-    //  */
-    // public void generateReportTest_1() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    /**
+     * generateReportTest_1: no ptt worked.
+     */
+    public void generateReportTest_1() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            response.close();
 
-    //         response = createProject(userId, "projectName");
-    //         String projectId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(userId, "projectName");
+            String projectId = getIdFromResponse(response);
+            response.close();
 
-    //         String startTime = "2019-02-18T20:00Z";
-    //         String endTime = "2019-02-18T20:00Z";
-    //         response = generateReport(userId, projectId, startTime, endTime);
+            String startTime = "2019-02-18T20:00Z";
+            String endTime = "2019-02-18T20:00Z";
+            response = generateReport(userId, projectId, startTime, endTime);
 
-    //         int status;
-    //         HttpEntity entity;
-    //         String strResponse;
+            int status;
+            HttpEntity entity;
+            String strResponse;
 
-    //         String expectedJson = "{\"sessions\":[],\"completedPomodoros\":0,\"totalHoursWorkedOnProject\":0}";
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            String expectedJson = "{\"sessions\":[]}";
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println(
-    //                 "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         // Check that the record is correct in the response
-    //         JSONAssert.assertEquals(expectedJson, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            // Check that the record is correct in the response
+            JSONAssert.assertEquals(expectedJson, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
      @Test
      /**
@@ -2603,7 +2603,7 @@ public class BackendTestsWeb3 {
      * Generate report
      */
     private CloseableHttpResponse generateReport(String userId, String projectId, String startTime, String endTime) throws IOException{
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users" + userId + "projects/" + projectId);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userId + "/projects/" + projectId + "/report?from=" + startTime + "&to=" + endTime);
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");

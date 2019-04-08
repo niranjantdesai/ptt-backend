@@ -229,8 +229,19 @@ export class ProjectController {
                     let options = {new: true};
                     this.Project.findOneAndUpdate(condition, updatedProject, options, (err: any, project: mongoose.Document) => {
                         if (err) {
-                            print("err:", err);
-                            reject({code: 400, result: "Bad request"});
+                            if (err.name === 'MongoError') {
+                                if (err.code === 11000) {
+                                    print("duplicate project names", err);
+                                    reject({code: 409, result: "Resource conflict"});
+                                } else {
+                                    print("unknown MongoError:", err);
+                                    reject({code: 400, result: "Bad request"});
+                                }
+                            } else if (err.name === 'ValidationError') {
+                                // when some necessary field is absent
+                                print("ValidationError:", err); 
+                                reject({code: 400, result: "Bad request"});
+                            }
                         } else {
                             if (project) {
                                 project = this.removeAllButSomeKeys(project, this.schemaKeys);

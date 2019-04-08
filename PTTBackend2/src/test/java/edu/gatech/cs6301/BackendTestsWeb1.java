@@ -916,34 +916,35 @@ public class BackendTestsWeb1 {
         }
     }
 
-    // @Test
-    // public void getMissingProjectTest() throws Exception {
-    //     try {
-    //         CloseableHttpResponse response = createUser("TestProject", "User8", "TPU8@gmail.com");
-    //         String user_id = getIdFromResponse(response);
-    //         response.close();
+    @Test
+    public void getMissingProjectTest() throws Exception {
+        try {
+            deleteUsers();
+            CloseableHttpResponse response = createUser("TestProject", "User8", "TPU8@gmail.com");
+            String user_id = getIdFromResponse(response);
+            response.close();
 
-    //         response = createProject(user_id, "test_project1");
-    //         String id1 = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(user_id, "test_project1");
+            String id1 = getIdFromResponse(response);
+            response.close();
 
-    //         response = createProject(user_id, "test_project2");
-    //         String id2 = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(user_id, "test_project2");
+            String id2 = getIdFromResponse(response);
+            response.close();
 
-    //         String missingId = "xyz" + id1 + id2; // making sure the ID is not present
+            String missingId = "12341234" + id1 + id2; // making sure the ID is not present
             
-    //         response = getProject(user_id, missingId);
+            response = getProject(user_id, missingId);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
      @Test
      public void deleteMissingProjectTest() throws Exception {
@@ -1157,86 +1158,66 @@ public class BackendTestsWeb1 {
 
     // Reports
 
-    // @Test
-    // public void GetReportTest() throws Exception {
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Lisa", "JL@gmail.com");
-    //         String user_id = getIdFromResponse(response);
-    //         response.close();
-
-    //         response = createProject(user_id, "test_project");
-    //         String proj_id = getIdFromResponse(response);
-    //         response.close();
-
-    //         int status;
-    //         HttpEntity entity;
-    //         String strResponse;
-
-    //         String StartTime = "2019-02-18T20:00Z";
-    //         String EndTime = "2019-02-18T21:00Z";
-    //         String counter = "2";
-    //         response = createSession(user_id, proj_id, StartTime, EndTime, counter);
-    //         response.close();
-
-    //         response = getReport(user_id, proj_id, StartTime, EndTime, true, true);
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
-    //         String completedPomodoros = null;
-    //         String totalHoursWorkedOnProject = null;
-    //         String hoursWorked = null;
-    //         JSONObject object = new JSONObject(strResponse);
-    //         Iterator<String> keyList = object.keys();
-    //         while (keyList.hasNext()) {
-    //             String key = keyList.next();
-    //             if (key.equals("completedPomodoros")) {
-    //                 completedPomodoros = object.get(key).toString();
-    //             }
-    //             if (key.equals("totalHoursWorkedOnProject")) {
-    //                 totalHoursWorkedOnProject = object.get(key).toString();
-    //             }
-    //             // Need to be modified here ********************************************
-    //             if (key.equals("sessions")) {
-    //                 JSONArray report_sessions = new JSONArray(object.get(key));
-    //                 JSONObject report_session = report_sessions.getJSONObject(0);
-    //                 hoursWorked = report_session.get("hoursWorked").toString();
-    //             }
-    //             // ********************************************************************
-    //         }
-
-    //         System.out.println(
-    //                 "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-
-    //         String expectedJSON = "{\"sessions\":[" + "{" + "\"startingTime\":\"" + StartTime + "\","
-    //                 + "\"endingTime\":\"" + EndTime + "\"," + "\"hoursWorked\":\"" + hoursWorked + "\"" + "}" + "],"
-    //                 + "\"completedPomodoros\":" + completedPomodoros + "," + "\"totalHoursWorkedOnProject\":\""
-    //                 + totalHoursWorkedOnProject + "\"," + "}";
-
-    //         JSONAssert.assertEquals(expectedJSON, strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    private CloseableHttpResponse getReport(String user_id, String proj_id, String startTime, String endTime,
-            boolean optCompletedPomodoros, boolean optTotalHoursWorkedOnProject) throws Exception{
+    @Test
+    public void GetReportTest() throws Exception {
         try {
-            HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + user_id + "/projects/" + proj_id + "/report" 
-            + "?from=" + startTime + "&to=" + endTime + "&includeCompletedPomodoros=" + String.valueOf(optCompletedPomodoros) + "&includeTotalHoursWorkedOnProject=" + String.valueOf(optTotalHoursWorkedOnProject));
+            CloseableHttpResponse response = createUser("John", "Lisa", "JL@gmail.com");
+            String user_id = getIdFromResponse(response);
+            response.close();
 
-            System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-            CloseableHttpResponse response = httpclient.execute(httpRequest);
-            System.out.println("*** Raw response " + response + "***");
-            return response;
+            response = createProject(user_id, "test_project");
+            String proj_id = getIdFromResponse(response);
+            response.close();
+
+            int status;
+            HttpEntity entity;
+            String strResponse;
+
+            String StartTime = "2019-02-18T20:00Z";
+            String EndTime = "2019-02-18T21:00Z";
+            String counter = "2";
+            response = createSession(user_id, proj_id, StartTime, EndTime, counter);
+            response.close();
+
+            response = getReport(user_id, proj_id, StartTime, EndTime, true, true);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
+
+            String completedPomodoros = "2";
+            String totalHoursWorkedOnProject = "1";
+            String hoursWorked = "1";
+
+            System.out.println(
+                    "*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+
+            String expectedJSON = "{\"sessions\":[" + "{" + "\"startingTime\":\"" + StartTime + "\","
+                    + "\"endingTime\":\"" + EndTime + "\"," + "\"hoursWorked\":" + hoursWorked + "}" + "],"
+                    + "\"completedPomodoros\":" + completedPomodoros + "," + "\"totalHoursWorkedOnProject\":"
+                    + totalHoursWorkedOnProject + "}";
+
+            JSONAssert.assertEquals(expectedJSON, strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
         } finally {
             httpclient.close();
         }
+    }
+
+    private CloseableHttpResponse getReport(String user_id, String proj_id, String startTime, String endTime,
+            boolean optCompletedPomodoros, boolean optTotalHoursWorkedOnProject) throws Exception{
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + user_id + "/projects/" + proj_id + "/report" 
+        + "?from=" + startTime + "&to=" + endTime + "&includeCompletedPomodoros=" + String.valueOf(optCompletedPomodoros) + "&includeTotalHoursWorkedOnProject=" + String.valueOf(optTotalHoursWorkedOnProject));
+        httpRequest.addHeader("accept", "application/json");
+
+        System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+        CloseableHttpResponse response = httpclient.execute(httpRequest);
+        System.out.println("*** Raw response " + response + "***");
+        return response;
     }
 
 }
