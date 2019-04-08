@@ -1011,45 +1011,7 @@ public class BackendTestsDevOps12 {
            httpclient.close();
        }
    }
-   // PUT /users/{userId}/projects/{projectId} by Lee Sun
-   // Case 4: Unsuccessful modification - Invalid request
-//    @Test
-//    public void putProjectsInvalidRequestTest() throws Exception {
-//        try {
-//            deleteAllUsers();
-//            CloseableHttpResponse response = addUser("putProject", "One", "pprj1@example.com");
-//            String userId = getIdFromResponse(response);
-//            response.close();
-
-//            response = addProject(userId, "Project1");
-//            String projectId = getIdFromResponse(response);
-//            response.close();
-
-//            response = invalidUpdateProject(userId, projectId, 2222);
-//            response.close();
-
-//            // Check response code
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 400) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//            // Check project object content
-//            String expected = "{\"id\":" + projectId + ",\"projectname\":\"Project1\",\"userId\":" + userId +"}";
-//            JSONAssert.assertEquals(expected,strResponse, false);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
-
-//            response = deleteUser(userId);
-//            response.close();
-
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
+   
 
     // DELETE /users/{userId}/projects/{projectId} by Lee Sun
     // Case 1: Successful deletion
