@@ -944,28 +944,28 @@ public class BackendTestsDevOps12 {
        }
    }
 
-//    // GET /users/{userId}/projects/{projectId} by Jiaying He
-//    @Test
-//    public void getProjectBadRequestTest1() throws Exception {
-//        try {
-//            // test for badrequest: Invalid userId
-//            CloseableHttpResponse response = getProject("\"invalidId\"", "0");
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 400) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//            String expected = "Bad request";
-//            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
+   // GET /users/{userId}/projects/{projectId} by Jiaying He
+   @Test
+   public void getProjectBadRequestTest1() throws Exception {
+       try {
+           // test for badrequest: Invalid userId
+           CloseableHttpResponse response = getProject("invalidId", "0");
+           int status = response.getStatusLine().getStatusCode();
+           HttpEntity entity;
+           if (status == 400) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 400");
+           }
+           String strResponse = EntityUtils.toString(entity);
+           String expected = "Bad request";
+           assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
+           EntityUtils.consume(response.getEntity());
+           response.close();
+       } finally {
+           httpclient.close();
+       }
+   }
 //
    // PUT /users/{userId}/projects/{projectId} by Lee Sun
    // Case 3: Unsuccessful modification - Invalid user
