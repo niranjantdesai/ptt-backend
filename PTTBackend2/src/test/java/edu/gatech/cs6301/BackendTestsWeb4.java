@@ -2506,275 +2506,275 @@ public class BackendTestsWeb4 {
     }
 
     // //*****************************************UPDATE PROJECT****************************
-    // @Test
-    // //when update a project with both userId and projectId do not exist,
-    // // the server should return request(404) and no body
-    // public void updateProjectUserIdProjectIdNotFound()throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         CloseableHttpResponse response = updateProject(999, 998, "updatedProject");
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+    @Test
+    //when update a project with both userId and projectId do not exist,
+    // the server should return request(404) and no body
+    public void updateProjectUserIdProjectIdNotFound()throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            CloseableHttpResponse response = updateProject(999, 998, "updatedProject");
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // //when update a project with projectId do not exist,
-    // // the server should return request(404) and no body
-    // public void updateProjectProjectIdNotFound()throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         // create a user
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+    @Test
+    //when update a project with projectId do not exist,
+    // the server should return request(404) and no body
+    public void updateProjectProjectIdNotFound()throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            // create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //update a project with a not existing project Id
-    //         response = updateProject(userId, 999, "updatedProject");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //update a project with a not existing project Id
+            response = updateProject(userId, 999, "updatedProject");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // //when update a project with a userId isn't Long (int64) type,
-    // //the server should return request(400) and no body
-    // public void updateProjectBadUserIdFormat() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         // create user1
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+    @Test
+    //when update a project with a userId isn't Long (int64) type,
+    //the server should return request(400) and no body
+    public void updateProjectBadUserIdFormat() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            // create user1
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId1 = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //create project1 for user1
-    //         response = createProject( "project1", userId1);
-    //         long project1Id = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-
-    //         //update the project with the userId isn't a long int
-    //         HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + "astring" + "/projects/" + project1Id);
-    //         httpRequest.addHeader("accept", "application/json");
-
-    //         //add body content sent to server
-    //         StringEntity input = new StringEntity("{\"id\":" + project1Id + "," +
-    //                 "\"projectname\":\"" + "updatedProject1" + "\"," + "\"userId\":" + "\"astring\"}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
-
-    //         //System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         //System.out.println("*** Raw response " + response + "***");
-
-    //         //verify if server returns 400 and no body
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
-
-    // @Test
-    // //when update a project with a projectId isn't Long (int64) type,
-    // //the server should return request(400) and no body
-    // public void updateProjectBadProjectIdFormat() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         // create user1
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-
-    //         //create project1 for user1
-    //         response = createProject( "project1", userId1);
-    //         long project1Id = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //create project1 for user1
+            response = createProject( "project1", userId1);
+            long project1Id = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
 
-    //         //update the project with the projectId isn't a long int
-    //         HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userId1 + "/projects/" + "astring");
-    //         httpRequest.addHeader("accept", "application/json");
+            //update the project with the userId isn't a long int
+            HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + "astring" + "/projects/" + project1Id);
+            httpRequest.addHeader("accept", "application/json");
 
-    //         //add body content sent to server
-    //         StringEntity input = new StringEntity("{\"id\":" + "astring" + "," +
-    //                 "\"projectname\":\"" + "\"updatedProject1\"" + "," + "\"userId\":" + userId1 + "}");
-    //         input.setContentType("application/json");
-    //         httpRequest.setEntity(input);
+            //add body content sent to server
+            StringEntity input = new StringEntity("{\"id\":" + project1Id + "," +
+                    "\"projectname\":\"" + "updatedProject1" + "\"," + "\"userId\":" + "\"astring\"}");
+            input.setContentType("application/json");
+            httpRequest.setEntity(input);
 
-    //         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
-    //         response = httpclient.execute(httpRequest);
-    //         System.out.println("*** Raw response " + response + "***");
+            //System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+            response = httpclient.execute(httpRequest);
+            //System.out.println("*** Raw response " + response + "***");
 
-    //         //verify if server returns 400 and no body
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            //verify if server returns 400 and no body
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // //when update a project with all correct inputs,
-    // //the server should return request(200) and a body which contains updated project info
-    // public void updateProjectSuccessful() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         // create user1
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+    @Test
+    //when update a project with a projectId isn't Long (int64) type,
+    //the server should return request(400) and no body
+    public void updateProjectBadProjectIdFormat() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            // create user1
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId1 = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //create user2
-    //         response = createUser("Shuangke", "Li", "shuangke@doe.org");
-    //         long userId2 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //create project1 for user1
+            response = createProject( "project1", userId1);
+            long project1Id = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //create project1 for user1
-    //         response = createProject("project1", userId1);
-    //         long project1Id = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
 
-    //         //create project2 for user1
-    //         response = createProject( "project2", userId1);
-    //         long project2Id = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //update the project with the projectId isn't a long int
+            HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userId1 + "/projects/" + "astring");
+            httpRequest.addHeader("accept", "application/json");
 
-    //         //create project3 for user2
-    //         response = createProject( "project3", userId2);
-    //         long project3Id = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //add body content sent to server
+            StringEntity input = new StringEntity("{\"id\":" + "astring" + "," +
+                    "\"projectname\":\"" + "\"updatedProject1\"" + "," + "\"userId\":" + userId1 + "}");
+            input.setContentType("application/json");
+            httpRequest.setEntity(input);
 
-    //         //update project1
-    //         response = updateProject(userId1, project1Id, "updatedProject1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         //verify returned body
-    //         String returnedBody1 = EntityUtils.toString(response.getEntity());
-    //         String expectedBody1 = "{\"id\":"+ project1Id + "," + "\"projectname\":\"updatedProject1\"," + "\"userId\":" + userId1 + "}";
-    //         Assert.assertEquals(expectedBody1, returnedBody1);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
+            response = httpclient.execute(httpRequest);
+            System.out.println("*** Raw response " + response + "***");
 
-    //         //update project2
-    //         response = updateProject(userId1, project2Id, "updatedProject2");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         //verify returned body
-    //         String returnedBody2 = EntityUtils.toString(response.getEntity());
-    //         String expectedBody2 = "{\"id\":"+ project2Id + "," + "\"projectname\":\"updatedProject2\"," + "\"userId\":" + userId1 + "}";
-    //         Assert.assertEquals(expectedBody2, returnedBody2);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //verify if server returns 400 and no body
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         //update project3
-    //         response = updateProject(userId2, project3Id, "updatedProject3");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(200, status);
-    //         //verify returned body
-    //         String returnedBody3 = EntityUtils.toString(response.getEntity());
-    //         String expectedBody3 = "{\"id\":"+ project3Id + "," + "\"projectname\":\"updatedProject3\"," + "\"userId\":" + userId2 + "}";
-    //         Assert.assertEquals(expectedBody2, returnedBody2);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    // @Test
-    // // update project with duplicated project name
-    // //server should return code 409
-    // public void updateProjectWithDuplicateName() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
-    //     try {
-    //         // create user1
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    //         //create project1 for user1
-    //         response = createProject("project1", userId1);
-    //         long project1Id = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+    @Test
+    //when update a project with all correct inputs,
+    //the server should return request(200) and a body which contains updated project info
+    public void updateProjectSuccessful() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            // create user1
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId1 = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //create project2 for user1
-    //         response = createProject( "project2", userId1);
-    //         long project2Id = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            //create user2
+            response = createUser("Shuangke", "Li", "shuangke@doe.org");
+            long userId2 = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         //update project2 with duplicated project name
-    //         response = updateProject(userId1, project2Id, "project1");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(409, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            //create project1 for user1
+            response = createProject("project1", userId1);
+            long project1Id = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //create project2 for user1
+            response = createProject( "project2", userId1);
+            long project2Id = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //create project3 for user2
+            response = createProject( "project3", userId2);
+            long project3Id = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //update project1
+            response = updateProject(userId1, project1Id, "updatedProject1");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(200, status);
+            //verify returned body
+            String returnedBody1 = EntityUtils.toString(response.getEntity());
+            String expectedBody1 = "{\"id\":"+ project1Id + "," + "\"projectname\":\"updatedProject1\"," + "\"userId\":" + userId1 + "}";
+            JSONAssert.assertEquals(expectedBody1, returnedBody1, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //update project2
+            response = updateProject(userId1, project2Id, "updatedProject2");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(200, status);
+            //verify returned body
+            String returnedBody2 = EntityUtils.toString(response.getEntity());
+            String expectedBody2 = "{\"id\":"+ project2Id + "," + "\"projectname\":\"updatedProject2\"," + "\"userId\":" + userId1 + "}";
+            JSONAssert.assertEquals(expectedBody2, returnedBody2, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //update project3
+            response = updateProject(userId2, project3Id, "updatedProject3");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(200, status);
+            //verify returned body
+            String returnedBody3 = EntityUtils.toString(response.getEntity());
+            String expectedBody3 = "{\"id\":"+ project3Id + "," + "\"projectname\":\"updatedProject3\"," + "\"userId\":" + userId2 + "}";
+            JSONAssert.assertEquals(expectedBody2, returnedBody2, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
+
+    @Test
+    // update project with duplicated project name
+    //server should return code 409
+    public void updateProjectWithDuplicateName() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
+        try {
+            // create user1
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId1 = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //create project1 for user1
+            response = createProject("project1", userId1);
+            long project1Id = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //create project2 for user1
+            response = createProject( "project2", userId1);
+            long project2Id = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+
+            //update project2 with duplicated project name
+            response = updateProject(userId1, project2Id, "project1");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(409, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     // @Test
     // // user/uid/projects/pid  requests such that uid doesn’t own pid, should return 400
