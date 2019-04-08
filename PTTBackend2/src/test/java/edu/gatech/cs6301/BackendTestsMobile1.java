@@ -1000,71 +1000,72 @@ public class BackendTestsMobile1 {
         }              
     }
 
-    // @Test
-    // public void updateProjectForMissingUserTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void updateProjectForMissingUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
 
-    //         response = createProject(userId,"Project 1");
-    //         response.close();
-    //         response = createProject(userId,"Project 2");
-    //         response.close();
-    //         response = createProject(userId,"Project 3");
+            response.close();
+            response = createProject(userId,"Project 1");
+            response.close();
+            response = createProject(userId,"Project 2");
+            response.close();
+            response = createProject(userId,"Project 3");
             
 
-    //         String projectId= getIdFromResponse(response);
-    //         String missinguserId= "xyz"+userId;
-    //         response.close();
-    //         response = updateProject(missinguserId, "New name", projectId);
+            String projectId= getIdFromResponse(response);
+            String missinguserId= "xyz"+userId;
+            response.close();
+            response = updateProject(missinguserId, "New name", projectId);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-    // @Test
-    // public void updateProjectForMissingProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     //deleteAllUsers();
-    //     deleteOurUsers();
+    @Test
+    public void updateProjectForMissingProjectTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        //deleteAllUsers();
+        deleteOurUsers();
 
-    //     try {
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         String userId = getIdFromResponse(response);
-    //         createdIDs.add(userId);
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userId = getIdFromResponse(response);
+            createdIDs.add(userId);
+            response.close();
 
-    //         response = createProject(userId,"Project 1");
-    //         response.close();
-    //         response = createProject(userId,"Project 2");
-    //         response.close();
-    //         response = createProject(userId,"Project 3");
+            response = createProject(userId,"Project 1");
+            response.close();
+            response = createProject(userId,"Project 2");
+            response.close();
+            response = createProject(userId,"Project 3");
 
-    //         String projectId= getIdFromResponse(response);
-    //         String missingprojectId= "xyz"+projectId;
-    //         response.close();
-    //         response = updateProject(userId, "New Name", missingprojectId);
+            String projectId= getIdFromResponse(response);
+            String missingprojectId= "xyz"+projectId;
+            response.close();
+            response = updateProject(userId, "New Name", missingprojectId);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(400, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     @Test
     public void updateProjectTest() throws Exception {
