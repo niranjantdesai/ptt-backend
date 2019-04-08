@@ -916,34 +916,35 @@ public class BackendTestsWeb1 {
         }
     }
 
-    // @Test
-    // public void getMissingProjectTest() throws Exception {
-    //     try {
-    //         CloseableHttpResponse response = createUser("TestProject", "User8", "TPU8@gmail.com");
-    //         String user_id = getIdFromResponse(response);
-    //         response.close();
+    @Test
+    public void getMissingProjectTest() throws Exception {
+        try {
+            deleteUsers();
+            CloseableHttpResponse response = createUser("TestProject", "User8", "TPU8@gmail.com");
+            String user_id = getIdFromResponse(response);
+            response.close();
 
-    //         response = createProject(user_id, "test_project1");
-    //         String id1 = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(user_id, "test_project1");
+            String id1 = getIdFromResponse(response);
+            response.close();
 
-    //         response = createProject(user_id, "test_project2");
-    //         String id2 = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(user_id, "test_project2");
+            String id2 = getIdFromResponse(response);
+            response.close();
 
-    //         String missingId = "xyz" + id1 + id2; // making sure the ID is not present
+            String missingId = "12341234" + id1 + id2; // making sure the ID is not present
             
-    //         response = getProject(user_id, missingId);
+            response = getProject(user_id, missingId);
 
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(404, status);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
 
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
      @Test
      public void deleteMissingProjectTest() throws Exception {
