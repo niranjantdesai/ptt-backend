@@ -681,6 +681,8 @@ public class BackendTestsDevOps12 {
     // POST /users/{userId}/projects by Jiaying He
     @Test
     public void postProjectSuccessTest() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // test for success
             CloseableHttpResponse response = addUser("firstname", "lastname", "email");
@@ -719,6 +721,8 @@ public class BackendTestsDevOps12 {
 
     @Test
     public void postProjectBadRequestTest1() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // test for badrequest: Invalid userId
             CloseableHttpResponse response = addProjectFormat("abc", "\"project\"");
@@ -739,6 +743,8 @@ public class BackendTestsDevOps12 {
 
     @Test
     public void postProjectBadRequestTest2() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // test for badrequest: Invalid projectname
             CloseableHttpResponse response = addProjectFormat("0", "project");
@@ -760,6 +766,8 @@ public class BackendTestsDevOps12 {
 
     @Test
     public void postProjectResourceConflictTest() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // test for resource conflict
             CloseableHttpResponse response = addUser("firstname", "lastname", "email");
@@ -790,6 +798,8 @@ public class BackendTestsDevOps12 {
    // GET /users/{userId}/projects by Jiaying He
    @Test
    public void getAllProjectsOfUserBadRequestTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
        try {
            // test bad request
            CloseableHttpResponse response = getAllProjects("invalidId");
@@ -810,6 +820,8 @@ public class BackendTestsDevOps12 {
 
    @Test
    public void getAllProjectsOfUserUserNotFoundTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
        try {
            // test user not found
            CloseableHttpResponse response = getAllProjects("0");
@@ -829,6 +841,8 @@ public class BackendTestsDevOps12 {
 
    @Test
    public void getAllProjectsOfUserNoProjectTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
        try {
            // test if user has no projects
            CloseableHttpResponse response = addUser("firstname", "lastname", "email");
@@ -859,6 +873,8 @@ public class BackendTestsDevOps12 {
 
    @Test
    public void getAllProjectsOfUserOneProjectTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
        try {
            // test if user has only one project
            CloseableHttpResponse response = addUser("firstname", "lastname", "email");
@@ -896,6 +912,8 @@ public class BackendTestsDevOps12 {
 
    @Test
    public void getAllProjectsOfUserMultipleProjectsTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
        try {
            // test if user has multiple projects
            CloseableHttpResponse response = addUser("firstname", "lastname", "email");
@@ -947,6 +965,8 @@ public class BackendTestsDevOps12 {
    // GET /users/{userId}/projects/{projectId} by Jiaying He
    @Test
    public void getProjectBadRequestTest1() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
        try {
            // test for badrequest: Invalid userId
            CloseableHttpResponse response = getProject("invalidId", "0");
@@ -1017,6 +1037,8 @@ public class BackendTestsDevOps12 {
     // Case 1: Successful deletion
     @Test
     public void deleteProjectSuccessTest() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // Create user to hold project
             CloseableHttpResponse response = addUser("deleteProject", "One", "dltprj1@example.com");
@@ -1070,6 +1092,8 @@ public class BackendTestsDevOps12 {
     // Case 2: Unsuccessful deletion - Invalid User
     @Test
     public void deleteProjectInvalidUserTest() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // Create user to hold project
             CloseableHttpResponse response = addUser("deleteProject", "One", "dltprj1@example.com");
@@ -1125,6 +1149,8 @@ public class BackendTestsDevOps12 {
     // Case 3: Unsuccessful deletion - Invalid Project
     @Test
     public void deleteProjectInvalidProjectTest() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // Create user to hold project
             CloseableHttpResponse response = addUser("deleteProject", "One", "dltprj1@example.com");
@@ -1179,6 +1205,8 @@ public class BackendTestsDevOps12 {
     // Case 4: Unsuccessful deletion - Invalid Request
     @Test
     public void deleteProjectInvalidRequestTest() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             // Create user to hold project
             CloseableHttpResponse response = addUser("deleteProject", "One", "dltprj1@example.com");
@@ -1227,6 +1255,7 @@ public class BackendTestsDevOps12 {
     @Test
     public void postProjectSessionAddSuccessTest() throws Exception {
         httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             CloseableHttpResponse response = addUser("firstname", "lastname", "email");
             String userId = getIdFromResponse(response);
@@ -1269,6 +1298,7 @@ public class BackendTestsDevOps12 {
     @Test
     public void postProjectSessionBadRequestTest() throws Exception {
         httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             CloseableHttpResponse response = addSession("userId", "projectId"); //string input - bad
 
@@ -1290,6 +1320,8 @@ public class BackendTestsDevOps12 {
     // case 3: invalid userId or invalid projectId (404)
     @Test
     public void postProjectSessionInvalidTest() throws Exception {
+        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+        deleteAllUsers();
         try {
             CloseableHttpResponse response = addSession("99999", "99999");
             int status = response.getStatusLine().getStatusCode();
@@ -1315,7 +1347,7 @@ public class BackendTestsDevOps12 {
    @Test
    public void putProjectSessionUpdateSuccessTest() throws Exception {
        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
-       // deleteAllUsers();
+       deleteAllUsers();
        String id = null;
        String expectedJson = "";
        try {
@@ -1393,7 +1425,6 @@ public class BackendTestsDevOps12 {
            }
            String strResponse = EntityUtils.toString(entity);
            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-        //    JSONAssert.assertEquals(expectedJson, strResponse, false);
            EntityUtils.consume(response.getEntity());
            response.close();
 
@@ -1407,7 +1438,7 @@ public class BackendTestsDevOps12 {
    @Test
    public void putProjectSessionUpdateNotFoundTest() throws Exception {
        httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
-       // deleteAllUsers();
+       deleteAllUsers();
        String id = null;
        String expectedJson = "";
        try {
@@ -1422,7 +1453,6 @@ public class BackendTestsDevOps12 {
            }
            String strResponse = EntityUtils.toString(entity);
            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-        //    JSONAssert.assertEquals(expectedJson, strResponse, false);
            EntityUtils.consume(response.getEntity());
            response.close();
 
@@ -1433,118 +1463,117 @@ public class BackendTestsDevOps12 {
 //
 //    // case: 500: cant be implemented
 //
-//    // Get /users/{userId}/projects/{projectId}/report:
-//    // case: 200
-//    @Test
-//    public void getReportSuccessTest() throws Exception {
-//        try {
-//            CloseableHttpResponse response = addUser("firstname", "lastname", "email");
-//            String userId = getIdFromResponse(response);
-//            response.close();
+   // Get /users/{userId}/projects/{projectId}/report:
+   // case: 200
+   @Test
+   public void getReportSuccessTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
+       try {
+           CloseableHttpResponse response = addUser("firstname", "lastname", "email");
+           String userId = getIdFromResponse(response);
+           response.close();
+
+           response = addProject(userId, "project");
+           String projectId = getIdFromResponse(response);
+           response.close();
+
+           response = addSession(userId, projectId);
+           String sessionId = getIdFromResponse(response);
+
+           String startTime = "2019-02-18T19:00Z";
+           String endTime = "2019-02-18T24:00Z";
+           response = getReport(userId, projectId, startTime, endTime, false,false);
+           int status = response.getStatusLine().getStatusCode();
+           HttpEntity entity;
+           if (status == 200) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 200");
+           }
+           String strResponse = EntityUtils.toString(entity);
+           String expected = "{\"sessions\": [{\"startingTime\":\"2019-02-18T20:00Z\", \"endingTime\": \"2019-02-18T21:00Z\", \"hoursWorked\": 1}], \"completedPomodoros\": 1, \"totalHoursWorkedOnProject\": 1}";
+           JSONAssert.assertEquals(strResponse,expected,false);
+           EntityUtils.consume(response.getEntity());
+           response.close();
+
+       } finally {
+           httpclient.close();
+       }
+   }
 //
-//            response = addProject(userId, "project");
-//            String projectId = getIdFromResponse(response);
-//            response.close();
+   // Get /users/{userId}/projects/{projectId}/report:
+   // case: 400
+	@Test
+   public void getReportBadRequestTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
+       try {
+           CloseableHttpResponse response = addUser("firstname", "lastname", "email");
+           String userId = getIdFromResponse(response);
+           response.close();
+
+           response = addProject(userId, "project");
+           String projectId = getIdFromResponse(response);
+           response.close();
+
+           response = addSession(userId, projectId);
+           String sessionId = getIdFromResponse(response);
+
+           String startTime = "2019-02-18T19:00Z";
+           String endTime = "2019-02-18T24:00Z";
+           response = getReport("invalid", "invalid", startTime, endTime,false,false);
+           int status = response.getStatusLine().getStatusCode();
+           HttpEntity entity;
+           if (status == 400) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status);
+           }
+           EntityUtils.consume(response.getEntity());
+           response.close();
+
+       } finally {
+           httpclient.close();
+       }
+   }
 //
-//            response = addSession(userId, projectId);
-//            String sessionId = getIdFromResponse(response);
-//
-//            String startTime = "2019-02-18T19:00Z";
-//            String endTime = "2019-02-18T24:00Z";
-//            response = getReport(userId, projectId, startTime, endTime);
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 200) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status + "while it should be 200");
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//            String expected = "{\"sessions\": [{\"startingTime\":\"2019-02-18T20:00Z\", \"endingTime\": \"2019-02-18T21:00Z\", \"hoursWorked\": 1}], \"completedPomodoros\": 1, \"totalHoursWorkedOnProject\": 1}";
-//            assertEquals("actual: " + strResponse + ", expect: " + expected, expected, strResponse);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
-//
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
-//
-//    // Get /users/{userId}/projects/{projectId}/report:
-//    // case: 400
-//	@Test
-//    public void getReportBadRequestTest() throws Exception {
-//        String expectedJson = "";
-//        try {
-//            CloseableHttpResponse response = addUser("firstname", "lastname", "email");
-//            String userId = getIdFromResponse(response);
-//            response.close();
-//
-//            response = addProject(userId, "project");
-//            String projectId = getIdFromResponse(response);
-//            response.close();
-//
-//            response = addSession(userId, projectId);
-//            String sessionId = getIdFromResponse(response);
-//
-//            String startTime = "2019-02-18T19:00Z";
-//            String endTime = "2019-02-18T24:00Z";
-//            response = getReport("invalid", "invalid", startTime, endTime);
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 400) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status);
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//            JSONAssert.assertEquals(expectedJson, strResponse, false);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
-//
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
-//
-//    // Get /users/{userId}/projects/{projectId}/report:
-//    // case: 404
-//	@Test
-//    public void getReportNotFoundTest() throws Exception {
-//        String expectedJson = "";
-//        try {
-//            CloseableHttpResponse response = addUser("firstname", "lastname", "email");
-//            String userId = getIdFromResponse(response);
-//            response.close();
-//
-//            response = addProject(userId, "project");
-//            String projectId = getIdFromResponse(response);
-//            response.close();
-//
-//            response = addSession(userId, projectId);
-//            String sessionId = getIdFromResponse(response);
-//
-//            String startTime = "2019-02-18T19:00Z";
-//            String endTime = "2019-02-18T24:00Z";
-//            response = getReport("99999999", "999999999", startTime, endTime);
-//            int status = response.getStatusLine().getStatusCode();
-//            HttpEntity entity;
-//            if (status == 404) {
-//                entity = response.getEntity();
-//            } else {
-//                throw new ClientProtocolException("Unexpected response status: " + status);
-//            }
-//            String strResponse = EntityUtils.toString(entity);
-//            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//            JSONAssert.assertEquals(expectedJson, strResponse, false);
-//            EntityUtils.consume(response.getEntity());
-//            response.close();
-//
-//        } finally {
-//            httpclient.close();
-//        }
-//    }
+   // Get /users/{userId}/projects/{projectId}/report:
+   // case: 404
+	@Test
+   public void getReportNotFoundTest() throws Exception {
+       httpclient = HttpClients.createDefault(); // Creates CloseableHttpClient instance with default configuration.
+       deleteAllUsers();
+       try {
+           CloseableHttpResponse response = addUser("firstname", "lastname", "email");
+           String userId = getIdFromResponse(response);
+           response.close();
+
+           response = addProject(userId, "project");
+           String projectId = getIdFromResponse(response);
+           response.close();
+
+           response = addSession(userId, projectId);
+           String sessionId = getIdFromResponse(response);
+
+           String startTime = "2019-02-18T19:00Z";
+           String endTime = "2019-02-18T24:00Z";
+           response = getReport("99999999", "999999999", startTime, endTime,false,false);
+           int status = response.getStatusLine().getStatusCode();
+           HttpEntity entity;
+           if (status == 404) {
+               entity = response.getEntity();
+           } else {
+               throw new ClientProtocolException("Unexpected response status: " + status);
+           }
+           
+           EntityUtils.consume(response.getEntity());
+           response.close();
+
+       } finally {
+           httpclient.close();
+       }
+   }
     
     
     /*  helper functions */
@@ -1840,10 +1869,18 @@ public class BackendTestsDevOps12 {
         return response;
     }
 
-    private CloseableHttpResponse getReport(String userId, String projectId, String startTime, String endTime) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report?"+"from="+startTime+"&to="+endTime);
+    private CloseableHttpResponse getReport(String userId, String projectId, String fromTime, String toTime, boolean includePomo, boolean includeHours) throws IOException {
+        HttpGet httpRequest = null;
+        if(!includeHours && !includePomo){
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=false" + "&includeTotalHoursWorkedOnProject=false");
+        }else if(includePomo && !includeHours){
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=true" + "&includeTotalHoursWorkedOnProject=false");
+        }else if(!includePomo && includeHours){
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=false" + "&includeTotalHoursWorkedOnProject=true");
+        }else{
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=true" + "&includeTotalHoursWorkedOnProject=true");
+        }
         httpRequest.addHeader("accept", "application/json");
-        
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
         CloseableHttpResponse response = httpclient.execute(httpRequest);
         System.out.println("*** Raw response " + response + "***");
