@@ -109,6 +109,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void createUserBadRequestTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing POST user with bad request body -----");
         httpclient = HttpClients.createDefault();
 
@@ -394,6 +395,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void updateUserBadRequestTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing PUT user with bad request -----");
         httpclient = HttpClients.createDefault();
 
@@ -626,6 +628,7 @@ public class BackendTestsBackend3 {
      /* Session related test -- START */
      @Test
      public void createSessionTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing POST session -----");
          httpclient = HttpClients.createDefault();
 
@@ -691,6 +694,7 @@ public class BackendTestsBackend3 {
     
      @Test
      public void createSessionBadRequestTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing POST session for ill-formed request body -----");
          httpclient = HttpClients.createDefault();
 
@@ -711,6 +715,7 @@ public class BackendTestsBackend3 {
     
      @Test
      public void createSessionNonExistentUserTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing POST session for non-existent user -----");
          httpclient = HttpClients.createDefault();
 
@@ -733,6 +738,7 @@ public class BackendTestsBackend3 {
     
      @Test
      public void createSessionNonExistentProjectTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing POST session for non-existent user -----");
          httpclient = HttpClients.createDefault();
 
@@ -856,6 +862,7 @@ public class BackendTestsBackend3 {
     
     @Test
     public void updateSessionBadRequestTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing PUT session for ill-formed request body -----");
         httpclient = HttpClients.createDefault();
 
@@ -876,6 +883,7 @@ public class BackendTestsBackend3 {
     
     @Test
     public void updateSessionNonExistentUserTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing PUT session for non-existent user -----");
         httpclient = HttpClients.createDefault();
 
@@ -898,6 +906,7 @@ public class BackendTestsBackend3 {
     
     @Test
     public void updateSessionNonExistentProjectTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing POST session for non-existent project -----");
         httpclient = HttpClients.createDefault();
 
@@ -920,6 +929,7 @@ public class BackendTestsBackend3 {
     
     @Test
     public void updateSessionNonExistentSessionTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing POST session for non-existent session -----");
         httpclient = HttpClients.createDefault();
 
@@ -946,6 +956,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void createProjectSuccessTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing successful project POST -----");
          try{
             deleteUsers();
@@ -993,6 +1004,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void createProjectBadUserIDTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing successful project POST -----");
          try{
             deleteUsers();
@@ -1026,6 +1038,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void createProjectBadBodyTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing 404 project POST -----");
          try{
             deleteUsers();
@@ -1060,6 +1073,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void createProjectMissUserIdTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing 404 project POST -----");
          try{
             deleteUsers();
@@ -1093,6 +1107,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void createProjectExistedTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing 409 project POST -----");
          try{
             deleteUsers();
@@ -1133,6 +1148,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void getProjectTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing 200 project GET -----");
         try{
             // Create user
@@ -1184,6 +1200,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void getProjectBadIDTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing 200 project GET -----");
         try{
             // Create user
@@ -1227,6 +1244,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void getProjectMissIDTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing 200 project GET -----");
         try{
             // Create user
@@ -1493,6 +1511,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void putProjectSuccessTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing successful project POST -----");
         try{
             // Create user
@@ -1548,6 +1567,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void putProjectBadUserIdTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing successful project POST -----");
         try{
             // Create user
@@ -1594,6 +1614,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void putProjectBadProjectIdTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing successful project POST -----");
         try{
             // Create user
@@ -1640,6 +1661,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void putProjectBadProjectBodyTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing successful project POST -----");
         try{
             // Create user
@@ -1686,6 +1708,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void putProjectMissUserIdTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing successful project POST -----");
         try{
             // Create user
@@ -1732,6 +1755,7 @@ public class BackendTestsBackend3 {
 
     @Test
     public void putProjectMissProjectIdTest() throws Exception{
+        deleteUsers();
         System.out.println("----- Start testing successful project POST -----");
         try{
             // Create user
@@ -1832,6 +1856,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void deleteProjectBadUserIdTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing successful project POST -----");
          try{
              // Create user
@@ -1927,6 +1952,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void deleteProjectMissProjectIdTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing successful project POST -----");
          try{
              // Create user
@@ -1974,6 +2000,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void deleteProjectMissUserIdTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing successful project POST -----");
          try{
              // Create user
@@ -2503,6 +2530,7 @@ public class BackendTestsBackend3 {
 
      @Test
      public void getReportWithNoSessionTest() throws Exception{
+         deleteUsers();
          System.out.println("----- Start testing GET report-----");
          httpclient = HttpClients.createDefault();
 
