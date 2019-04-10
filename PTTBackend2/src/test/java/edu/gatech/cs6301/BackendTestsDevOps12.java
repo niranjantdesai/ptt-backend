@@ -1,7 +1,7 @@
 package edu.gatech.cs6301;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.*;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.*;
@@ -27,7 +27,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 public class BackendTestsDevOps12 {
 
-    private String baseUrl = "http://localhost:8080/ptt"; // I changed this to 8081/ptt to match yaml spec
+    private String baseUrl = ""; // I changed this to 8081/ptt to match yaml spec
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     private CloseableHttpClient httpclient;
     private boolean setupdone;
@@ -36,6 +36,15 @@ public class BackendTestsDevOps12 {
     public void runBefore() {
 	if (!setupdone) {
 	    System.out.println("*** SETTING UP TESTS ***");
+
+        // Read environment parameter
+        Map<String, String> env = System.getenv();
+        if(env.containsKey("PTT_URL")){
+            baseUrl = env.get("PTT_URL");
+        }else{
+            baseUrl = "http://localhost:8080/ptt";
+        }
+
 	    // Increase max total connection to 100
 	    cm.setMaxTotal(100);
 	    // Increase default max connection per route to 20
