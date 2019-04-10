@@ -2,7 +2,7 @@ package edu.gatech.cs6301;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.*;
@@ -27,7 +27,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 public class BackendTestsWeb3 {
 
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     private CloseableHttpClient httpclient;
     private boolean setupdone;
@@ -36,6 +36,13 @@ public class BackendTestsWeb3 {
     public void runBefore() {
         if (!setupdone) {
             System.out.println("*** SETTING UP TESTS ***");
+            // Read environment parameter
+            Map<String, String> env = System.getenv();
+            if(env.containsKey("PTT_URL")){
+                baseUrl = env.get("PTT_URL");
+            }else{
+                baseUrl = "http://localhost:8080/ptt";
+            }
             // Increase max total connection to 100
             cm.setMaxTotal(100);
             // Increase default max connection per route to 20
@@ -2433,7 +2440,7 @@ public class BackendTestsWeb3 {
      * getUesrById request
      */
     private CloseableHttpResponse getUser(String id) throws IOException{
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + id);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + id);
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -2446,7 +2453,7 @@ public class BackendTestsWeb3 {
      * deleteAllUsers: delete all users only used in test
      */
     private CloseableHttpResponse getAllUsers() throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users");
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users");
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -2459,7 +2466,7 @@ public class BackendTestsWeb3 {
      * deleteUserById request
      */
     private CloseableHttpResponse deleteUser(String id) throws IOException {
-        HttpDelete httpDelete = new HttpDelete(baseUrl + "/ptt/users/" + id);
+        HttpDelete httpDelete = new HttpDelete(baseUrl + "/users/" + id);
         httpDelete.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpDelete.getRequestLine() + "***");
@@ -2469,7 +2476,7 @@ public class BackendTestsWeb3 {
     }
 
     private CloseableHttpResponse createUser(String firstname, String lastname, String email) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/ptt/users");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users");
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"firstName\":\"" + firstname + "\"," +
                 "\"lastName\":\"" + lastname + "\"," +
@@ -2487,7 +2494,7 @@ public class BackendTestsWeb3 {
      * Update user by ID request
      */
     private CloseableHttpResponse updateUser(String id, String firstname, String lastname, String email) throws IOException {
-        HttpPut httpPut = new HttpPut(baseUrl + "/ptt/users/" + id);
+        HttpPut httpPut = new HttpPut(baseUrl + "/users/" + id);
         httpPut.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"id\":" + id + ",\"firstName\":\"" + firstname + "\"," +
                 "\"lastName\":\"" + lastname + "\"," +
@@ -2506,7 +2513,7 @@ public class BackendTestsWeb3 {
      * Implement Project CRUD APIs
      */
     private CloseableHttpResponse getProject(String userId, String projectId) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userId + "/projects/" + projectId);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId);
         httpRequest.addHeader("accept", "application/json");
     
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -2516,7 +2523,7 @@ public class BackendTestsWeb3 {
     }
     
     private CloseableHttpResponse getAllProjects(String userId) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userId + "/projects");
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects");
         httpRequest.addHeader("accept", "application/json");
     
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -2526,7 +2533,7 @@ public class BackendTestsWeb3 {
     }
     
     private CloseableHttpResponse createProject(String userId, String projectName) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/ptt/users/" + userId + "/projects");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userId + "/projects");
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"projectname\":\"" + projectName + "\"," +
                 "\"userId\":\"" + userId + "\"}");
@@ -2540,7 +2547,7 @@ public class BackendTestsWeb3 {
     }
     
     private CloseableHttpResponse updateProject(String userId, String projectId, String projectName) throws IOException {
-        HttpPut httpRequest = new HttpPut(baseUrl + "/ptt/users/" + userId + "/projects/" + projectId);
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userId + "/projects/" + projectId);
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"id\":\"" + projectId + "\"," +
                 "\"projectname\":\"" + projectName + "\"," +
@@ -2555,7 +2562,7 @@ public class BackendTestsWeb3 {
     }
     
     private CloseableHttpResponse deleteProject(String userId, String projectId) throws IOException {
-        HttpDelete httpDelete = new HttpDelete(baseUrl + "/ptt/users/" + userId + "/projects/" + projectId);
+        HttpDelete httpDelete = new HttpDelete(baseUrl + "/users/" + userId + "/projects/" + projectId);
         httpDelete.addHeader("accept", "application/json");
     
         System.out.println("*** Executing request " + httpDelete.getRequestLine() + "***");
@@ -2570,7 +2577,7 @@ public class BackendTestsWeb3 {
      * Create a session
      */
     private CloseableHttpResponse createSession(String userid, String projectid, String starttime, String endtime, String count) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid + "/sessions");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userid + "/projects/" + projectid + "/sessions");
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"startTime\":\"" + starttime + "\"," +
                 "\"endTime\":\"" + endtime + "\"," +
@@ -2585,7 +2592,7 @@ public class BackendTestsWeb3 {
     }
 
     private CloseableHttpResponse updateSession(String userid, String projectid, String sessionid, String starttime, String endtime, String count) throws IOException {
-        HttpPut httpRequest = new HttpPut(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid + "/sessions/" + sessionid);
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userid + "/projects/" + projectid + "/sessions/" + sessionid);
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"startTime\":\"" + starttime + "\"," +
                 "\"endTime\":\"" + endtime + "\"," +
@@ -2603,7 +2610,7 @@ public class BackendTestsWeb3 {
      * Generate report
      */
     private CloseableHttpResponse generateReport(String userId, String projectId, String startTime, String endTime) throws IOException{
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userId + "/projects/" + projectId + "/report?from=" + startTime + "&to=" + endTime);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report?from=" + startTime + "&to=" + endTime);
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
