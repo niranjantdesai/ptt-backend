@@ -962,7 +962,7 @@ public class BackendTestsWeb4 {
              response.close();
 
              // deleteProject with string projectId
-             httpRequest = new HttpDelete(baseUrl + "/users/" + 222 + "/projects/" + "()-+=");
+             httpRequest = new HttpDelete(baseUrl + "/users/" + 123412341 + "/projects/" + "()-+=");
              httpRequest.addHeader("accept", "application/json");
 
              System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -970,7 +970,7 @@ public class BackendTestsWeb4 {
              System.out.println("*** Raw response " + response + "***");
 
              status = response.getStatusLine().getStatusCode();
-             Assert.assertEquals(400, status);
+             Assert.assertEquals(404, status);
              EntityUtils.consume(response.getEntity());
              response.close();
 
