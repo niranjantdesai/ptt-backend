@@ -182,7 +182,7 @@ public class BackendTestsBackend1 {
     @Test
     public void createUsersBadRequest() throws Exception {
         try {
-
+            deleteUsers();
             // Creating a User with FirstName missing
 
             CloseableHttpResponse response =
@@ -295,7 +295,6 @@ public class BackendTestsBackend1 {
     @Test
     public void getUserByIdTest() throws Exception {
         try {
-
             // Adding a user to the PTT
             deleteUsers();
 
@@ -672,7 +671,7 @@ public class BackendTestsBackend1 {
     public void getProjectUserNotFoundTest() throws Exception {
         httpclient = HttpClients.createDefault();
         String expectedJson = null;
-
+        deleteUsers();
         try {
             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
             String userid = getIdFromResponse(response);
@@ -969,6 +968,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updateInvalidProjectTest() throws Exception {
+        deleteUsers();
         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
         String userId = getIdFromResponse(response);
         response.close();
@@ -995,6 +995,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updateMissingProjectTest() throws Exception {
+        deleteUsers();
         CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
         String userId = getIdFromResponse(response);
         response.close();
@@ -1281,6 +1282,7 @@ public class BackendTestsBackend1 {
 
      @Test
      public void createPomodoroSessionWithInvalidUserIdTest() throws Exception {
+         deleteUsers();
          httpclient = HttpClients.createDefault();
 
          try {
@@ -1313,6 +1315,7 @@ public class BackendTestsBackend1 {
 
      @Test
      public void createPomodoroSessionBadRequestTest() throws Exception {
+         deleteUsers();
          httpclient = HttpClients.createDefault();
 
          try {
@@ -1339,6 +1342,7 @@ public class BackendTestsBackend1 {
 
      @Test
      public void createPomodoroSessionWithInvalidProjectIdTest() throws Exception {
+         deleteUsers();
          httpclient = HttpClients.createDefault();
 
          try {
@@ -1364,6 +1368,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updatePomodoroSessionWithBadUserId() throws Exception {
+        deleteUsers();
         httpclient = HttpClients.createDefault();
 
         try {
@@ -1394,6 +1399,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updatePomodoroSessionWithBadProjectId() throws Exception {
+        deleteUsers();
         httpclient = HttpClients.createDefault();
 
         try {
@@ -1425,6 +1431,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updatePomodoroSessionWithBadSessionId() throws Exception {
+        deleteUsers();
         httpclient = HttpClients.createDefault();
         try {
             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
@@ -1453,6 +1460,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updatePomodoroSessionWithInvalidUserId() throws Exception {
+        deleteUsers();
         httpclient = HttpClients.createDefault();
 
         try {
@@ -1482,6 +1490,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updatePomodoroSessionWithInvalidProjectId() throws Exception {
+        deleteUsers();
         httpclient = HttpClients.createDefault();
 
         try {
@@ -1512,6 +1521,7 @@ public class BackendTestsBackend1 {
 
     @Test
     public void updatePomodoroSessionWithInvalidSessionId() throws Exception {
+        deleteUsers();
         httpclient = HttpClients.createDefault();
         try {
             CloseableHttpResponse response = createUser("James", "Doe", "james@gatech.edu");
@@ -1541,6 +1551,7 @@ public class BackendTestsBackend1 {
 
      @Test
      public void getReportWithInvalidProjectId() throws Exception {
+         deleteUsers();
          httpclient = HttpClients.createDefault();
 
          try {
@@ -1570,6 +1581,7 @@ public class BackendTestsBackend1 {
 
      @Test
      public void getReportWithInvalidUserIdTest() throws Exception {
+         deleteUsers();
          httpclient = HttpClients.createDefault();
 
          try {
