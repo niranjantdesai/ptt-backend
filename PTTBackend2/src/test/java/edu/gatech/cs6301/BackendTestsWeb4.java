@@ -2783,99 +2783,99 @@ public class BackendTestsWeb4 {
         }
     }
 
-    // @Test
-    // // user/uid/projects/pid  requests such that uid doesn’t own pid, should return 400
-    // public void requestOthersResourceTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     deleteUsers();
+    @Test
+    // user/uid/projects/pid  requests such that uid doesn’t own pid, should return 400
+    public void requestOthersResourceTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteUsers();
 
-    //     try {
-    //         // add user1
-    //         CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-    //         long userId1 = getIdFromResponse(response);
-    //         int status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+        try {
+            // add user1
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            long userId1 = getIdFromResponse(response);
+            int status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // add project1 to user1
-    //         response = createProject("test project1", userId1);
-    //         long projectId1 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // add project1 to user1
+            response = createProject("test project1", userId1);
+            long projectId1 = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // add user2
-    //         response = createUser("Jacky", "Lee", "jlee@lee.org");
-    //         long userId2 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // add user2
+            response = createUser("Jacky", "Lee", "jlee@lee.org");
+            long userId2 = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // add project2 to user2
-    //         response = createProject("test project2", userId2);
-    //         long projectId2 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // add project2 to user2
+            response = createProject("test project2", userId2);
+            long projectId2 = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // try to delete project2 using userId1
-    //         response = deleteProject(userId1, projectId2);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // try to delete project2 using userId1
+            response = deleteProject(userId1, projectId2);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // try to get project2 using userId1
-    //         response = getProject(userId1, projectId2);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // try to get project2 using userId1
+            response = getProject(userId1, projectId2);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // try to update project1 using userId2
-    //         response = updateProject(userId2, projectId1, "new project name");
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // try to update project1 using userId2
+            response = updateProject(userId2, projectId1, "new project name");
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // add session1 to project1
-    //         response = createSession(userId1, projectId1, "2013-03-01T23:59:59", "2013-03-02T23:59:59", 1);
-    //         long sessionId1 = getIdFromResponse(response);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(201, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // add session1 to project1
+            response = createSession(userId1, projectId1, "2013-03-01T23:59:59", "2013-03-02T23:59:59", 1);
+            long sessionId1 = getIdFromResponse(response);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(201, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // try to create session on project1 using userId2
-    //         response = createSession(userId2, projectId1, "2014-03-01T23:59:59", "2014-03-02T23:59:59", 2);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // try to create session on project1 using userId2
+            response = createSession(userId2, projectId1, "2014-03-01T23:59:59", "2014-03-02T23:59:59", 2);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // try to update session on project1 using userId2
-    //         response = updateSession(userId2, projectId1, sessionId1, "2015-03-01T23:59:59", "2015-03-02T23:59:59", 3);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // try to update session on project1 using userId2
+            response = updateSession(userId2, projectId1, sessionId1, "2015-03-01T23:59:59", "2015-03-02T23:59:59", 3);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         // try to get report of projectId1 using userId2
-    //         response = getReport(userId2, projectId1, "2013-03-01T23:59:59", "2013-03-02T23:59:59", true, true);
-    //         status = response.getStatusLine().getStatusCode();
-    //         Assert.assertEquals(400, status);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // try to get report of projectId1 using userId2
+            response = getReport(userId2, projectId1, "2013-03-01T23:59:59", "2013-03-02T23:59:59", true, true);
+            status = response.getStatusLine().getStatusCode();
+            Assert.assertEquals(404, status);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
 
 
