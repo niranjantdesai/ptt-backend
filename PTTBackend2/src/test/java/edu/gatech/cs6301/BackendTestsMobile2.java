@@ -28,7 +28,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 public class BackendTestsMobile2 {
 
-    private String baseUrl = "http://localhost:8080/ptt";
+    private String baseUrl = "";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     private CloseableHttpClient httpclient;
     private boolean setupdone;
@@ -37,6 +37,13 @@ public class BackendTestsMobile2 {
     public void runBefore() {
 	if (!setupdone) {
 	    System.out.println("*** SETTING UP TESTS ***");
+        // Read environment parameter
+        Map<String, String> env = System.getenv();
+        if(env.containsKey("PTT_URL")){
+            baseUrl = env.get("PTT_URL");
+        }else{
+            baseUrl = "http://localhost:8080/ptt";
+        }
 	    // Increase max total connection to 100
 	    cm.setMaxTotal(100);
 	    // Increase default max connection per route to 20

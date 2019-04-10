@@ -20,11 +20,11 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.*;
 
 public class BackendTestsMobile4 {
 
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "";
     private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     private CloseableHttpClient httpclient;
     private boolean setupdone;
@@ -33,6 +33,13 @@ public class BackendTestsMobile4 {
     public void runBefore() {
         if (!setupdone) {
             System.out.println("*** SETTING UP TESTS ***");
+            // Read environment parameter
+            Map<String, String> env = System.getenv();
+            if(env.containsKey("PTT_URL")){
+                baseUrl = env.get("PTT_URL");
+            }else{
+                baseUrl = "http://localhost:8080/ptt";
+            }
             // Increase max total connection to 100
             cm.setMaxTotal(100);
             // Increase default max connection per route to 20
@@ -902,7 +909,7 @@ public class BackendTestsMobile4 {
     // USER
 
     private CloseableHttpResponse createUser(String firstName, String lastName, String email) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/ptt/users");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users");
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"firstName\":\"" + firstName + "\"," +
                 "\"lastName\":\"" + lastName + "\"," +
@@ -917,7 +924,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse updateUser(String id, String firstName, String lastName, String email) throws IOException {
-        HttpPut httpRequest = new HttpPut(baseUrl + "/ptt/users/" + id);
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + id);
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"firstName\":\"" + firstName + "\"," +
                 "\"lastName\":\"" + lastName + "\"," +
@@ -932,7 +939,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse getUser(String id) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + id);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + id);
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -942,7 +949,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse getAllUsers() throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users");
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users");
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -952,7 +959,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse deleteUser(String id) throws IOException {
-        HttpDelete httpDelete = new HttpDelete(baseUrl + "/ptt/users/" + id);
+        HttpDelete httpDelete = new HttpDelete(baseUrl + "/users/" + id);
         httpDelete.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpDelete.getRequestLine() + "***");
@@ -1009,7 +1016,7 @@ public class BackendTestsMobile4 {
 
     // PROJECT
     private CloseableHttpResponse createProject(String userid, String projectname) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/ptt/users/" + userid + "/projects");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userid + "/projects");
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"projectname\":\"" + projectname + "\"," +
                 "\"userid\":\"" + userid + "\"}");
@@ -1023,7 +1030,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse updateProject(String userid, String projectid, String projectname) throws IOException {
-        HttpPut httpRequest = new HttpPut(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid);
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userid + "/projects/" + projectid);
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"projectname\":\"" + projectname + "\"}");
         input.setContentType("application/json");
@@ -1036,7 +1043,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse getProject(String userid, String projectid) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userid + "/projects/" + projectid);
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -1046,7 +1053,7 @@ public class BackendTestsMobile4 {
     }
     // Not Needed?
     private CloseableHttpResponse getAllProjects(String userid) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userid + "/projects");
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userid + "/projects");
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
@@ -1056,7 +1063,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse deleteProject(String userid, String projectid) throws IOException {
-        HttpDelete httpDelete = new HttpDelete(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid);
+        HttpDelete httpDelete = new HttpDelete(baseUrl + "/users/" + userid + "/projects/" + projectid);
         httpDelete.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpDelete.getRequestLine() + "***");
@@ -1068,7 +1075,7 @@ public class BackendTestsMobile4 {
     }
     // SESSION
     private CloseableHttpResponse createSession(String userid, String projectid, String startTime, String endTime, Integer counter) throws IOException {
-        HttpPost httpRequest = new HttpPost(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid + "/sessions");
+        HttpPost httpRequest = new HttpPost(baseUrl + "/users/" + userid + "/projects/" + projectid + "/sessions");
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"startTime\":\"" + startTime + "\"," +
                 "\"endTime\":\"" + endTime + "\"," +
@@ -1083,7 +1090,7 @@ public class BackendTestsMobile4 {
     }
 
     private CloseableHttpResponse updateSession(String userid, String projectid, String sessionid, String endTime, Integer counter) throws IOException {
-        HttpPut httpRequest = new HttpPut(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid + "/sessions/" +sessionid);
+        HttpPut httpRequest = new HttpPut(baseUrl + "/users/" + userid + "/projects/" + projectid + "/sessions/" +sessionid);
         httpRequest.addHeader("accept", "application/json");
         StringEntity input = new StringEntity("{\"endTime\":\"" + endTime + "\"," +
                 "\"counter\":\"" + counter + "\"}");
@@ -1109,7 +1116,7 @@ public class BackendTestsMobile4 {
         } else {
         	ithwop = "false";
         }
-        HttpGet httpRequest = new HttpGet(baseUrl + "/ptt/users/" + userid + "/projects/" + projectid + "/report?from=" + from + "&to=" + to + "&includeCompletedPomodoros=" + icp + "&includeTotalHoursWorkedOnProject=" + ithwop);
+        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userid + "/projects/" + projectid + "/report?from=" + from + "&to=" + to + "&includeCompletedPomodoros=" + icp + "&includeTotalHoursWorkedOnProject=" + ithwop);
         httpRequest.addHeader("accept", "application/json");
 
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
