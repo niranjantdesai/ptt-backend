@@ -121,7 +121,7 @@ export class UserController {
                             let projectController = new ProjectController();
                             let usersProjects = user["projects"];
                             usersProjects.forEach(projectId => {
-                                projectController.deleteProject(userId, projectId, false);
+                                projectController.deleteProject(userId, projectId, false, false);
                             })
                             user = this.removeAllButSomeKeys(user, this.schemaKeys);
                             resolve({code: 200, result: user});

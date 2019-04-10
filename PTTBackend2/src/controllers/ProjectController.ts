@@ -4,6 +4,7 @@ import { SessionSchema } from "../models/Session";
 import { IDCounterController } from "./IDCounterController";
 import { UserController } from "./UserController";
 import promise from "promise";
+import { rejects } from "assert";
 
 export class ProjectController {
     Project: mongoose.Model<mongoose.Document> = mongoose.model('Project', ProjectSchema);
@@ -141,7 +142,7 @@ export class ProjectController {
                             })
                             .catch(obj => { 
                                 // since the project could not be added to the user's list of projects, we should also delete this project from our collection
-                                this.deleteProject(userId, projectId, false)
+                                this.deleteProject(userId, projectId, false, false)
                                 .then(__ => {
                                     reject(obj);
                                 })
@@ -165,64 +166,80 @@ export class ProjectController {
         });
     }
 
-    public deleteProject(userId: string, projectId: string, removeFromUsersListOfProjects: boolean): promise<ProjectResultInterface> {
-        return new promise<ProjectResultInterface> ((resolve, reject) => {
-            if (removeFromUsersListOfProjects) {
-                this.userController.removeProject(userId, projectId)
+    public deleteProject(userId: string, projectId: string, removeFromUsersListOfProjects: boolean, checkUserProjectRelation: boolean): promise<ProjectResultInterface> {
+        if (checkUserProjectRelation) {
+            return new promise<ProjectResultInterface> ((resolve, reject) => {
+                this.getProject(userId, projectId, true)
                 .then(__ => {
-                    this.deleteProject(userId, projectId, false)
+                    this.deleteProject(userId, projectId, removeFromUsersListOfProjects, false)
                     .then(result => {
                         resolve(result);
                     })
                     .catch(result => {
-                        // put the project back into the list of user's projects, so the DB is returned to its original state
-                        this.userController.appendProject(userId, projectId)
-                        .then(__ => {
-                            reject(result); 
-                        })
-                        .catch(__ => {
-                            // should not happen because removeProject didnt throw any error so appendProject should not either
-                            reject(result); 
-                        });
+                        reject(result); 
                     });
                 })
-                .catch(obj => { 
-                    // could be that the user wasnt found or bad request
+                .catch(obj => {
                     reject(obj);
                 })
-            } else {
-                try {
-                    let condition = { id: { $eq: projectId } };
-                    this.Project.findOneAndDelete(condition, (err: any, project: mongoose.Document) => {
-                        if (err) {
-                            print("err:", err);
-                            reject({code: 400, result: "Bad request"});
-                        } else {
-                            if (project) {
-                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                                project["userId"] = Number(userId);
-                                resolve({code: 200, result: project});
+            });
+        } else {
+            return new promise<ProjectResultInterface> ((resolve, reject) => {
+                if (removeFromUsersListOfProjects) {
+                    this.userController.removeProject(userId, projectId)
+                    .then(__ => {
+                        this.deleteProject(userId, projectId, false, false)
+                        .then(result => {
+                            resolve(result);
+                        })
+                        .catch(result => {
+                            // put the project back into the list of user's projects, so the DB is returned to its original state
+                            this.userController.appendProject(userId, projectId)
+                            .then(__ => {
+                                reject(result); 
+                            })
+                            .catch(__ => {
+                                // should not happen because removeProject didnt throw any error so appendProject should not either
+                                reject(result); 
+                            });
+                        });
+                    })
+                    .catch(obj => { 
+                        // could be that the user wasnt found or bad request
+                        reject(obj);
+                    })
+                } else {
+                    try {
+                        let condition = { id: { $eq: projectId } };
+                        this.Project.findOneAndDelete(condition, (err: any, project: mongoose.Document) => {
+                            if (err) {
+                                print("err:", err);
+                                reject({code: 400, result: "Bad request"});
                             } else {
-                                print("Project not found:", projectId);
-                                reject({code: 404, result: `Project not found`});
+                                if (project) {
+                                    project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                                    project["userId"] = Number(userId);
+                                    resolve({code: 200, result: project});
+                                } else {
+                                    print("Project not found:", projectId);
+                                    reject({code: 404, result: `Project not found`});
+                                }
                             }
-                        }
-                    });
-                } catch (error) {
-                    print("500: server error:", error);
-                    reject({code: 500, result: "Server error"});
+                        });
+                    } catch (error) {
+                        print("500: server error:", error);
+                        reject({code: 500, result: "Server error"});
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public updateProject(userId: string, projectId: string, updatedProject: JSON): promise<ProjectResultInterface> {
         return new promise<ProjectResultInterface> ((resolve, reject) => {
-            this.userController.getUser(userId, false)
+            this.getProject(userId, projectId, true)
             .then(obj => {
-                let user = obj["result"];
-                let usersProjectIds = user["projects"];
-
+                
                 try {
                     updatedProject = this.removeAllButSomeKeys(updatedProject, this.updatedableKeys);
                     let condition = { id: { $eq: projectId } };
@@ -237,26 +254,15 @@ export class ProjectController {
                                     print("unknown MongoError:", err);
                                     reject({code: 400, result: "Bad request"});
                                 }
-                            } else if (err.name === 'ValidationError') {
+                            } else {
                                 // when some necessary field is absent
                                 print("ValidationError:", err); 
                                 reject({code: 400, result: "Bad request"});
                             }
                         } else {
-                            if (project) {
-                                project = this.removeAllButSomeKeys(project, this.schemaKeys);
-                                project["userId"] = Number(userId);
-                                if (usersProjectIds.indexOf(projectId) == -1) {
-                                    print("User doesn't have this project");
-                                    reject({code: 404, result: "Project not found"});
-                                } else {
-                                    resolve({code: 200, result: project});
-                                }
-                               
-                            } else {
-                                print("Project not found:", projectId);
-                                reject({code: 404, result: "Project not found"});
-                            }
+                            project = this.removeAllButSomeKeys(project, this.schemaKeys);
+                            project["userId"] = Number(userId);
+                            resolve({code: 200, result: project});
                         }
                     });
                 } catch (e) {

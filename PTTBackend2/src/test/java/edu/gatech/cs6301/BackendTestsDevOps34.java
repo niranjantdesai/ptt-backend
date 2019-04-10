@@ -704,65 +704,65 @@ public class BackendTestsDevOps34 {
 
 
 
-    // @Test
-    // public void CreateMultipleUpdateOneProjectTest() throws Exception {
-    //     httpclient = HttpClients.createDefault();
-    //     String userId = singleUserBeforeProjectTest();
+    @Test
+    public void CreateMultipleUpdateOneProjectTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        String userId = singleUserBeforeProjectTest();
 
-    //     try {
-    //         CloseableHttpResponse response = createProject(userId, "Homework");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String id = getIdFromResponse(response);
-    //         response.close();
+        try {
+            CloseableHttpResponse response = createProject(userId, "Homework");
+            // EntityUtils.consume(response.getEntity());
+            String id = getIdFromResponse(response);
+            response.close();
 
-    //         response = createProject(userId, "Programming");
-    //         // EntityUtils.consume(response.getEntity());
-    //         String updatedId = getIdFromResponse(response);
-    //         response.close();
+            response = createProject(userId, "Programming");
+            // EntityUtils.consume(response.getEntity());
+            String updatedId = getIdFromResponse(response);
+            response.close();
 
-    //         int status;
-    //         HttpEntity entity;
-    //         String strResponse;
+            int status;
+            HttpEntity entity;
+            String strResponse;
 
-    //         response = updateProject(userId, updatedId, "Watching Udacity");
-    //         String expectedJson = "{\"id\":" + id + ",\"projectname\":\"Watching Udacity\",\"userId\":"+ userId +"}";
+            response = updateProject(userId, updatedId, "Watching Udacity");
+            String expectedJson = "{\"id\":" + updatedId + ",\"projectname\":\"Watching Udacity\",\"userId\":"+ userId +"}";
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         // Check that the record is correct in the response
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Check that the record is correct in the response
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //         response = getProject(userId, updatedId);
+            response = getProject(userId, updatedId);
 
-    //         status = response.getStatusLine().getStatusCode();
-    //         if (status == 200) {
-    //             entity = response.getEntity();
-    //         } else {
-    //             throw new ClientProtocolException("Unexpected response status: " + status);
-    //         }
-    //         strResponse = EntityUtils.toString(entity);
+            status = response.getStatusLine().getStatusCode();
+            if (status == 200) {
+                entity = response.getEntity();
+            } else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-    //         System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
 
-    //         // Check that the record was correctly updated in the addressbook
-    //         JSONAssert.assertEquals(expectedJson,strResponse, false);
-    //         EntityUtils.consume(response.getEntity());
-    //         response.close();
+            // Check that the record was correctly updated in the addressbook
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
 
-    //     } finally {
-    //         httpclient.close();
-    //     }
-    // }
+        } finally {
+            httpclient.close();
+        }
+    }
 
     @Test
     public void getMissingProjectTest() throws Exception {
@@ -887,7 +887,7 @@ public class BackendTestsDevOps34 {
             response = updateProject(userId, updatedId, "Homework");
 
             int status = response.getStatusLine().getStatusCode();
-            Assert.assertEquals(400, status);
+            Assert.assertEquals(409, status);
 
             EntityUtils.consume(response.getEntity());
             response.close();
@@ -1045,317 +1045,308 @@ public class BackendTestsDevOps34 {
         }
     }
 
-//     //Bharath
-//     @Test
-//     public void getReportOfAllSessionsTest() throws Exception {
-//         httpclient = HttpClients.createDefault();
-//         deleteAllUsers();
-//         try {
+    // Bharath
+    @Test
+    public void getReportOfAllSessionsTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteAllUsers();
+        try {
 
-//             //create a user
-//             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-//             response.close();
-//             String userid = getIdFromResponse(response);
+            //create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a project for the user
-//             response = createProject(userid, "Homework");
-//             response.close();
-//             String projectid = getIdFromResponse(response);
+            //create a project for the user
+            response = createProject(userid, "Homework");
+            String projectid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a session for the project
-//             response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
-//             response.close();
+            //create a session for the project
+            response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
+            response.close();
 
-//             //create another session for the project
-//             response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
-//             response.close();
+            //create another session for the project
+            response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
+            response.close();
 
-//             //create another session for the project
-//             response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
-//             response.close();
+            //create another session for the project
+            response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
+            response.close();
 
-//             String from = "1970-01-01T00:00Z";
-//             String to = "2099-12-31T23:59Z";
+            String from = "1970-01-01T00:00Z";
+            String to = "2099-12-31T23:59Z";
 
-//             response = getReports(userid, projectid, from, to, true, true);
-//             int status = response.getStatusLine().getStatusCode();
-//             HttpEntity entity;
-//             String strResponse;
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             }
-//             else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status);
-//             }
-//             strResponse = EntityUtils.toString(entity);
+            response = getReports(userid, projectid, from, to, true, true);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            }
+            else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-//             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//             String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":1.00}," +
-//                     "{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T11:09Z\"," +
-//                     "\"hoursWorked\":0.50}," +
-//                     "{\"startTime\":\"2019-02-02T13:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":\"0.50\"}]";
-//             String expectedJson = "{\"sessions\":\"" + report_session + "\",\"completedPomodoros\":2,\"totalHoursWorkedOnProject\":1.00}";
-//             JSONAssert.assertEquals(expectedJson,strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-//         } finally {
-//             httpclient.close();
-//         }
-//     }
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T11:09Z\"," +
+                    "\"hoursWorked\":1}," +
+                    "{\"startingTime\":\"2019-02-02T12:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T12:39Z\"," +
+                    "\"hoursWorked\":0.5}," +
+                    "{\"startingTime\":\"2019-02-02T13:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T13:39Z\"," +
+                    "\"hoursWorked\":0.5}]";
+            String expectedJson = "{\"sessions\":" + report_session + ",\"completedPomodoros\":4,\"totalHoursWorkedOnProject\":2}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-//     @Test
-//     public void getReportOfSessionsWithGivenTimeFrameTest() throws Exception {
-//         httpclient = HttpClients.createDefault();
-//         deleteAllUsers();
+    @Test
+    public void getReportOfSessionsWithGivenTimeFrameTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteAllUsers();
 
-//         try {
+        try {
 
-//             //create a user
-//             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-//             response.close();
-//             String userid = getIdFromResponse(response);
+            //create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a project for the user
-//             response = createProject(userid, "Homework");
-//             response.close();
-//             String projectid = getIdFromResponse(response);
+            //create a project for the user
+            response = createProject(userid, "Homework");
+            String projectid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a session for the project
-//             response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
-//             response.close();
+            //create a session for the project
+            response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
+            response.close();
 
-//             //create another session for the project
-//             response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
-//             response.close();
+            //create another session for the project
+            response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
+            response.close();
 
-//             //create another session for the project
-//             response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
-//             response.close();
+            //create another session for the project
+            response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
+            response.close();
 
-//             String from = "2019-02-02T11:09Z";
-//             String to = "2019-02-02T13:00Z";
+            String from = "2019-02-02T11:09Z";
+            String to = "2019-02-02T13:00Z";
 
-//             response = getReports(userid, projectid, from, to, true, true);
-//             int status = response.getStatusLine().getStatusCode();
-//             HttpEntity entity;
-//             String strResponse;
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             }
-//             else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status);
-//             }
-//             strResponse = EntityUtils.toString(entity);
+            response = getReports(userid, projectid, from, to, true, true);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            }
+            else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-//             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//             String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":1.00}," +
-//                     "{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T11:09Z\"," +
-//                     "\"hoursWorked\":0.50}]";
-//             String expectedJson = "{\"sessions\":\"" + report_session + "\",\"completedPomodoros\":3,\"totalHoursWorkedOnProject\":1.50}";
-//             JSONAssert.assertEquals(expectedJson,strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-//         } finally {
-//             httpclient.close();
-//         }
-//     }
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T11:09Z\"," +
+                    "\"hoursWorked\":1}," +
+                    "{\"startingTime\":\"2019-02-02T12:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T12:39Z\"," +
+                    "\"hoursWorked\":0.5}]";
+            String expectedJson = "{\"sessions\":" + report_session + ",\"completedPomodoros\":3,\"totalHoursWorkedOnProject\":2}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-//     @Test
-//     public void getReportWithoutTotalHoursDetailsTest() throws Exception {
-//         httpclient = HttpClients.createDefault();
-//         deleteAllUsers();
+    @Test
+    public void getReportWithoutTotalHoursDetailsTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteAllUsers();
 
-//         try {
+        try {
 
-//             //create a user
-//             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-//             response.close();
-//             String userid = getIdFromResponse(response);
+            //create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a project for the user
-//             response = createProject(userid, "Homework");
-//             response.close();
-//             String projectid = getIdFromResponse(response);
+            //create a project for the user
+            response = createProject(userid, "Homework");
+            String projectid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a session for the project
-//             response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
-//             response.close();
+            //create a session for the project
+            response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
+            response.close();
 
-//             //create another session for the project
-//             response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
-//             response.close();
+            //create another session for the project
+            response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
+            response.close();
 
-//             //create another session for the project
-//             response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
-//             response.close();
+            //create another session for the project
+            response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
+            response.close();
 
-//             String from = "1970-01-01T00:00Z";
-//             String to = "2099-12-31T23:59Z";
+            String from = "1970-01-01T00:00Z";
+            String to = "2099-12-31T23:59Z";
 
-//             response = getReports(userid, projectid, from, to, true, false);
-//             int status = response.getStatusLine().getStatusCode();
-//             HttpEntity entity;
-//             String strResponse;
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             }
-//             else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status);
-//             }
-//             strResponse = EntityUtils.toString(entity);
+            response = getReports(userid, projectid, from, to, true, false);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 200) {
+                entity = response.getEntity();
+            }
+            else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-//             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//             String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":1.00}," +
-//                     "{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T11:09Z\"," +
-//                     "\"hoursWorked\":0.50}," +
-//                     "{\"startTime\":\"2019-02-02T13:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":\"0.50\"}]";
-//             String expectedJson = "{\"sessions\":\"" + report_session + "\",\"completedPomodoros\":2}";
-//             JSONAssert.assertEquals(expectedJson,strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-//         } finally {
-//             httpclient.close();
-//         }
-//     }
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T11:09Z\"," +
+                    "\"hoursWorked\":1}," +
+                    "{\"startingTime\":\"2019-02-02T12:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T12:39Z\"," +
+                    "\"hoursWorked\":0.5}," +
+                    "{\"startingTime\":\"2019-02-02T13:09Z\"," +
+                    "\"endingTime\":\"2019-02-02T13:39Z\"," +
+                    "\"hoursWorked\":0.5}]";
+            String expectedJson = "{\"sessions\":" + report_session + ",\"completedPomodoros\":4}";
+            JSONAssert.assertEquals(expectedJson,strResponse, false);
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-//     @Test
-//     public void getReportWithMissingUserTest() throws Exception {
-//         httpclient = HttpClients.createDefault();
-//         deleteAllUsers();
+    @Test
+    public void getReportWithMissingUserTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteAllUsers();
 
-//         try {
+        try {
 
-//             //create a user
-//             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-//             response.close();
-//             String userid = getIdFromResponse(response);
+            //create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a project for the user
-//             response = createProject(userid, "Homework");
-//             response.close();
-//             String projectid = getIdFromResponse(response);
+            //create a project for the user
+            response = createProject(userid, "Homework");
+            String projectid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a session for the project
-//             response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
-//             response.close();
+            //create a session for the project
+            response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
+            response.close();
 
-//             //create another session for the project
-//              response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
-//             response.close();
+            //create another session for the project
+             response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
+            response.close();
 
-//             //create another session for the project
-//              response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
-//             response.close();
+            //create another session for the project
+             response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
+            response.close();
 
-//             String from = "1970-01-01T00:00Z";
-//             String to = "2099-12-31T23:59Z";
+            String from = "1970-01-01T00:00Z";
+            String to = "2099-12-31T23:59Z";
 
-//             response = getReports(userid+"xyz", projectid, from, to, false, false);
-//             int status = response.getStatusLine().getStatusCode();
-//             HttpEntity entity;
-//             String strResponse;
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             }
-//             else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status);
-//             }
-//             strResponse = EntityUtils.toString(entity);
+            response = getReports(userid+"xyz", projectid, from, to, false, false);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 400) {
+                entity = response.getEntity();
+            }
+            else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-//             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//             String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":1.00}," +
-//                     "{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T11:09Z\"," +
-//                     "\"hoursWorked\":0.50}," +
-//                     "{\"startTime\":\"2019-02-02T13:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":\"0.50\"}]";
-//             String expectedJson = "{\"sessions\":\"" + report_session + "}";
-//             JSONAssert.assertEquals(expectedJson,strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-//         } finally {
-//             httpclient.close();
-//         }
-//     }
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            
+            
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
-//     @Test
-//     public void getReportWithMissingProjectTest() throws Exception {
-//         httpclient = HttpClients.createDefault();
-//         deleteAllUsers();
+    @Test
+    public void getReportWithMissingProjectTest() throws Exception {
+        httpclient = HttpClients.createDefault();
+        deleteAllUsers();
 
-//         try {
+        try {
 
-//             //create a user
-//             CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
-//             response.close();
-//             String userid = getIdFromResponse(response);
+            //create a user
+            CloseableHttpResponse response = createUser("John", "Doe", "john@doe.org");
+            String userid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a project for the user
-//             response = createProject(userid, "Homework");
-//             response.close();
-//             String projectid = getIdFromResponse(response);
+            //create a project for the user
+            response = createProject(userid, "Homework");
+            String projectid = getIdFromResponse(response);
+            response.close();
+            
 
-//             //create a session for the project
-//             response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
-//             response.close();
+            //create a session for the project
+            response = createSession(userid, projectid, "2019-02-02T10:09Z", "2019-02-02T11:09Z", 2);
+            response.close();
 
-//             //create another session for the project
-//              response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
-//             response.close();
+            //create another session for the project
+             response = createSession(userid, projectid, "2019-02-02T12:09Z", "2019-02-02T12:39Z", 1);
+            response.close();
 
-//             //create another session for the project
-//             response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
-//             response.close();
+            //create another session for the project
+            response = createSession(userid, projectid, "2019-02-02T13:09Z", "2019-02-02T13:39Z", 1);
+            response.close();
 
-//             String from = "1970-01-01T00:00Z";
-//             String to = "2099-12-31T23:59Z";
+            String from = "1970-01-01T00:00Z";
+            String to = "2099-12-31T23:59Z";
 
-//             response = getReports(userid, projectid+"xyz", from, to, false, false);
-//             int status = response.getStatusLine().getStatusCode();
-//             HttpEntity entity;
-//             String strResponse;
-//             if (status == 200) {
-//                 entity = response.getEntity();
-//             }
-//             else {
-//                 throw new ClientProtocolException("Unexpected response status: " + status);
-//             }
-//             strResponse = EntityUtils.toString(entity);
+            response = getReports(userid, projectid+"xyz", from, to, false, false);
+            int status = response.getStatusLine().getStatusCode();
+            HttpEntity entity;
+            String strResponse;
+            if (status == 400) {
+                entity = response.getEntity();
+            }
+            else {
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+            strResponse = EntityUtils.toString(entity);
 
-//             System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
-//             String report_session = "[{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":1.00}," +
-//                     "{\"startingTime\":\"2019-02-02T10:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T11:09Z\"," +
-//                     "\"hoursWorked\":0.50}," +
-//                     "{\"startTime\":\"2019-02-02T13:09Z\"," +
-//                     "\"endingTime\":\"2019-02-02T13:39Z\"," +
-//                     "\"hoursWorked\":\"0.50\"}]";
-//             String expectedJson = "{\"sessions\":\"" + report_session + "}";
-//             JSONAssert.assertEquals(expectedJson,strResponse, false);
-//             EntityUtils.consume(response.getEntity());
-//             response.close();
-//         } finally {
-//             httpclient.close();
-//         }
-//     }
+            System.out.println("*** String response " + strResponse + " (" + response.getStatusLine().getStatusCode() + ") ***");
+            
+            EntityUtils.consume(response.getEntity());
+            response.close();
+        } finally {
+            httpclient.close();
+        }
+    }
 
     
     private CloseableHttpResponse createProject(String userId, String projectname) throws IOException {
@@ -1573,16 +1564,18 @@ public class BackendTestsDevOps34 {
         return response;
     }
 
-    private CloseableHttpResponse getReports(String userid, String projectid, String from, String to, Boolean completedPomodoros, Boolean totalHours) throws IOException {
-        HttpGet httpRequest = new HttpGet(baseUrl + "/users/" + userid + "/projects/" + projectid + "/report");
+    private CloseableHttpResponse getReports(String userId, String projectId, String fromTime, String toTime, boolean includePomo, boolean includeHours) throws IOException {
+        HttpGet httpRequest = null;
+        if(!includeHours && !includePomo){
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=false" + "&includeTotalHoursWorkedOnProject=false");
+        }else if(includePomo && !includeHours){
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=true" + "&includeTotalHoursWorkedOnProject=false");
+        }else if(!includePomo && includeHours){
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=false" + "&includeTotalHoursWorkedOnProject=true");
+        }else{
+            httpRequest = new HttpGet(baseUrl + "/users/" + userId + "/projects/" + projectId + "/report" + "?from=" + fromTime + "&to=" + toTime + "&includeCompletedPomodoros=true" + "&includeTotalHoursWorkedOnProject=true");
+        }
         httpRequest.addHeader("accept", "application/json");
-        HttpParams params = new BasicHttpParams();
-        params.setParameter("from", from);
-        params.setParameter("to", to);
-        params.setParameter("includeCompletedPomodoros", completedPomodoros);
-        params.setParameter("includeTotalHoursWorkedOnProject", totalHours);
-        httpRequest.setParams(params);
-
         System.out.println("*** Executing request " + httpRequest.getRequestLine() + "***");
         CloseableHttpResponse response = httpclient.execute(httpRequest);
         System.out.println("*** Raw response " + response + "***");
