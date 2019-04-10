@@ -1,4 +1,4 @@
-#### Instructions to run the backend server:
+## Instructions to run the backend server:
 * ##### Clone repo in any directory
   +  ###### git clone https://github.gatech.edu/gt-se-cs6301-spring2019/6301Spring19Backend2.git
 * ##### Go to the the code directory
@@ -17,7 +17,7 @@
     ###### Connected to MongoDB database
     ###### Backend server listening on 8080
 
-#### Instructions to run the test cases:
+## Instructions to run the test cases:
 * ##### Set the environment variable (PTT_URL). For example:
   +  ###### export PTT_URL=http://localhost:8080/ptt
 * ##### From the root directory of the project, run the test cases for a Backend team (1,2,3). For example:
