@@ -16,3 +16,15 @@
 * ##### If everything went correctly, then you should be able to see the following message after starting the server:
     ###### Connected to MongoDB database
     ###### Backend server listening on 8080
+
+#### Instructions to run the test cases:
+* ##### Set the environment variable (PTT_URL). For example:
+  +  ###### export PTT_URL=http://localhost:8080/ptt
+* ##### From the root directory of the project, run the test cases for a Backend team (1,2,3). For example:
+  +  ###### gradle BackendTestsBackend1
+* ##### From the root directory of the project, run the test cases for a Web team (1,2,3,4). For example:
+  +  ###### gradle BackendTestsWeb1
+* ##### From the root directory of the project, run the test cases for a Mobile team (1,2,3,4). For example:
+  +  ###### gradle BackendTestsMobile1
+* ##### From the root directory of the project, run the test cases for a DevOps team (12,34). For example:
+  +  ###### gradle BackendTestsDevOps12
