@@ -441,6 +441,8 @@ export class ProjectController {
                                 let reportSession = {};
                                 reportSession["startingTime"] = sessionStartTime;
                                 reportSession["endingTime"] = sessionEndTime;
+
+                                reportSession = this.changeDateFormatForFields(reportSession, ["startingTime", "endingTime"]);
     
                                 let sessionEndTimeDate = new Date(sessionEndTime);
                                 let sessionStartTimeDate = new Date(sessionStartTime);
